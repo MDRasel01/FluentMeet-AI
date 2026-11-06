@@ -1,7 +1,15 @@
 from app.models.base import (
+    Base,
     User,
+    UserProfile,
+    AuthSession,
+    RefreshToken,
+    EmailVerificationToken,
+    PasswordResetToken,
     Organization,
+    OrganizationSettings,
     OrganizationMember,
+    OrganizationInvitation,
     Subscription,
     Meeting,
     MeetingParticipant,
@@ -11,9 +19,17 @@ from app.models.base import (
 )
 
 __all__ = [
+    "Base",
     "User",
+    "UserProfile",
+    "AuthSession",
+    "RefreshToken",
+    "EmailVerificationToken",
+    "PasswordResetToken",
     "Organization",
+    "OrganizationSettings",
     "OrganizationMember",
+    "OrganizationInvitation",
     "Subscription",
     "Meeting",
     "MeetingParticipant",
@@ -21,4 +37,3 @@ __all__ = [
     "UsageLog",
     "AuditLog",
 ]
-

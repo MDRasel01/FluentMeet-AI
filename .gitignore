@@ -5,12 +5,24 @@ node_modules
 
 # Testing & Coverage
 coverage
+.pytest_cache
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.sqlite3
+*.db
+.venv/
+env/
+venv/
 
 # Production Build
 dist
 dist-ssr
 build
 *.local
+.next/
 
 # Environment variables
 .env
@@ -35,4 +47,3 @@ pnpm-debug.log*
 .idea
 .vscode
 *.tsbuildinfo
-
