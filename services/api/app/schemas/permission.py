@@ -14,3 +14,4 @@ class OrgPermissionsResponse(BaseModel):
     can_invite: bool
     can_manage_roles: bool
     can_delete_org: bool
+

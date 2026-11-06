@@ -135,3 +135,4 @@ async def revoke_invitation(
 
     revoked = await inv_repo.revoke_invitation(invitation_id, inv.organization_id)
     return ApiResponse.ok_response(data=revoked, message="Invitation revoked successfully.")
+

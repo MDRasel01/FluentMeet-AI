@@ -20,3 +20,4 @@ All authentication, authorization, and tenant isolation tests were executed usin
 | **Privilege Escalation** | `test_organization_lifecycle` | PASSED | Managers cannot grant Owner or Admin roles |
 | **Cross-Tenant Access** | `test_cross_tenant_isolation` | PASSED | Cross-organization resource access blocked with 403 Forbidden |
 | **Account Protection** | `test_users.py::test_account_deactivation` | PASSED | Sole organization owner cannot deactivate without transferring ownership |
+

@@ -20,3 +20,4 @@ Every user record in `users` has an attached `user_profiles` record containing:
   - Password re-authentication is mandatory.
   - **Sole Owner Protection:** If the user is the only Owner of an active organization, deactivation is blocked with an explicit error requiring them to transfer ownership or delete the organization first.
   - Upon deactivation, all active sessions are revoked, `status` becomes `"deactivated"`, `is_active = False`, and an audit event is logged.
+

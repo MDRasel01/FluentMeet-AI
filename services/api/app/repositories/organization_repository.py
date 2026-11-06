@@ -143,3 +143,4 @@ class OrganizationRepository(BaseRepository[Organization]):
 
         await self.db.commit()
         return True
+

@@ -11,3 +11,4 @@ The extension utilizes `ExtensionAuthAdapter` (`apps/extension/src/utils/auth-ad
 - Uses `chrome.storage.session` (memory-only in Manifest V3) to store access and refresh tokens.
 - Content scripts communicate with the background worker via `chrome.runtime.sendMessage` using validated message schemas (`CHECK_MEETING_STATUS`, `MEETING_PAGE_DETECTED`).
 - Session expiration automatically prompts the sidepanel UI to display the Sign In screen without disrupting the active meeting tab.
+

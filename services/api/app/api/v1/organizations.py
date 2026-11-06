@@ -200,3 +200,4 @@ async def transfer_ownership(
         owner_password=req.password,
     )
     return ApiResponse.ok_response(data=success, message="Organization ownership transferred successfully.")
+

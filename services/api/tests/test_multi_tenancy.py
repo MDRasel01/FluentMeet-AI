@@ -52,3 +52,4 @@ async def test_cross_tenant_isolation(
     alpha_valid = await async_client.get(f"/api/v1/organizations/{alpha_id}", headers=user1_headers)
     assert alpha_valid.status_code == 200
     assert alpha_valid.json()["data"]["name"] == "Alpha Corp"
+

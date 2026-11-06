@@ -168,3 +168,4 @@ def downgrade() -> None:
     op.drop_column('users', 'timezone')
     op.drop_column('users', 'email_verified_at')
     op.drop_column('users', 'status')
+

@@ -56,3 +56,4 @@ export class ExtensionAuthAdapter {
     return Date.now() >= session.expiresAt - 60000;
   }
 }
+

@@ -14,3 +14,4 @@
 - `POST /api/v1/auth/resend-verification`:
   - Request: `{"email": "user@example.com"}`
   - Effect: Generates a new 30-minute token and dispatches email.
+

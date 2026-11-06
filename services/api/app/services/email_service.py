@@ -81,3 +81,4 @@ class EmailService:
 
 # Default singleton instance
 email_service = EmailService()
+

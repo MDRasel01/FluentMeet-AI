@@ -90,3 +90,4 @@ def can_manage_target_role(actor_role: str, target_role: str) -> bool:
         return ROLE_HIERARCHY[a_role] > ROLE_HIERARCHY[t_role]
     except (ValueError, KeyError):
         return False
+

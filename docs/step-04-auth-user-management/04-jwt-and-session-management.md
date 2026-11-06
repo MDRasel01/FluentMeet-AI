@@ -28,3 +28,4 @@ Users can view and manage their active sessions across devices:
 - `DELETE /api/v1/auth/sessions/{session_id}`: Revokes a specific device session.
 - `POST /api/v1/auth/logout`: Revokes the current session.
 - `POST /api/v1/auth/logout-all`: Atomically revokes all sessions for the user across all devices.
+

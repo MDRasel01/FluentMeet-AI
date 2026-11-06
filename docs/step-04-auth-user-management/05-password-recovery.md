@@ -19,3 +19,4 @@
 1. Authenticated user submits `current_password` and `new_password` via `POST /api/v1/auth/change-password`.
 2. Current password hash is verified.
 3. New password is saved and all other sessions (except the current active session) are revoked.
+

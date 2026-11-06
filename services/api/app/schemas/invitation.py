@@ -21,3 +21,4 @@ class InvitationResponse(BaseModel):
     expires_at: datetime
     created_at: datetime
     is_expired: bool = False
+

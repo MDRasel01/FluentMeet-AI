@@ -53,3 +53,4 @@ All endpoints are versioned under the `/api/v1` prefix.
 |---|---|---|---|
 | `GET` | `/permissions/me` | Get platform roles and permissions | Yes |
 | `GET` | `/organizations/{id}/permissions/me` | Get organization-scoped permissions | Yes |
+

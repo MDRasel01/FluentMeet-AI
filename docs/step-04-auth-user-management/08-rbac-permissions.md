@@ -35,3 +35,4 @@ FluentMeet AI maintains strict separation between **Platform Roles** and **Organ
 - Every role assignment is validated against `ROLE_HIERARCHY`:
   - `owner` (40) > `admin` (30) > `manager` (20) > `member` (10).
 - An actor can only assign or manage roles with a strictly lower hierarchy value than their own.
+

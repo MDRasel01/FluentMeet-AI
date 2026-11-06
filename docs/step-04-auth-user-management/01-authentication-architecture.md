@@ -27,3 +27,4 @@ FluentMeet AI utilizes a dual-tier identity and authorization architecture desig
 - **Short-Lived Access Tokens:** 15-minute expiration minimizes exposure windows.
 - **Stateful Rotating Refresh Tokens:** Stored as cryptographic hashes with family tracking; reuse triggers immediate revocation of the entire token family.
 - **Cryptographic Separation:** Passwords hashed with Bcrypt (Argon2id compatible); one-time tokens generated via `secrets.token_urlsafe(32)` and persisted exclusively as SHA-256 hashes.
+

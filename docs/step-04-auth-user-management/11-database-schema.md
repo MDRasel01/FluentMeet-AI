@@ -29,3 +29,4 @@ erDiagram
 9. `organization_members`: Junction between users and organizations with `role` (`owner`, `admin`, `manager`, `member`), `status`, and unique constraint on `(organization_id, user_id)`.
 10. `organization_invitations`: Team invitations with token hash, target email, role, 7-day expiration, accepted_at, revoked_at.
 11. `audit_logs`: Security and administrative audit trail with actor ID, organization ID, action, target entity, JSON details, and client IP.
+

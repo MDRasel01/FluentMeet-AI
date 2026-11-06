@@ -102,3 +102,4 @@ class InvitationRepository(BaseRepository[OrganizationInvitation]):
             await self.db.commit()
             return True
         return False
+

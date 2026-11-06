@@ -91,3 +91,4 @@ async def test_organization_lifecycle(
     new_owner_org = await async_client.get(f"/api/v1/organizations/{org_id}", headers=member_headers)
     assert new_owner_org.status_code == 200
     assert new_owner_org.json()["data"]["my_role"] == "owner"
+

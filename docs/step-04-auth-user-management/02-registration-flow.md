@@ -53,3 +53,4 @@ User Submits Registration Form (email, password, full_name, terms, privacy)
     "message": "Registration successful. Please check your email to verify your account."
   }
   ```
+

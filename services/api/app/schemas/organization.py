@@ -62,3 +62,4 @@ class OrganizationResponse(BaseModel):
 class OrganizationDetailResponse(OrganizationResponse):
     settings: Optional[OrganizationSettingsResponse] = None
     member_count: int = 1
+

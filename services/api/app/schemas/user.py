@@ -41,3 +41,4 @@ class UserDetailResponse(BaseModel):
     english_learning_goal: Optional[str] = None
     target_speaking_score: Optional[int] = None
     created_at: datetime
+

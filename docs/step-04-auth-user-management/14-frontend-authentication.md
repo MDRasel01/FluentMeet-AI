@@ -19,3 +19,4 @@ The Web Dashboard (`apps/dashboard/`) consumes backend authentication and organi
 - Organization Switcher and Organization Creation modal
 - Team Members management with role assignment and removal
 - User Profile Settings, Security Settings, and Active Session listing
+

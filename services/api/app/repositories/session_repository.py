@@ -161,3 +161,4 @@ class SessionRepository(BaseRepository[AuthSession]):
             await self.db.execute(sess_stmt)
 
         await self.db.commit()
+

@@ -548,3 +548,4 @@ class AuthService:
             details={"reason": reason},
         )
         return True
+

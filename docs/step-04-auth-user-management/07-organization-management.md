@@ -28,3 +28,4 @@
   - New owner must be an active member of the organization.
   - Old owner is transitioned to Admin.
   - Audit event is logged with actor and new owner IDs.
+

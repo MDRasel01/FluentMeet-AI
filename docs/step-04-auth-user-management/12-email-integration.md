@@ -17,3 +17,4 @@ class BaseEmailProvider(ABC):
 - **Organization Invitation:** 7-day invitation link containing organization name, inviter name, and assigned role.
 - **Role Changed Alert:** Notifies user when an organization administrator promotes or adjusts their role.
 - **Account Deactivated Confirmation:** Confirmation notice upon user-initiated account deactivation.
+
