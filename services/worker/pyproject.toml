@@ -1,0 +1,17 @@
+[project]
+name = "fluentmeet-worker"
+version = "0.1.0"
+description = "FluentMeet AI Celery Background Job Worker"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "celery>=5.3.6",
+    "redis>=5.0.1",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.2.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+

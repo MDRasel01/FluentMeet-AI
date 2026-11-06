@@ -1,0 +1,57 @@
+name: FluentMeet AI CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend-tests:
+    name: Backend Pytest & Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        working-directory: services/api
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]" pytest pytest-asyncio httpx aiosqlite
+
+      - name: Run Pytest Suite
+        working-directory: services/api
+        env:
+          DATABASE_URL: sqlite+aiosqlite:///:memory:
+          ENVIRONMENT: testing
+          JWT_SECRET_KEY: test-secret-ci-pipeline-key-must-be-long-enough-32bytes
+        run: |
+          python -m pytest tests/ -v
+
+  frontend-check:
+    name: Frontend TypeScript & Build Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Typecheck Workspace
+        run: pnpm run -r --if-present lint
