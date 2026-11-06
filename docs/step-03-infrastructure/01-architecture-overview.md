@@ -24,3 +24,4 @@ fluentmeet-ai/
 - **Client to API:** HTTPS REST for Auth, Profiles, Meetings, Billing.
 - **Real-Time Coaching:** WSS (WebSocket) at `/ws/v1/sessions/{session_id}` with JWT authentication and bi-directional JSON streaming.
 - **Async Processing:** Redis 7 Pub/Sub broker with Celery workers for long-running audio processing and report generation.
+

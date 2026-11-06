@@ -17,3 +17,4 @@
 | `test_get_and_update_my_profile` | User Profile | **PASSED** | Authenticated profile retrieval and updates |
 | `test_create_and_list_meetings` | Meetings API | **PASSED** | Session lifecycle (create, get, list, end) |
 | `test_websocket_ping_pong` | WebSocket Engine | **PASSED** | Handshake, ping-pong, and echo events |
+

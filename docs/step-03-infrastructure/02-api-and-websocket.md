@@ -20,3 +20,4 @@
   - `ping` / `pong`: Heartbeat keeping connection open through NAT/proxies
   - `broadcast_event`: Multi-party notification within meeting session
   - `ack`: Message acknowledgement
+

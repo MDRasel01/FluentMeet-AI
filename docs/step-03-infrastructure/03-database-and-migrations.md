@@ -16,3 +16,4 @@
 7. `consent_records`: Explicit GDPR/compliance consent audit trail with timestamps and IP.
 8. `usage_logs`: Metered minutes and AI token consumption.
 9. `audit_logs`: Security and administrative actions.
+
