@@ -13,7 +13,9 @@ import {
   CheckCircle2,
   Moon,
   Sun,
-  Sparkles
+  Sparkles,
+  Download,
+  ExternalLink
 } from 'lucide-react';
 import {
   Button,
@@ -30,6 +32,7 @@ type ActiveApp = 'dashboard' | 'extension' | 'admin' | 'design-system';
 
 export const App: React.FC = () => {
   const [activeApp, setActiveApp] = useState<ActiveApp>('dashboard');
+  const [dashboardPage, setDashboardPage] = useState<string>('overview');
   const [viewportWidth, setViewportWidth] = useState<string>('100%');
   const [isDark, setIsDark] = useState<boolean>(false);
 
@@ -95,6 +98,19 @@ export const App: React.FC = () => {
               <span>Design System</span>
             </button>
           </div>
+
+          {/* Quick Direct Link to Download Center */}
+          <button
+            onClick={() => {
+              setDashboardPage('chrome-extension');
+              setActiveApp('dashboard');
+            }}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-md transition-colors bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-sm"
+            title="Open Chrome Extension Download Center"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Download Extension</span>
+          </button>
         </div>
 
         {/* Viewport & Theme Resizer Controls */}
@@ -146,11 +162,43 @@ export const App: React.FC = () => {
           style={{ width: viewportWidth, maxWidth: '100%' }}
         >
           {activeApp === 'dashboard' && (
-            <DashboardApp isDark={isDark} onToggleTheme={() => setIsDark(!isDark)} />
+            <DashboardApp
+              key={dashboardPage}
+              initialPage={dashboardPage as any}
+              isDark={isDark}
+              onToggleTheme={() => setIsDark(!isDark)}
+            />
           )}
 
           {activeApp === 'extension' && (
             <div className="p-8 flex flex-col items-center justify-center min-h-[640px] bg-slate-100 dark:bg-slate-950">
+              {/* Direct Download Banner for users on the Simulator view */}
+              <div className="w-full max-w-md mb-6 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950/60 dark:to-slate-900 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-indigo-600 text-white rounded-xl shadow-sm shrink-0">
+                    <Download className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                      Need the installable Extension?
+                    </h3>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                      Download v1.0.0 ZIP or Load Unpacked in Chrome
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setDashboardPage('chrome-extension');
+                    setActiveApp('dashboard');
+                  }}
+                  className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-all flex items-center gap-1.5 shrink-0"
+                >
+                  <span>Download Page</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
               <div className="text-center mb-4">
                 <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
                   Chrome Extension Simulator (Manifest V3 Side Panel API)
