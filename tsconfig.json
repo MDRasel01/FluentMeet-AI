@@ -19,7 +19,9 @@
     "types": ["node", "chrome"],
     "paths": {
       "@design-system/*": ["design-system/*"],
-      "@apps/*": ["apps/*"]
+      "@apps/*": ["apps/*"],
+      "react": ["node_modules/@types/react"],
+      "react/*": ["node_modules/@types/react/*"]
     }
   },
   "include": ["src", "design-system", "apps"],
