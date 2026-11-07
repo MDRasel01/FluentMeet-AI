@@ -91,7 +91,7 @@ class TestAudioWorkerConsumer:
             storage_service=mock_storage
         )
 
-        payload = {"segment_id": "seg-fatal"}
+        payload = {"segment_id": "seg-fatal", "storage_key": "storage/audio/seg-fatal.pcm"}
         # Already at 2 retries (so next attempt is 3rd = max retries)
         msg_data = {
             b"payload": json.dumps(payload).encode("utf-8"),

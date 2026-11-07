@@ -283,3 +283,14 @@ async def websocket_meeting_audio_endpoint(
     org_id: Optional[str] = Query(None)
 ):
     await handle_websocket_loop(websocket, session_id=meeting_id, token=token, org_id=org_id)
+
+
+@router.websocket("/ws/meetings/{meeting_id}/transcripts")
+async def websocket_meeting_transcripts_endpoint(
+    websocket: WebSocket,
+    meeting_id: str,
+    token: Optional[str] = Query(None),
+    org_id: Optional[str] = Query(None)
+):
+    await handle_websocket_loop(websocket, session_id=meeting_id, token=token, org_id=org_id)
+

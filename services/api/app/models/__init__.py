@@ -27,6 +27,14 @@ from app.models.audio import (
     AudioOutboxEvent,
     AudioIngestionEvent,
 )
+from app.models.transcript import (
+    MeetingSpeaker,
+    TranscriptSegment,
+    TranscriptWord,
+    SpeakerTurn,
+    SpeechOverlap,
+    TranscriptEvent,
+)
 
 __all__ = [
     "Base",
@@ -54,4 +62,10 @@ __all__ = [
     "AudioUsageRecord",
     "AudioOutboxEvent",
     "AudioIngestionEvent",
+    "MeetingSpeaker",
+    "TranscriptSegment",
+    "TranscriptWord",
+    "SpeakerTurn",
+    "SpeechOverlap",
+    "TranscriptEvent",
 ]
