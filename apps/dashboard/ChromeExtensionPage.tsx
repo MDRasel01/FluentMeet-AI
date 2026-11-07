@@ -60,7 +60,7 @@ const DEFAULT_LATEST_RELEASE: ReleaseItem = {
   artifact_size_bytes: 98300,
   sha256_checksum: '53e8620c9422f7e7f7a2715eaccc7a37bca41b87ca2f5a4f774a5dc7480cf003',
   download_count: 24,
-  download_url: '/api/v1/extensions/releases/latest/download?channel=stable',
+  download_url: '/downloads/fluentmeet-ai-v1.0.0.zip',
   published_at: '2026-11-07T10:00:00Z',
   created_at: '2026-11-07T09:30:00Z'
 };
@@ -160,10 +160,15 @@ export const ChromeExtensionPage: React.FC = () => {
   };
 
   const handleDownload = (release: ReleaseItem) => {
-    setDownloadSuccess(`Downloading ${release.artifact_filename || `fluentmeet-ai-v${release.version}.zip`}...`);
+    const filename = release.artifact_filename || `fluentmeet-ai-v${release.version}.zip`;
+    setDownloadSuccess(`Downloading ${filename}...`);
     const link = document.createElement('a');
-    link.href = release.download_url || `/api/v1/extensions/releases/${release.id}/download`;
-    link.setAttribute('download', release.artifact_filename || `fluentmeet-ai-v${release.version}.zip`);
+    // Always ensure valid download URL (prefer static public file if API relative path)
+    const targetUrl = release.download_url && !release.download_url.startsWith('/api/')
+      ? release.download_url
+      : `/downloads/${filename}`;
+    link.href = targetUrl;
+    link.setAttribute('download', filename);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -314,9 +319,19 @@ export const ChromeExtensionPage: React.FC = () => {
               <Download className="w-4 h-4" />
               <span>Download Chrome Extension (ZIP)</span>
             </Button>
-            <span className="text-[11px] text-slate-400 text-center lg:text-right">
-              Direct download • Unpacked local installation
-            </span>
+            <div className="flex items-center gap-2 justify-center lg:justify-end text-[11px] text-slate-400">
+              <span>Direct ZIP (96 KB)</span>
+              <span>•</span>
+              <a
+                href="https://github.com/MDRasel01/FluentMeet-AI/releases"
+                target="_blank"
+                rel="noreferrer"
+                className="text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 font-medium"
+              >
+                <span>GitHub Releases</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
           </div>
         </div>
 
