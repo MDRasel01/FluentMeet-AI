@@ -19,7 +19,7 @@
     "ws://localhost:8000/*"
   ],
   "background": {
-    "service_worker": "src/background/service-worker.ts",
+    "service_worker": "src/background/service-worker.js",
     "type": "module"
   },
   "action": {
@@ -35,7 +35,7 @@
         "https://*.zoom.us/*",
         "https://teams.microsoft.com/*"
       ],
-      "js": ["src/content/content-script.ts"],
+      "js": ["src/content/content-script.js"],
       "run_at": "document_idle"
     }
   ],
