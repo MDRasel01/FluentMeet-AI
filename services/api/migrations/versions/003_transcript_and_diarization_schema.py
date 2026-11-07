@@ -123,3 +123,4 @@ def downgrade() -> None:
     op.drop_table('transcript_words')
     op.drop_table('transcript_segments')
     op.drop_table('meeting_speakers')
+

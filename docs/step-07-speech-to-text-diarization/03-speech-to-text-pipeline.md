@@ -22,3 +22,4 @@ The primary ASR engine is `faster-whisper`, a reimplementation of OpenAI's Whisp
 Raw Whisper outputs log-probabilities per token. FluentMeet converts these into normalized confidence scores $[0.0, 1.0]$:
 $$\text{Confidence} = \min\left(1.0, \max\left(0.0, e^{\text{avg\_logprob}}\right)\right)$$
 If confidence is uncalibrated or absent, the system strictly stores `null` to avoid hallucinating artificial certainty. Words with $\text{Confidence} < 0.65$ are visually highlighted in the UI with warning indicators for coaching review.
+

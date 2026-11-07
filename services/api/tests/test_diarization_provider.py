@@ -60,3 +60,4 @@ class TestDiarizationProvider:
         assert overlaps[0].duration_ms == 500
         assert "speaker_001" in overlaps[0].overlapping_speakers
         assert "speaker_002" in overlaps[0].overlapping_speakers
+

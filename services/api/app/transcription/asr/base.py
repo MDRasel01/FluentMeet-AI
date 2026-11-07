@@ -45,3 +45,4 @@ class BaseASRProvider(ABC):
         Transcribe 16-bit PCM audio returning structured segments and word timestamps.
         """
         pass
+

@@ -59,3 +59,4 @@ class SpeechOverlapResponse(BaseModel):
     duration_ms: int
     overlapping_speaker_ids: List[str]
     confidence_score: Optional[float] = None
+

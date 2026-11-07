@@ -35,6 +35,11 @@ from app.models.transcript import (
     SpeechOverlap,
     TranscriptEvent,
 )
+from app.models.extension_release import (
+    ExtensionRelease,
+    ExtensionDownloadLog,
+    ExtensionReleaseEvent,
+)
 
 __all__ = [
     "Base",
@@ -68,4 +73,7 @@ __all__ = [
     "SpeakerTurn",
     "SpeechOverlap",
     "TranscriptEvent",
+    "ExtensionRelease",
+    "ExtensionDownloadLog",
+    "ExtensionReleaseEvent",
 ]

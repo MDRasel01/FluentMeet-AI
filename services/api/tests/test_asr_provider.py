@@ -66,3 +66,4 @@ class TestASRProvider:
         assert seg.words[1].word == "world"
         assert seg.confidence is not None
         assert 0.90 <= seg.confidence <= 1.0
+

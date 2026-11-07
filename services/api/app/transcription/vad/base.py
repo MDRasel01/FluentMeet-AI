@@ -30,3 +30,4 @@ class BaseVADProvider(ABC):
         Returns list of SpeechInterval with millisecond timestamps and confidence.
         """
         pass
+

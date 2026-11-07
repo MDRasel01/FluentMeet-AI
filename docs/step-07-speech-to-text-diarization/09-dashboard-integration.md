@@ -31,3 +31,4 @@ apps/dashboard/src/features/transcripts/
 - Hovering over any utterance reveals an edit icon (`Edit3`).
 - Clicking launches `TranscriptSegmentEditModal`, allowing instant correction of typos or speaker reattribution.
 - Updates are saved optimistically and broadcast to all connected dashboard and extension clients.
+

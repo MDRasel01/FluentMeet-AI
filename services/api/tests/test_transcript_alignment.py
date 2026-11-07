@@ -79,3 +79,4 @@ class TestSpeakerTranscriptAligner:
         alignment = SpeakerTranscriptAligner.align(asr_res, diar_res)
         assert len(alignment.segments) == 1
         assert alignment.segments[0].words[0].is_overlapping is True
+

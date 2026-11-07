@@ -120,3 +120,4 @@ class TestTranscriptionWorkerConsumer:
 
         claimed_count = await consumer.claim_stale_messages()
         assert claimed_count == 1
+

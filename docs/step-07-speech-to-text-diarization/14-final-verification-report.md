@@ -28,3 +28,4 @@
 
 ## 3. Ready for Step 08
 With timestamped, speaker-attributed transcripts accurately generated and persisted, the pipeline is fully prepared for **Step 08 — English Language Analysis & Coaching Engine** (Grammar Correction, Vocabulary Enrichment, Tone & Politeness Analysis via Gemini API).
+

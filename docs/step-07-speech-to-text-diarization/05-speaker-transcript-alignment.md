@@ -38,3 +38,4 @@ $$\text{Distance}(w, T) = \min\left(|w.\text{start\_ms} - T.\text{end\_ms}|, |w.
 - Once all words are attributed, contiguous words sharing the same `speaker_label` are coalesced into a single `TranscriptSegment`.
 - If a speaker turn changes mid-sentence, the sentence is split cleanly at the speaker turn boundary.
 - Granular word timestamps are retained in `transcript_words` for millisecond-level UI navigation.
+

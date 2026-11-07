@@ -172,3 +172,4 @@ class TranscriptEvent(Base):
     __table_args__ = (
         Index("ix_transcript_events_meeting_type", "meeting_id", "event_type"),
     )
+

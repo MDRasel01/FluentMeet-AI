@@ -41,3 +41,4 @@ apps/dashboard/
 10. **ST-090 - ST-093:** Next.js dashboard transcript timeline, speaker renaming, and segment edit modals verified.
 11. **ST-100 - ST-101:** Tenant boundary isolation and unauthorized access rejection verified.
 12. **ST-110 - ST-120:** Accuracy benchmarks, WER $\le 8.9\%$, DER $\le 6.1\%$, and RTF verified.
+

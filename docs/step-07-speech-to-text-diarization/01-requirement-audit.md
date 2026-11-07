@@ -82,3 +82,4 @@ Step 07 transforms raw 16 kHz Mono PCM audio ingested by Step 06 into structured
 | **ST-101** | Security | Token authorization on WebSocket & REST transcript routes | Security Test | Verified |
 | **ST-110** | Chaos | Resilient recovery on audio segment gaps and packet loss | Chaos Test | Verified |
 | **ST-120** | Benchmarking | WER (Word Error Rate) & DER benchmark metrics generation | Benchmark Test | Verified |
+

@@ -75,3 +75,4 @@ Redis Streams provides durable, at-least-once event delivery decoupling audio se
 - **At-Least-Once Delivery:** Messages are only acknowledged (`XACK`) after successful database commit.
 - **Dead-Letter Routing:** Messages failing 3 consecutive attempts are automatically moved to `audio:segments:dlq` with failure timestamps and stack trace metadata.
 - **Stale Claiming:** `claim_stale_messages` periodically executes `XAUTOCLAIM` with an idle threshold of 30 seconds to recover messages from crashed or killed worker processes.
+

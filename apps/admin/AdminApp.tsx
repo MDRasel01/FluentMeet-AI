@@ -22,10 +22,12 @@ import {
   Lock,
   ArrowUpRight,
   TrendingUp,
-  UserCheck
+  UserCheck,
+  Download
 } from 'lucide-react';
 import { Button, Input, Card, Badge, StatCard } from '../../design-system/components';
 import { DEMO_ADMIN_DATA } from '../demoData';
+import { AdminExtensionReleases } from './AdminExtensionReleases';
 
 export type AdminPage =
   | 'admin-overview'
@@ -40,7 +42,8 @@ export type AdminPage =
   | 'admin-system'
   | 'admin-errors'
   | 'admin-audit'
-  | 'admin-settings';
+  | 'admin-settings'
+  | 'admin-extension-releases';
 
 interface AdminAppProps {
   initialPage?: AdminPage;
@@ -208,6 +211,16 @@ export const AdminApp: React.FC<AdminAppProps> = ({
             >
               <Settings className="w-4 h-4" />
               <span>Platform Config</span>
+            </button>
+
+            <button
+              onClick={() => navigateTo('admin-extension-releases')}
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${
+                currentPage === 'admin-extension-releases' ? 'bg-rose-950/60 text-rose-300' : 'text-slate-400 hover:bg-slate-900 hover:text-white'
+              }`}
+            >
+              <Download className="w-4 h-4" />
+              <span>Extension Releases</span>
             </button>
           </div>
         </aside>
@@ -523,6 +536,11 @@ export const AdminApp: React.FC<AdminAppProps> = ({
                 <Button size="sm">Save Global Config</Button>
               </Card>
             </div>
+          )}
+
+          {/* SCREEN 14: EXTENSION RELEASE MANAGEMENT */}
+          {currentPage === 'admin-extension-releases' && (
+            <AdminExtensionReleases />
           )}
         </main>
       </div>

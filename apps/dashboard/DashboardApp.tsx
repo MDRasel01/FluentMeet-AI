@@ -38,8 +38,10 @@ import {
   ArrowRight,
   BarChart2,
   Mic,
-  Languages
+  Languages,
+  Puzzle
 } from 'lucide-react';
+import { ChromeExtensionPage } from './ChromeExtensionPage';
 import {
   Button,
   Input,
@@ -81,6 +83,7 @@ export type DashboardPage =
   | 'improvement-plan'
   | 'team-analytics'
   | 'integrations'
+  | 'chrome-extension'
   | 'billing'
   | 'profile-settings'
   | 'privacy-settings'
@@ -420,6 +423,18 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
                 >
                   <Layers className="w-4 h-4 shrink-0" />
                   {!sidebarCollapsed && <span>Integrations</span>}
+                </button>
+
+                <button
+                  onClick={() => navigateTo('chrome-extension')}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                    currentPage === 'chrome-extension'
+                      ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300'
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <Puzzle className="w-4 h-4 shrink-0" />
+                  {!sidebarCollapsed && <span>Chrome Extension</span>}
                 </button>
 
                 <button
@@ -1696,6 +1711,11 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
                 </Card>
               </div>
             </div>
+          )}
+
+          {/* PAGE 16.5: CHROME EXTENSION DOWNLOAD CENTER */}
+          {currentPage === 'chrome-extension' && (
+            <ChromeExtensionPage />
           )}
 
           {/* PAGE 17: BILLING & USAGE */}

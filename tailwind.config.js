@@ -5,7 +5,10 @@ export default {
     './index.html',
     './src/**/*.{js,ts,jsx,tsx}',
     './design-system/**/*.{js,ts,jsx,tsx}',
-    './apps/**/*.{js,ts,jsx,tsx}',
+    './apps/*.{js,ts,jsx,tsx}',
+    './apps/*/*.{js,ts,jsx,tsx}',
+    './apps/*/src/**/*.{js,ts,jsx,tsx}',
+    '!./apps/**/node_modules/**',
   ],
   theme: {
     extend: {

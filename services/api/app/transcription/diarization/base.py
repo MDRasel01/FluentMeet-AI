@@ -47,3 +47,4 @@ class BaseDiarizationProvider(ABC):
         Partition PCM audio into speaker turns and detect overlapping speech intervals.
         """
         pass
+

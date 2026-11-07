@@ -56,3 +56,4 @@ flowchart TD
 5. **Diarization:** `PyannoteDiarizationProvider` detects speaker boundaries and computes turn intervals.
 6. **Alignment:** `SpeakerTranscriptAligner` maps every word token to its optimal speaker turn via temporal intersection maximization.
 7. **Storage & Distribution:** Database transactions write to `meeting_speakers`, `transcript_segments`, `transcript_words`, `speaker_turns`, and `speech_overlaps`. Events are published to Redis and broadcast over WebSockets.
+

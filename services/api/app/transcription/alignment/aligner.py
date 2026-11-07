@@ -179,3 +179,4 @@ class SpeakerTranscriptAligner:
             words=words,
             status="final"
         )
+

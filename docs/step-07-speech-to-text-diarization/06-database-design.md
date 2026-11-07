@@ -104,3 +104,4 @@ erDiagram
 
 ## 3. Database Migrations
 Step 07 tables are managed via Alembic revision `003_transcript_diarization.py` located at `services/api/migrations/versions/003_transcript_and_diarization_schema.py`.
+

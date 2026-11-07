@@ -30,3 +30,4 @@ When multiple speakers talk simultaneously:
   $$\text{Overlap}_{\text{duration}} = \min(T_{1.\text{end}}, T_{2.\text{end}}) - \max(T_{1.\text{start}}, T_{2.\text{start}})$$
 - Recorded in `speech_overlaps` table with participating speaker labels.
 - Published via real-time WebSocket event `speaker.overlap` so coaches and users can identify interruptions and conversational flow dynamics.
+

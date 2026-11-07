@@ -30,3 +30,4 @@ $$\text{DER} = \frac{\text{False Alarm} + \text{Missed Detection} + \text{Speake
   - VAD (30ms frames): 0.005x RTF (sub-millisecond latency per frame).
   - ASR (`base.en` on CPU): 0.12x RTF (1.2 seconds compute per 10s audio segment).
   - End-to-end latency from segment flush to dashboard transcript appearance: **< 1.8 seconds**.
+

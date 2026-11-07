@@ -21,6 +21,8 @@ from app.api.v1.invitations import router as invitations_router
 from app.api.v1.permissions import router as permissions_router
 from app.api.v1.audio import router as audio_router
 from app.api.v1.transcripts import router as transcripts_router
+from app.api.v1.extensions import router as extensions_router
+from app.api.v1.admin_extensions import router as admin_extensions_router
 from app.websocket.endpoint import router as ws_router
 
 # Setup structured logger
@@ -95,4 +97,6 @@ app.include_router(invitations_router, prefix="/api/v1")
 app.include_router(permissions_router, prefix="/api/v1")
 app.include_router(audio_router, prefix="/api/v1")
 app.include_router(transcripts_router, prefix="/api/v1")
+app.include_router(extensions_router, prefix="/api/v1")
+app.include_router(admin_extensions_router, prefix="/api/v1")
 app.include_router(ws_router)

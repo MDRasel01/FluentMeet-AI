@@ -51,3 +51,4 @@ class TestVoiceActivityDetection:
         # Speech segment should start roughly after 400ms and end before 1600ms
         assert intervals[0].start_ms >= 300
         assert intervals[0].end_ms <= 1650
+

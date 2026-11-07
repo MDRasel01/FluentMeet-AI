@@ -87,3 +87,4 @@
   - `speaker.detected`: newly identified speaker
   - `speaker.updated`: updated name or label
   - `speaker.overlap`: cross-talk interval warning
+

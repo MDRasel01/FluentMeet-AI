@@ -19,3 +19,4 @@ When a segment fails processing across 3 consecutive retry attempts:
 2. Written via `XADD` to `audio:segments:dlq`.
 3. Message acknowledged (`XACK`) from primary stream `audio:segments` to avoid head-of-line blocking.
 4. Sentry / alert monitor triggered for engineer inspection.
+

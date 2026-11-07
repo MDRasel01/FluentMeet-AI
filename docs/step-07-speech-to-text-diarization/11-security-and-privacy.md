@@ -9,3 +9,4 @@
 - **No Identity Guessing:** The pipeline never fabricates personal names from voice characteristics. Remote speakers are strictly assigned synthetic meeting-scoped identifiers (`speaker_001`, `speaker_002`) until the meeting owner explicitly renames them.
 - **No Fabricated Confidence:** If confidence metrics are uncalibrated or missing, the database records `null` rather than a misleading artificial probability score.
 - **Audio Minimization:** Temporary intermediate wav files or resampled buffers are processed entirely in-memory using NumPy arrays, preventing residual audio artifacts on disk.
+

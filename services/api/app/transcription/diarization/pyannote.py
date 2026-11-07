@@ -231,3 +231,4 @@ class PyannoteDiarizationProvider(BaseDiarizationProvider):
                             confidence=0.90
                         ))
         return overlaps
+

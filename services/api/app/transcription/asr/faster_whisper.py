@@ -115,3 +115,4 @@ class FasterWhisperASRProvider(BaseASRProvider):
             segments=all_segments,
             confidence=overall_conf
         )
+
