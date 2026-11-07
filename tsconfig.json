@@ -16,11 +16,13 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
+    "types": ["node", "chrome"],
     "paths": {
       "@design-system/*": ["design-system/*"],
       "@apps/*": ["apps/*"]
     }
   },
-  "include": ["src", "design-system", "apps"]
+  "include": ["src", "design-system", "apps"],
+  "exclude": ["apps/dashboard", "node_modules", "dist"]
 }
 

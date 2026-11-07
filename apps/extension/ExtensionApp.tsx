@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Sparkles,
   CheckCircle2,
@@ -6,23 +6,19 @@ import {
   Play,
   Pause,
   Square,
-  RefreshCw,
   Users,
   Mic,
   Volume2,
-  ExternalLink,
   Shield,
   Settings,
-  ArrowRight,
-  Clock,
-  Wifi,
-  WifiOff,
-  Radio,
   Lock,
   XCircle,
-  HelpCircle
+  HelpCircle,
+  Radio,
+  WifiOff
 } from 'lucide-react';
 import { Button, Input, Card, Badge } from '../../design-system/components';
+import { useExtensionStore } from './src/sidepanel/store/extension-store';
 
 export type ExtensionScreen =
   | 'auth'
@@ -48,20 +44,32 @@ interface ExtensionAppProps {
 }
 
 export const ExtensionApp: React.FC<ExtensionAppProps> = ({
-  initialScreen = 'detected',
+  initialScreen,
   onScreenChange,
   isDark = false,
 }) => {
-  const [currentScreen, setCurrentScreen] = useState<ExtensionScreen>(initialScreen);
-  const [consentChecked, setConsentChecked] = useState(false);
-  const [sessionSeconds, setSessionSeconds] = useState(868); // 14m 28s
-  const [micVolume, setMicVolume] = useState(68); // %
-  const [tabVolume, setTabVolume] = useState(82); // %
+  const store = useExtensionStore();
 
+  const currentScreen = initialScreen || store.screen;
   const setScreen = (s: ExtensionScreen) => {
-    setCurrentScreen(s);
+    store.setScreen(s);
     if (onScreenChange) onScreenChange(s);
   };
+
+  useEffect(() => {
+    store.initializeExtension();
+  }, []);
+
+  // Timer ticker during active live session
+  useEffect(() => {
+    let interval: number;
+    if (currentScreen === 'live') {
+      interval = window.setInterval(() => {
+        useExtensionStore.setState((prev) => ({ sessionSeconds: prev.sessionSeconds + 1 }));
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [currentScreen]);
 
   const formatTimer = (secs: number) => {
     const m = Math.floor(secs / 60);
@@ -181,17 +189,21 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
           <div className="space-y-4">
             <div className="p-3.5 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 space-y-1">
               <div className="flex items-center justify-between">
-                <Badge variant="primary" size="sm">Google Meet Detected</Badge>
-                <span className="text-[11px] font-mono text-indigo-700 dark:text-indigo-400">meet.google.com</span>
+                <Badge variant="primary" size="sm">
+                  {store.platform === 'google-meet' ? 'Google Meet' : store.platform === 'zoom' ? 'Zoom Web' : 'MS Teams'} Detected
+                </Badge>
+                <span className="text-[11px] font-mono text-indigo-700 dark:text-indigo-400">
+                  {store.platform === 'google-meet' ? 'meet.google.com' : store.platform === 'zoom' ? 'zoom.us' : 'teams.microsoft.com'}
+                </span>
               </div>
               <h4 className="text-sm font-bold text-slate-900 dark:text-white pt-1">
-                Q4 Product Roadmap & Architecture Sync
+                {store.meetingTitle}
               </h4>
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
-                <span>Discovered Participants (4)</span>
+                <span>Discovered Participants ({store.participants.length || 3})</span>
                 <span className="text-indigo-600 cursor-pointer" onClick={() => setScreen('participant-list')}>
                   View All
                 </span>
@@ -217,8 +229,8 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
               <label className="flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={consentChecked}
-                  onChange={(e) => setConsentChecked(e.target.checked)}
+                  checked={store.consentChecked}
+                  onChange={(e) => store.setConsentChecked(e.target.checked)}
                   className="mt-0.5 rounded text-indigo-600 focus:ring-indigo-500"
                 />
                 <span className="leading-tight">
@@ -230,8 +242,8 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
             <Button
               fullWidth
               size="md"
-              disabled={!consentChecked}
-              onClick={() => setScreen('live')}
+              disabled={!store.consentChecked}
+              onClick={() => store.startCapture()}
             >
               Start Analysis Session
             </Button>
@@ -242,7 +254,7 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
         {currentScreen === 'participant-list' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white">Active Roster (4)</h3>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">Active Roster ({store.participants.length || 4})</h3>
               <Button variant="ghost" size="sm" onClick={() => setScreen('detected')}>Back</Button>
             </div>
             <div className="space-y-2 text-xs">
@@ -292,7 +304,7 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
                 Live Recording Active
               </div>
               <span className="text-3xl font-black font-mono text-slate-900 dark:text-white block tabular-nums">
-                {formatTimer(sessionSeconds)}
+                {formatTimer(store.sessionSeconds || 868)}
               </span>
             </div>
 
@@ -308,10 +320,10 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
                   <span className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
                     <Mic className="w-3.5 h-3.5 text-emerald-600" /> Your Microphone
                   </span>
-                  <span className="font-mono text-slate-500">{micVolume}%</span>
+                  <span className="font-mono text-slate-500">{store.micVolume}%</span>
                 </div>
                 <div className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-emerald-500 rounded-full transition-all duration-150" style={{ width: `${micVolume}%` }} />
+                  <div className="h-full bg-emerald-500 rounded-full transition-all duration-150" style={{ width: `${store.micVolume}%` }} />
                 </div>
               </div>
 
@@ -321,10 +333,10 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
                   <span className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
                     <Volume2 className="w-3.5 h-3.5 text-indigo-600" /> Meeting Tab Audio
                   </span>
-                  <span className="font-mono text-slate-500">{tabVolume}%</span>
+                  <span className="font-mono text-slate-500">{store.tabVolume}%</span>
                 </div>
                 <div className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-indigo-600 rounded-full transition-all duration-150" style={{ width: `${tabVolume}%` }} />
+                  <div className="h-full bg-indigo-600 rounded-full transition-all duration-150" style={{ width: `${store.tabVolume}%` }} />
                 </div>
               </div>
             </div>
@@ -335,7 +347,7 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
                 variant="outline"
                 size="sm"
                 leadingIcon={<Pause className="w-3.5 h-3.5" />}
-                onClick={() => setScreen('paused')}
+                onClick={() => store.pauseCapture()}
               >
                 Pause Session
               </Button>
@@ -343,7 +355,7 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
                 variant="destructive"
                 size="sm"
                 leadingIcon={<Square className="w-3.5 h-3.5" />}
-                onClick={() => setScreen('processing')}
+                onClick={() => store.stopCapture()}
               >
                 Stop & Analyze
               </Button>
@@ -362,10 +374,10 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
               <p className="text-xs text-slate-500 mt-1">Audio buffering is suspended</p>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <Button size="sm" onClick={() => setScreen('live')}>
+              <Button size="sm" onClick={() => store.resumeCapture()}>
                 Resume
               </Button>
-              <Button size="sm" variant="destructive" onClick={() => setScreen('processing')}>
+              <Button size="sm" variant="destructive" onClick={() => store.stopCapture()}>
                 Stop & Process
               </Button>
             </div>
@@ -384,7 +396,7 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
               You can close this side panel. We will notify you once your report is ready.
             </p>
             <Button size="sm" variant="outline" fullWidth onClick={() => setScreen('completed')}>
-              Simulate Processing Done
+              View Finished Report
             </Button>
           </div>
         )}
@@ -404,7 +416,7 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
               <p className="text-slate-700 dark:text-slate-300">• 3 Executive vocabulary upgrades</p>
               <p className="text-slate-700 dark:text-slate-300">• 142 WPM Pacing (Optimal)</p>
             </div>
-            <Button size="md" fullWidth onClick={() => alert('Opens Web Dashboard at /meetings/meet-001/report')}>
+            <Button size="md" fullWidth onClick={() => alert(`Opens Web Dashboard for session: ${store.meetingId}`)}>
               View Full Report in Dashboard →
             </Button>
           </div>
@@ -450,9 +462,9 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
             </div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-white">Connection Lost. Buffering...</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
-              WebSocket disconnected. Audio is currently being safely buffered in local IndexedDB storage.
+              WebSocket disconnected. Audio is currently being safely buffered in bounded memory queue.
             </p>
-            <Button size="sm" fullWidth onClick={() => setScreen('live')}>
+            <Button size="sm" fullWidth onClick={() => store.startCapture()}>
               Reconnect Now
             </Button>
           </div>
@@ -521,11 +533,10 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
           <span className="w-2 h-2 rounded-full bg-emerald-500" />
           <span>Connected</span>
         </span>
-        <span className="hover:text-indigo-600 cursor-pointer" onClick={() => setScreen('auth')}>
+        <span className="hover:text-indigo-600 cursor-pointer" onClick={() => store.logout()}>
           Sign Out
         </span>
       </div>
     </div>
   );
 };
-

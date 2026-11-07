@@ -171,3 +171,158 @@ async def end_meeting(
         started_at=meeting.started_at,
     )
     return ApiResponse.ok_response(data=response_data, message="Meeting ended successfully")
+
+@router.post("/{meeting_id}/start", response_model=ApiResponse[MeetingResponse])
+async def start_meeting(
+    meeting_id: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    stmt = select(Meeting).where(Meeting.id == meeting_id, Meeting.user_id == current_user.id)
+    result = await db.execute(stmt)
+    meeting = result.scalar_one_or_none()
+    if not meeting:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found")
+
+    meeting.status = "active"
+    if not meeting.started_at:
+        meeting.started_at = datetime.now(timezone.utc)
+    await db.commit()
+    await db.refresh(meeting)
+
+    response_data = MeetingResponse(
+        id=meeting.id,
+        title=meeting.title,
+        platform=meeting.platform,
+        meeting_url=meeting.meeting_url,
+        status=meeting.status,
+        duration_seconds=meeting.duration_seconds,
+        my_speaking_seconds=meeting.my_speaking_seconds,
+        overall_score=meeting.overall_score,
+        started_at=meeting.started_at,
+    )
+    return ApiResponse.ok_response(data=response_data, message="Meeting session started")
+
+@router.post("/{meeting_id}/pause", response_model=ApiResponse[MeetingResponse])
+async def pause_meeting(
+    meeting_id: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    stmt = select(Meeting).where(Meeting.id == meeting_id, Meeting.user_id == current_user.id)
+    result = await db.execute(stmt)
+    meeting = result.scalar_one_or_none()
+    if not meeting:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found")
+
+    meeting.status = "paused"
+    await db.commit()
+    await db.refresh(meeting)
+
+    response_data = MeetingResponse(
+        id=meeting.id,
+        title=meeting.title,
+        platform=meeting.platform,
+        meeting_url=meeting.meeting_url,
+        status=meeting.status,
+        duration_seconds=meeting.duration_seconds,
+        my_speaking_seconds=meeting.my_speaking_seconds,
+        overall_score=meeting.overall_score,
+        started_at=meeting.started_at,
+    )
+    return ApiResponse.ok_response(data=response_data, message="Meeting session paused")
+
+@router.post("/{meeting_id}/resume", response_model=ApiResponse[MeetingResponse])
+async def resume_meeting(
+    meeting_id: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    stmt = select(Meeting).where(Meeting.id == meeting_id, Meeting.user_id == current_user.id)
+    result = await db.execute(stmt)
+    meeting = result.scalar_one_or_none()
+    if not meeting:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found")
+
+    meeting.status = "active"
+    await db.commit()
+    await db.refresh(meeting)
+
+    response_data = MeetingResponse(
+        id=meeting.id,
+        title=meeting.title,
+        platform=meeting.platform,
+        meeting_url=meeting.meeting_url,
+        status=meeting.status,
+        duration_seconds=meeting.duration_seconds,
+        my_speaking_seconds=meeting.my_speaking_seconds,
+        overall_score=meeting.overall_score,
+        started_at=meeting.started_at,
+    )
+    return ApiResponse.ok_response(data=response_data, message="Meeting session resumed")
+
+@router.post("/{meeting_id}/stop", response_model=ApiResponse[MeetingResponse])
+async def stop_meeting(
+    meeting_id: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    stmt = select(Meeting).where(Meeting.id == meeting_id, Meeting.user_id == current_user.id)
+    result = await db.execute(stmt)
+    meeting = result.scalar_one_or_none()
+    if not meeting:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found")
+
+    now = datetime.now(timezone.utc)
+    meeting.ended_at = now
+    meeting.status = "stopped"
+    if meeting.started_at:
+        started = meeting.started_at
+        if started.tzinfo is None:
+            started = started.replace(tzinfo=timezone.utc)
+        meeting.duration_seconds = max(0, int((now - started).total_seconds()))
+
+    await db.commit()
+    await db.refresh(meeting)
+
+    response_data = MeetingResponse(
+        id=meeting.id,
+        title=meeting.title,
+        platform=meeting.platform,
+        meeting_url=meeting.meeting_url,
+        status=meeting.status,
+        duration_seconds=meeting.duration_seconds,
+        my_speaking_seconds=meeting.my_speaking_seconds,
+        overall_score=meeting.overall_score,
+        started_at=meeting.started_at,
+    )
+    return ApiResponse.ok_response(data=response_data, message="Meeting session stopped")
+
+@router.post("/{meeting_id}/complete", response_model=ApiResponse[MeetingResponse])
+async def complete_meeting(
+    meeting_id: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    stmt = select(Meeting).where(Meeting.id == meeting_id, Meeting.user_id == current_user.id)
+    result = await db.execute(stmt)
+    meeting = result.scalar_one_or_none()
+    if not meeting:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found")
+
+    meeting.status = "completed"
+    await db.commit()
+    await db.refresh(meeting)
+
+    response_data = MeetingResponse(
+        id=meeting.id,
+        title=meeting.title,
+        platform=meeting.platform,
+        meeting_url=meeting.meeting_url,
+        status=meeting.status,
+        duration_seconds=meeting.duration_seconds,
+        my_speaking_seconds=meeting.my_speaking_seconds,
+        overall_score=meeting.overall_score,
+        started_at=meeting.started_at,
+    )
+    return ApiResponse.ok_response(data=response_data, message="Meeting marked as completed")

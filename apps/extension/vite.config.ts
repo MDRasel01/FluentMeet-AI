@@ -29,11 +29,14 @@ export default defineConfig({
         sidepanel: resolve(__dirname, 'sidepanel.html'),
         background: resolve(__dirname, 'src/background/service-worker.ts'),
         content: resolve(__dirname, 'src/content/content-script.ts'),
+        offscreen: resolve(__dirname, 'src/offscreen/offscreen.html'),
+        pcmProcessor: resolve(__dirname, 'src/offscreen/audio-worklet/pcm-processor.ts'),
       },
       output: {
         entryFileNames: (chunkInfo) => {
           if (chunkInfo.name === 'background') return 'src/background/service-worker.js';
           if (chunkInfo.name === 'content') return 'src/content/content-script.js';
+          if (chunkInfo.name === 'pcmProcessor') return 'src/offscreen/audio-worklet/pcm-processor.js';
           return 'assets/[name]-[hash].js';
         },
         chunkFileNames: 'assets/[name]-[hash].js',
@@ -42,4 +45,3 @@ export default defineConfig({
     }
   }
 });
-
