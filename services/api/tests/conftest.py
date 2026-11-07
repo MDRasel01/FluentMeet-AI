@@ -11,13 +11,22 @@ os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///:memory:"
 os.environ["ENVIRONMENT"] = "testing"
 os.environ["JWT_SECRET_KEY"] = "test-secret-key-for-testing-purpose-only-32bytes"
 
-from app.main import app
+import app.models  # Ensure all tables including audio models are registered
 from app.models.base import Base
 from app.database.session import get_db
+import app.database.session as app_session_mod
 from app.services.email_service import email_service
+from sqlalchemy.pool import StaticPool
+from app.main import app
 
-test_engine = create_async_engine("sqlite+aiosqlite:///:memory:", echo=False)
+test_engine = create_async_engine(
+    "sqlite+aiosqlite:///:memory:",
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+    echo=False
+)
 TestSessionLocal = async_sessionmaker(bind=test_engine, class_=AsyncSession, expire_on_commit=False)
+app_session_mod.AsyncSessionLocal = TestSessionLocal
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
 async def setup_test_db():

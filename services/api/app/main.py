@@ -19,6 +19,7 @@ from app.api.v1.meetings import router as meetings_router
 from app.api.v1.organizations import router as organizations_router
 from app.api.v1.invitations import router as invitations_router
 from app.api.v1.permissions import router as permissions_router
+from app.api.v1.audio import router as audio_router
 from app.websocket.endpoint import router as ws_router
 
 # Setup structured logger
@@ -91,4 +92,5 @@ app.include_router(meetings_router, prefix="/api/v1")
 app.include_router(organizations_router, prefix="/api/v1")
 app.include_router(invitations_router, prefix="/api/v1")
 app.include_router(permissions_router, prefix="/api/v1")
+app.include_router(audio_router, prefix="/api/v1")
 app.include_router(ws_router)

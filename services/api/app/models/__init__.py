@@ -17,6 +17,16 @@ from app.models.base import (
     UsageLog,
     AuditLog,
 )
+from app.models.audio import (
+    AudioStream,
+    AudioSegment,
+    AudioStreamGap,
+    AudioProcessingJob,
+    AudioQualityMetric,
+    AudioUsageRecord,
+    AudioOutboxEvent,
+    AudioIngestionEvent,
+)
 
 __all__ = [
     "Base",
@@ -36,4 +46,12 @@ __all__ = [
     "ConsentRecord",
     "UsageLog",
     "AuditLog",
+    "AudioStream",
+    "AudioSegment",
+    "AudioStreamGap",
+    "AudioProcessingJob",
+    "AudioQualityMetric",
+    "AudioUsageRecord",
+    "AudioOutboxEvent",
+    "AudioIngestionEvent",
 ]

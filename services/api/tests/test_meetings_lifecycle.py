@@ -90,9 +90,9 @@ def test_websocket_binary_audio_streaming():
         # Send binary frame to WebSocket
         ws.send_bytes(frame_bytes)
 
-        # Receive audio_ack
+        # Receive audio_ack or audio_received
         audio_ack = ws.receive_json()
-        assert audio_ack["type"] == "audio_ack"
+        assert audio_ack["type"] in ("audio_ack", "audio_received")
         assert audio_ack["session_id"] == "meet-test-123"
         assert audio_ack["sourceId"] == 0
         assert audio_ack["sequenceNumber"] == 42

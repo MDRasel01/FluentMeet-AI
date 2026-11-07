@@ -37,6 +37,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Storage & Audio
+storage/
+*.pcm
+*.tmp
+
 # Editor & OS files
 .DS_Store
 *.suo
