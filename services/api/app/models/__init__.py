@@ -51,6 +51,15 @@ from app.models.analysis import (
     ImprovementRecommendation,
     AnalysisEvent,
 )
+from app.models.pronunciation import (
+    PronunciationAssessment,
+    PronunciationWordResult,
+    PronunciationPhonemeResult,
+    PronunciationProsodyResult,
+    PronunciationRecommendation,
+    IELTSSpeakingPracticeAssessment,
+    AssessmentModelRun,
+)
 
 __all__ = [
     "Base",
@@ -96,4 +105,11 @@ __all__ = [
     "CommunicationInsight",
     "ImprovementRecommendation",
     "AnalysisEvent",
+    "PronunciationAssessment",
+    "PronunciationWordResult",
+    "PronunciationPhonemeResult",
+    "PronunciationProsodyResult",
+    "PronunciationRecommendation",
+    "IELTSSpeakingPracticeAssessment",
+    "AssessmentModelRun",
 ]

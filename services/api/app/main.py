@@ -24,6 +24,7 @@ from app.api.v1.transcripts import router as transcripts_router
 from app.api.v1.extensions import router as extensions_router
 from app.api.v1.admin_extensions import router as admin_extensions_router
 from app.api.v1.analysis import router as analysis_router
+from app.api.v1.pronunciation import router as pronunciation_router
 from app.websocket.endpoint import router as ws_router
 
 # Setup structured logger
@@ -101,4 +102,5 @@ app.include_router(transcripts_router, prefix="/api/v1")
 app.include_router(extensions_router, prefix="/api/v1")
 app.include_router(admin_extensions_router, prefix="/api/v1")
 app.include_router(analysis_router, prefix="/api/v1")
+app.include_router(pronunciation_router, prefix="/api/v1")
 app.include_router(ws_router)
