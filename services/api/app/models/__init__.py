@@ -40,6 +40,17 @@ from app.models.extension_release import (
     ExtensionDownloadLog,
     ExtensionReleaseEvent,
 )
+from app.models.analysis import (
+    AnalysisSession,
+    ParticipantAnalysis,
+    AnalysisCategoryScore,
+    GrammarIssue,
+    VocabularyInsight,
+    FluencyMetric,
+    CommunicationInsight,
+    ImprovementRecommendation,
+    AnalysisEvent,
+)
 
 __all__ = [
     "Base",
@@ -76,4 +87,13 @@ __all__ = [
     "ExtensionRelease",
     "ExtensionDownloadLog",
     "ExtensionReleaseEvent",
+    "AnalysisSession",
+    "ParticipantAnalysis",
+    "AnalysisCategoryScore",
+    "GrammarIssue",
+    "VocabularyInsight",
+    "FluencyMetric",
+    "CommunicationInsight",
+    "ImprovementRecommendation",
+    "AnalysisEvent",
 ]

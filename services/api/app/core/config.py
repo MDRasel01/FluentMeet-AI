@@ -54,8 +54,15 @@ class Settings(BaseSettings):
     # Sentry DSN
     SENTRY_DSN: str = ""
 
-    # Future AI Provider Keys
+    # AI Provider Keys & Step 08 Analysis Engine Configuration
     GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-2.5-flash"
+    GEMINI_TIMEOUT_SECONDS: float = 30.0
+    GEMINI_MAX_RETRIES: int = 3
+    GEMINI_MAX_CONCURRENCY: int = 5
+    ANALYSIS_CHUNK_SIZE_TOKENS: int = 4000
+    ANALYSIS_CONFIDENCE_THRESHOLD: float = 0.65
+    ANALYSIS_SCORING_VERSION: str = "1.0"
     DEEPGRAM_API_KEY: str = ""
 
 settings = Settings()
