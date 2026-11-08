@@ -160,3 +160,4 @@ class TranscriptCleaner:
             start_time_ms=start,
             end_time_ms=end,
         )
+

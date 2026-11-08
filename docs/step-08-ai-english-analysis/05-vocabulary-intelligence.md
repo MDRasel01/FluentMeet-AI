@@ -19,3 +19,4 @@ Conversational crutch phrases are flagged and matched with elevated alternatives
 
 ## 3. Register-Calibrated Scoring
 Vocabulary scoring is contextualized by the detected meeting register (`business`, `technical`, `interview`, `client_discussion`). Technical meetings encourage domain jargon (e.g., `latency`, `throughput`, `endpoints`), whereas executive business discussions emphasize strategic phrasing.
+

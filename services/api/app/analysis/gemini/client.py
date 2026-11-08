@@ -260,3 +260,4 @@ class GeminiClient:
             }
 
         return {"status": "ok", "summary": "Default mock analysis completed."}
+

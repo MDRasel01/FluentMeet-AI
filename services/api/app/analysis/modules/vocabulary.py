@@ -216,3 +216,4 @@ class VocabularyAnalyzer:
             "evidence_count": len(insights),
             "summary": summary,
         }
+

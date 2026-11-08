@@ -222,3 +222,4 @@ class GrammarAnalyzer:
             "evidence_count": len(findings),
             "summary": summary,
         }
+

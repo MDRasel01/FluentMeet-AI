@@ -118,3 +118,4 @@ class ContextDetector:
             register_scores={k: round(v, 3) for k, v in scores.items()},
             formality_level=formality,
         )
+

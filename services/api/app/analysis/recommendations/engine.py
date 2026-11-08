@@ -179,3 +179,4 @@ class RecommendationEngine:
         recommendations.sort(key=lambda r: priority_order.get(r.priority, 3))
 
         return recommendations[:6]
+

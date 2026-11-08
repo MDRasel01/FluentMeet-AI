@@ -135,3 +135,4 @@ async def test_analysis_endpoints_full_cycle(async_client: AsyncClient, auth_tok
     recs_data = recs_resp.json()["data"]
     assert len(recs_data) >= 1
     assert recs_data[0]["actionable_suggestion"] != ""
+

@@ -237,3 +237,4 @@ class AnalysisEvent(Base):
     )
 
     session = relationship("AnalysisSession", back_populates="events")
+

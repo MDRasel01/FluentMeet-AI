@@ -82,3 +82,4 @@ export function FluencyMetricsCard({ metrics }: FluencyMetricsCardProps) {
     </div>
   );
 }
+

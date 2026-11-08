@@ -34,3 +34,4 @@ async def test_get_participant_details_nonexistent(async_client: AsyncClient, au
         headers=headers,
     )
     assert resp.status_code == 404
+

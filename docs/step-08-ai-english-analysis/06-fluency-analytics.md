@@ -23,3 +23,4 @@ $$\text{Repetition Rate} = \left(\frac{\text{Repeated Token Pairs}}{\text{Total 
 ### 1.4 Turn Pausing & Utterance Length
 - Computes pause gaps between speaker turns (> 1200ms).
 - Measures average utterance length (words per turn) to evaluate conversational cadence.
+

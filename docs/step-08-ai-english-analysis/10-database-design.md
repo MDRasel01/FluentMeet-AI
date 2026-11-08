@@ -32,3 +32,4 @@ Step 08 introduces nine dedicated PostgreSQL entities managing the lifecycle of 
 - Unique constraint `uq_participant_analysis_session_speaker` on `(analysis_session_id, speaker_label)`.
 - Unique constraint `uq_category_score_participant_cat` on `(participant_analysis_id, category)`.
 - Index on `(meeting_id, status)` for fast status polling.
+

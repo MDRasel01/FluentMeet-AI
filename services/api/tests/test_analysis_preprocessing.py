@@ -88,3 +88,4 @@ class TestContextDetector:
         ctx = detector.detect_context(text)
         assert ctx.primary_register == "casual"
         assert ctx.formality_level == "casual"
+

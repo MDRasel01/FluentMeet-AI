@@ -172,3 +172,4 @@ def downgrade() -> None:
     op.drop_table('analysis_category_scores')
     op.drop_table('participant_analysis')
     op.drop_table('analysis_sessions')
+

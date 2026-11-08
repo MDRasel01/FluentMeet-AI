@@ -70,3 +70,4 @@ class TestVocabularyAnalyzer:
         res = await analyzer.analyze("speaker_001", [], context)
         assert res["status"] == "insufficient_data"
         assert res["mattr"] == 0.0
+

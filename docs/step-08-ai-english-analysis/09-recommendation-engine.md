@@ -22,3 +22,4 @@ Feedback is designed to be immediately actionable, positive, and grounded:
 
 ## 3. Deduplication & Capping
 The recommendation engine caps output to the top **5–7 highest-impact recommendations** per meeting to prevent cognitive overload.
+

@@ -92,3 +92,4 @@ class SpeakingPatternAnalyzer:
                 )
 
         return patterns
+

@@ -82,3 +82,4 @@ export function RecommendationsList({ recommendations }: RecommendationsListProp
     </div>
   );
 }
+

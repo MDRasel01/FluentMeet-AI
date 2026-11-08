@@ -24,3 +24,4 @@ If a participant speaks:
 - Less than **15.0 seconds** of active speaking time,
 
 The engine flags the participant as `status = "insufficient_data"`, sets `overall_score = NULL`, and outputs individual category scores as `insufficient_data`. This guarantees fair assessments and eliminates false negative ratings.
+

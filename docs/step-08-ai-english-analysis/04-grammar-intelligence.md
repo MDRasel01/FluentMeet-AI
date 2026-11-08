@@ -20,3 +20,4 @@ The Grammar Intelligence module evaluates spoken English across eight core gramm
 $$Score_{grammar} = \max\left(40.0, \min\left(100.0, 100.0 - \sum \text{Deductions} - 2.0 \times \text{Error Density}\right)\right)$$
 where Error Density is errors per 100 spoken words.
 The final score is blended 50/50 with Gemini contextual scoring.
+

@@ -76,3 +76,4 @@ services\worker\tests\test_transcription_worker.py ....                  [PASS]
 ✓ Finalizing page optimization
 Exit Code: 0
 ```
+

@@ -27,3 +27,4 @@ All prompts leverage Gemini's native `response_mime_type="application/json"` and
 - **Exponential Backoff**: Automatic retry handling for HTTP 429 (Rate Limit) and HTTP 500/502/503/504 errors up to 3 retries.
 - **Timeout Handling**: Configurable 30.0s request timeout.
 - **Deterministic Mock Fallback**: When `GEMINI_API_KEY` is omitted or in test environments, deterministic local mock responses are provided to ensure zero pipeline crashes and full offline testability.
+

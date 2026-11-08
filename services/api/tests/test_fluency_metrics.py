@@ -66,3 +66,4 @@ class TestFluencyAnalyzer:
         res = analyzer.analyze("speaker_001", [])
         assert res["status"] == "insufficient_data"
         assert res["metrics"] == []
+

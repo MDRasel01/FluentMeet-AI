@@ -128,3 +128,4 @@ class TestAnalysisWorkerConsumer:
         assert args[0] == DEAD_LETTER_STREAM
         assert b"error_reason" in args[1]
         mock_redis.xack.assert_called_once_with(STREAM_NAME, CONSUMER_GROUP, "1710000000000-2")
+

@@ -140,3 +140,4 @@ class AnalysisStreamConsumer:
         except Exception as e:
             logger.error(f"Error claiming stale analysis messages: {e}")
             return 0
+

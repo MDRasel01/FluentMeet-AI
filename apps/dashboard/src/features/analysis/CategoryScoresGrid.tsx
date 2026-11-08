@@ -119,3 +119,4 @@ export function CategoryScoresGrid({ categories }: CategoryScoresGridProps) {
     </div>
   );
 }
+

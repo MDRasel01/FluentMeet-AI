@@ -74,3 +74,4 @@ class TestScoringEngine:
 
         assert summary.score_status == "insufficient_data"
         assert summary.overall_score is None
+

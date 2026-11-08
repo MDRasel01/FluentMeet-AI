@@ -75,3 +75,4 @@ export function VocabularyInsightsList({ insights }: VocabularyInsightsListProps
     </div>
   );
 }
+

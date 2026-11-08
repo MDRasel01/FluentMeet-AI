@@ -82,3 +82,4 @@ Before any linguistic finding (grammar mistake, vocabulary suggestion) is accept
 2. **Text Containment Check:** The `original_text` identified by the model must actually appear within that segment.
 3. **Attribution Check:** The segment must belong to the target participant/speaker.
 If any check fails, the finding is discarded and logged, preventing hallucinations from contaminating user scores.
+

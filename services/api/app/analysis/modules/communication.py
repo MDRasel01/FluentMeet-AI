@@ -147,3 +147,4 @@ class CommunicationAnalyzer:
             "evidence_count": len(insights),
             "summary": summary,
         }
+

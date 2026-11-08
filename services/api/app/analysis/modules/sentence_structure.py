@@ -168,3 +168,4 @@ class SentenceStructureAnalyzer:
             "evidence_count": len(observations),
             "summary": summary,
         }
+

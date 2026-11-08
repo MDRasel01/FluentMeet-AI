@@ -63,3 +63,4 @@ The Step 08 Speech Analysis Pipeline consumes finalized multi-speaker transcript
 - **Temporal Alignment**: Preserves Step 07 millisecond start/end boundaries (`start_time_ms`, `end_time_ms`).
 - **Speaker Attribution**: Uses `MeetingSpeaker.speaker_label` (`speaker_user_me`, `speaker_001`, etc.) to prevent speaker cross-talk contamination.
 - **Idempotency**: Re-running analysis for a meeting updates existing sessions and clears prior provisional outputs to prevent duplicate records.
+

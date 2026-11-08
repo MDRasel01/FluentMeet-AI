@@ -95,3 +95,4 @@ export interface ParticipantDetailedAnalysisUI extends ParticipantSummaryUI {
   communication_insights: CommunicationInsightUI[];
   recommendations: RecommendationUI[];
 }
+

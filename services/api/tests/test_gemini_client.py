@@ -76,3 +76,4 @@ class TestGeminiClient:
         assert "insights" in res_vocab
         assert res_vocab["insights"][0]["segment_id"] == "seg-102"
         assert "vocabulary_score" in res_vocab
+

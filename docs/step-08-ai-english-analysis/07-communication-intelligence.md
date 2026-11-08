@@ -12,3 +12,4 @@ The `SpeakingPatternAnalyzer` synthesizes observations across an entire meeting:
 - Identifies sentence starter habits (e.g., speaker initiating 5+ sentences with `Basically` or `So yeah`).
 - Correlates speaking time proportion to topic transitions.
 - Generates holistic communication insights stored in `communication_insights`.
+

@@ -139,3 +139,4 @@ class ScoringEngine:
             analysis_confidence=overall_confidence,
             category_scores=category_scores,
         )
+

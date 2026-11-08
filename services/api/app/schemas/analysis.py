@@ -150,3 +150,4 @@ class HistoricalProgressResponse(BaseModel):
     participant_id: Optional[str] = None
     speaker_label: Optional[str] = None
     history: List[HistoricalProgressPoint] = []
+
