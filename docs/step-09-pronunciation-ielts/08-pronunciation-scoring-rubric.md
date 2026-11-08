@@ -32,3 +32,4 @@ To prevent phantom score generation on silence, throat clearing, or single words
 - **Confidence ($[0.0, 1.0]$)**: Reflects mathematical and signal certainty of the measurement (SNR, ASR acoustic probability, and frame correlation).
 - **Evidence Coverage ($[0.0, 1.0]$)**: The ratio of successfully evaluated words relative to total detected words:
   $$\text{Coverage} = \frac{\text{Evaluated Word Count}}{\text{Evaluated Word Count} + \text{Excluded Word Count}}$$
+

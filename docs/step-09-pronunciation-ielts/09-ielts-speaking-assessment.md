@@ -47,3 +47,4 @@ $$\text{Overall Band} = \frac{\text{round}(\text{Raw Average} \times 2.0)}{2.0}$
 - $6.25 \rightarrow \mathbf{6.5}$
 - $6.75 \rightarrow \mathbf{7.0}$
 - $6.125 \rightarrow \mathbf{6.0}$
+

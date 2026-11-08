@@ -63,3 +63,4 @@ CEFR/IELTS practice estimates with disclaimer.
 - `fluency_coherence_estimate`, `lexical_resource_estimate`, `grammatical_accuracy_estimate`, `pronunciation_estimate`, `overall_practice_estimate` (FLOAT, 0.5 increments)
 - `qualitative_band_descriptor` (VARCHAR 128)
 - `disclaimer_text` (TEXT NOT NULL)
+

@@ -110,3 +110,4 @@ class PronunciationScorer:
             scoring_version="1.0",
             explanation=f"Successfully evaluated {evaluated_count} words with {coverage*100:.0f}% evidence coverage.",
         )
+

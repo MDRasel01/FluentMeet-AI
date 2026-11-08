@@ -122,3 +122,4 @@ class PronunciationAssessmentResponse(BaseModel):
     prosody_result: Optional[ProsodyResponse] = None
     ielts_assessment: Optional[IELTSPracticeAssessmentResponse] = None
     recommendations: List[PronunciationRecommendationResponse] = Field(default_factory=list)
+

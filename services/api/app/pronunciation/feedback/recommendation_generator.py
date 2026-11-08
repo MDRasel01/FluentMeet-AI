@@ -173,3 +173,4 @@ class PronunciationRecommendationGenerator:
         prio_map = {"high": 0, "medium": 1, "low": 2}
         recommendations.sort(key=lambda r: prio_map.get(r.priority, 3))
         return recommendations[:5]
+

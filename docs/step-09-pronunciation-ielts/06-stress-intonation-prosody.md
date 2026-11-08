@@ -36,3 +36,4 @@ Word stress accuracy is evaluated by calculating root-mean-square energy contras
 3. Elevated local fundamental frequency ($\Delta F_0 \ge 12\text{ Hz}$).
 
 Monotone delivery without syllable prominence is identified, triggering stress modulation exercises.
+

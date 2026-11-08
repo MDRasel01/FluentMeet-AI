@@ -46,3 +46,4 @@ For words outside the reference lexicon, the engine invokes `fallback_g2p` to de
 ### 3.3 Sibilants & Plosives
 - Alveolar fricatives (/s/, /z/) verified by spectral energy peaking above $4000\text{ Hz}$.
 - Plosive burst releases (/p/, /b/, /t/, /d/, /k/, /g/) verified by rapid amplitude transients preceded by silent closure intervals.
+

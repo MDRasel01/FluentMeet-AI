@@ -40,3 +40,4 @@ flowchart LR
   $$\text{Byte Offset Start} = \left\lfloor \frac{W_{\text{rel\_start\_ms}}}{1000.0} \times 16000 \right\rfloor \times 2$$
   $$\text{Byte Offset End} = \left\lfloor \frac{W_{\text{rel\_end\_ms}}}{1000.0} \times 16000 \right\rfloor \times 2$$
 - Yields a dedicated byte slice attached to `AlignedWordAudio.audio_pcm_slice` for FFT spectral processing.
+

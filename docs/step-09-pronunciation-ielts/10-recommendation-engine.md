@@ -47,3 +47,4 @@ Exercises are assigned priorities based on communication impact:
 1. **High Priority**: Phonetic substitutions that alter semantic meaning (e.g., *three* vs *tree*), or extreme speaking pace ($> 180\text{ WPM}$).
 2. **Medium Priority**: Consonant cluster reductions or minor vowel shortening.
 3. **Low Priority**: Expressive pitch range enhancement for monotone speakers.
+

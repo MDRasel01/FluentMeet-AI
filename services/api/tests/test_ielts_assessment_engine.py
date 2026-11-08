@@ -143,3 +143,4 @@ class TestPronunciationRecommendations:
         assert th_ex is not None
         assert "Dental Fricative" in th_ex.title
         assert "think / sink" in th_ex.suggested_exercise or "three / tree" in th_ex.suggested_exercise
+

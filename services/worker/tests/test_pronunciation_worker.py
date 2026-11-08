@@ -145,3 +145,4 @@ class TestPronunciationWorkerConsumer:
         reclaimed = await consumer.claim_stale_messages()
         assert reclaimed == 1
         mock_redis.xautoclaim.assert_called_once()
+

@@ -102,3 +102,4 @@ services/api/app/
 5. **Prosody & Pace**: F0 pitch contour is extracted via normalized autocorrelation. Intonation dynamics, syllable stress, WPM, and pause classifications are generated.
 6. **Scoring & IELTS Synthesis**: Deterministic 0–100 scores are calculated. Step 08 grammar, lexical, and fluency metrics are merged to generate an IELTS-style indicative band (0.5 increments) with qualitative descriptors.
 7. **Recommendations & Persistence**: Targeted minimal pair drills are generated and persisted into PostgreSQL with a completion event dispatched to Redis.
+

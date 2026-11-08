@@ -143,3 +143,4 @@ class PronunciationStreamConsumer:
         except Exception as e:
             logger.error(f"Error claiming stale pronunciation messages: {e}")
             return 0
+

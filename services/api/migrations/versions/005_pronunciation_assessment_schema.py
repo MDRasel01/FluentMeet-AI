@@ -160,3 +160,4 @@ def downgrade() -> None:
     op.drop_table('pronunciation_phoneme_results')
     op.drop_table('pronunciation_word_results')
     op.drop_table('pronunciation_assessments')
+

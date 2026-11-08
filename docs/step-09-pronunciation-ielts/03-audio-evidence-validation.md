@@ -31,3 +31,4 @@ The `SpeakerAudioResolver` enforces the following routing logic:
 - If `speaker_label` matches the local user (`speaker_user_me` or `source_id == 0`), prioritize `local_mic` (attribution confidence $0.98$). Fallback to `remote_mix` only if local microphone capture was unavailable.
 - For remote participants, map to `remote_mix` (source 1). Require diarization confidence $\ge 0.60$. If diarization confidence $< 0.60$, the speaker is marked `uncertain` (`LOW_DIARIZATION_CONFIDENCE`) to prevent attributing misidentified speech.
 - Overlapping speech segments (where multiple participants speak simultaneously) are detected from `SpeechOverlap` records and excluded from word-level phoneme scoring to prevent acoustic corruption.
+

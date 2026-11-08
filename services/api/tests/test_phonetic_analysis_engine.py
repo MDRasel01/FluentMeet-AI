@@ -96,3 +96,4 @@ class TestPhoneticAnalysisEngine:
         th_obs = next(p for p in evidence.phonemes if p.phoneme_reference == "TH")
         assert th_obs.issue_type == "substitution"
         assert th_obs.phoneme_score < 75.0
+

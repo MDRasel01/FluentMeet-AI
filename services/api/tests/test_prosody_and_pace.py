@@ -109,3 +109,4 @@ class TestIntelligibilityAnalyzer:
         )
         assert report.classification == "Insufficient evidence"
         assert report.intelligibility_score == 0.0
+

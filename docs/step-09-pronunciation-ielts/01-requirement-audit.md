@@ -37,3 +37,4 @@ The following areas are explicitly excluded from Step 09 to preserve architectur
 3. **Core ASR Model Training**: Whisper STT and PyAnnote diarization are consumed from Step 07.
 4. **Official Certification Claims**: System outputs educational practice estimates only; no claims of certified IELTS or TOEFL examination.
 5. **Accent Penalization**: Regional accents are never penalized; evaluation is strictly intelligibility-focused.
+

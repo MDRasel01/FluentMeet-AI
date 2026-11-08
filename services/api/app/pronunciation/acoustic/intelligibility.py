@@ -75,3 +75,4 @@ class IntelligibilityAnalyzer:
             phonemic_clarity_score=round(phonemic_clarity, 1),
             summary=summary,
         )
+

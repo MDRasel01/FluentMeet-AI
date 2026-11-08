@@ -42,3 +42,4 @@ Where:
 - **$\ge 85.0$**: `High intelligibility` — Speech is effortless to understand across international audiences.
 - **$70.0 - 84.9$**: `Generally intelligible` — Speech is clear with occasional minor phonetic blur.
 - **$< 70.0$**: `Partially difficult to understand` — Frequent acoustic masking or consonant reductions.
+
