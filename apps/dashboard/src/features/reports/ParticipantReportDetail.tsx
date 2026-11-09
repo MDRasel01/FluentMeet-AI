@@ -371,3 +371,4 @@ export const ParticipantReportDetail: React.FC<ParticipantReportDetailProps> = (
     </div>
   );
 };
+

@@ -24,3 +24,4 @@ Allows participants and coaches to track English improvement over time, detect c
    - Any rule type appearing across **2 or more distinct meetings** is flagged as a recurring mistake.
 4. **Persistent Strengths Detection:**
    - Any core category consistently scoring **$\ge 80\%$** across at least 50% of meetings is highlighted as a persistent strength.
+

@@ -30,3 +30,4 @@ chrome.exe \
 4. **Mandatory Educational Disclaimer:** Validates presence of statutory disclaimer text:
    > *"Educational practice estimate only. This is not an official IELTS score, certified assessment, or substitute for an IELTS examiner."*
 5. **Visual Capture:** Captures high-resolution PNG screenshot evidence verifying font loading, layout integrity, and badge styling.
+

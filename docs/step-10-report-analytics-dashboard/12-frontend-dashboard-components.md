@@ -24,3 +24,4 @@ The Next.js reports feature provides interactive visualization components:
 - Built with Tailwind CSS supporting responsive desktop, tablet, and mobile layouts.
 - Screen reader-accessible semantic table markup and color-coded score status badges.
 - Mandatory IELTS disclaimer rendered with prominent amber callout banner.
+

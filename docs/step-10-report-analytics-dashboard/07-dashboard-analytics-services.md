@@ -29,3 +29,4 @@ Returns chronological time series suitable for charting:
 
 ### 2.3 Recent Meetings Feed (`GET /api/v1/dashboard/recent-meetings`)
 Returns recent meeting entries with title, date, duration, participant count, average score, report snapshot ID, and completion status.
+

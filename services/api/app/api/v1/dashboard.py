@@ -74,3 +74,4 @@ async def get_recent_meetings(
         limit=limit,
     )
     return ApiResponse.ok_response(data=meetings)
+

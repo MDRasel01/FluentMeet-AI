@@ -59,3 +59,4 @@ Audit and compliance tracking for report interactions.
 | `action` | VARCHAR(32) | No | `'view'`, `'export_csv'`, `'export_html'`, `'generate_reports'` |
 | `request_metadata` | JSON | Yes | Metadata (file size, version, IP address) |
 | `created_at` | TIMESTAMP WITH TZ | No | Access timestamp |
+

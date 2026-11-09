@@ -104,3 +104,4 @@ class ReportValidationEngine:
             missing_components=[],
             validation_notes=["All four assessment pillars validated and calibrated."]
         )
+

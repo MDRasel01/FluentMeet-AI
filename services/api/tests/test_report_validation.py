@@ -63,3 +63,4 @@ class TestReportValidationEngine:
         assert val.report_status == "completed"
         assert val.missing_components == []
         assert val.confidence_score == 0.91
+

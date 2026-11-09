@@ -63,3 +63,4 @@ The Meeting Summary Report provides team leaders, hiring managers, and enterpris
 - Computes each speaker's share of total vocal speaking duration:
   $$\text{Talk Time \%} = \text{round}\left(\frac{\text{Duration}_{\text{speaker}}}{\text{Total Vocal Duration}} \times 100, 1\right)$$
 - Highlights turn-taking and dominant speaker tendencies.
+

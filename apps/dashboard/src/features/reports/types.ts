@@ -180,3 +180,4 @@ export interface HistoricalComparisonData {
   recurring_mistakes: Array<{ rule_type: string; frequency: number }>;
   persistent_strengths: string[];
 }
+

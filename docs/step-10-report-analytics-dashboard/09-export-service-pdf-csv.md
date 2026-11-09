@@ -29,3 +29,4 @@ Prepending `'` forces spreadsheet processors to interpret the cell as raw text, 
 3. Every report prominently includes the statutory IELTS practice disclaimer:
    > *"Educational practice estimate only. This is not an official IELTS score, certified assessment, or substitute for an IELTS examiner."*
 4. SHA-256 cryptographic hash is generated for each export artifact and stored in `report_exports.content_hash` for audit and integrity verification.
+

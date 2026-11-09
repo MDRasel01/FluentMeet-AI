@@ -144,3 +144,4 @@ class TestReportWorkerConsumer:
         assert call_args[0][0] == DEAD_LETTER_STREAM
         assert b"error_reason" in call_args[0][1]
         mock_redis.xack.assert_called_once_with(STREAM_NAME, CONSUMER_GROUP, "msg-rep-dlq-1")
+

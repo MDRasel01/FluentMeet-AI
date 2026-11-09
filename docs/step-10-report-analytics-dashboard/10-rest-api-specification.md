@@ -33,3 +33,4 @@
 - `403 Forbidden`: Cross-tenant or unauthorized access attempt.
 - `404 Not Found`: When meeting or report snapshot does not exist.
 - `500 Internal Server Error`: Unhandled failure (logged to structured log).
+

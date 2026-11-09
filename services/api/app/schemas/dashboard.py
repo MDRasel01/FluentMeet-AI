@@ -35,3 +35,4 @@ class DashboardTrendsResponse(BaseModel):
     vocabulary_scores: List[Optional[float]] = Field(default_factory=list)
     fluency_scores: List[Optional[float]] = Field(default_factory=list)
     pronunciation_scores: List[Optional[float]] = Field(default_factory=list)
+

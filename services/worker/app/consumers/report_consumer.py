@@ -118,3 +118,4 @@ class ReportStreamConsumer:
             updated[b"retry_count"] = str(current_retries).encode("utf-8")
             await r.xadd(STREAM_NAME, updated)
             await r.xack(STREAM_NAME, CONSUMER_GROUP, message_id)
+

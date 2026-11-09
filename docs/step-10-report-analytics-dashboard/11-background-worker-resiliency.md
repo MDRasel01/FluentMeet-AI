@@ -33,3 +33,4 @@ The background report worker consumes jobs from Redis Streams to asynchronously 
    - Increments `retry_count` in message payload.
    - If `retry_count < 3`: republishes to `report:jobs` and ACKs original message.
    - If `retry_count >= 3`: moves message to `report:jobs:dlq` with `error_reason`, timestamp, and `original_message_id`, then ACKs original message.
+

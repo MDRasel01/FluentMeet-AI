@@ -252,3 +252,4 @@ export const ReportSummaryView: React.FC<ReportSummaryViewProps> = ({
     </div>
   );
 };
+

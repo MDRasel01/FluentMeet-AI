@@ -118,3 +118,4 @@ class ReportAccessLog(Base):
 
     # Relationships
     snapshot = relationship("ReportSnapshot", back_populates="access_logs")
+
