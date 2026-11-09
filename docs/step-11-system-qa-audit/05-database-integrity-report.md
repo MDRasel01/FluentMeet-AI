@@ -65,3 +65,4 @@ erDiagram
 - `006_report_engine_schema.py`: Report snapshots, exports, access logs.
 
 **Migration Verification Result**: All 6 Alembic migrations apply sequentially with 0 conflicts and full rollback capability.
+

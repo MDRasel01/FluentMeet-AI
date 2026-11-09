@@ -45,3 +45,4 @@
 - **`pnpm audit` Finding**: Flags Next.js Windows dev advisory (GHSA-p293-qw3h-jr36).
   - *Risk Assessment*: In production environments, FluentMeet AI dashboard is deployed on Linux/containerized Alpine Docker images or static CDN edges, eliminating Windows-specific dev server exposure.
   - *Mitigation Plan*: Documented in Technical Debt Register (`DEBT-001`) with scheduled upgrade to Next.js 15.5+ for the next major release cycle.
+

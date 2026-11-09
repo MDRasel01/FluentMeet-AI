@@ -78,3 +78,4 @@ graph TD
 | 18 | **Security & Privacy Architecture** | `app/reports/export.py` | **Hardened (DEF-002)** | CWE-1236 CSV formula injection defense (including leading whitespace neutralization). |
 | 19 | **Monitoring & Logging** | `app/main.py`, `app/models/report.py` | **Compliant** | Structured logging, request correlation IDs, `ReportAccessLog` audit trails. |
 | 20 | **Deployment & Infrastructure** | `docker-compose.yml`, `Dockerfile` | **Compliant** | Multi-stage Docker builds; isolated worker and API container configurations. |
+

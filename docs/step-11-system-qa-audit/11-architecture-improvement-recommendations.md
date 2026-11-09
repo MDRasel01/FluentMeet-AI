@@ -15,3 +15,4 @@
    - For enterprises with $> 100$ concurrent active meetings, route dashboard analytics queries (`/dashboard/summary`, `/dashboard/trends`) to a PostgreSQL read replica, preserving write IOPS for audio ingestion and worker transcribing.
 4. **Offline Mobile PWA Support**:
    - Enable Service Worker offline caching on the Next.js dashboard so users can review previously loaded meeting reports during flights or low-connectivity scenarios.
+

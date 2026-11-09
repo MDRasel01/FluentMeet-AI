@@ -8,6 +8,11 @@ import { ExtensionScreen } from '../../../ExtensionApp';
 import { AudioSourceId } from '../../types/audio.types';
 import { MeetingPlatform, ParticipantMetadata, SessionState } from '../../types/extension.types';
 import { ExtensionAuthAdapter, StoredAuthSession } from '../../utils/auth-adapter';
+import {
+  speechRecognitionService,
+  VoiceRecognitionState,
+  RecognizedTranscriptItem,
+} from '../../services/speech-recognition.service';
 
 interface ExtensionStoreState {
   // Navigation & Screen
@@ -34,12 +39,21 @@ interface ExtensionStoreState {
   sessionSeconds: number;
   participants: ParticipantMetadata[];
 
+  // Voice Recognition & Live Transcripts
+  voiceState: VoiceRecognitionState;
+  interimTranscript: string;
+  finalTranscripts: RecognizedTranscriptItem[];
+  voiceError: string | null;
+
   // Actions
   initializeExtension: () => Promise<void>;
   startCapture: () => Promise<void>;
   pauseCapture: () => Promise<void>;
   resumeCapture: () => Promise<void>;
   stopCapture: () => Promise<void>;
+  startVoiceRecognition: () => Promise<void>;
+  stopVoiceRecognition: () => void;
+  clearTranscripts: () => void;
   updateAudioMetrics: (sourceId: AudioSourceId, volume: number) => void;
 }
 
@@ -51,13 +65,21 @@ export const useExtensionStore = create<ExtensionStoreState>((set, get) => ({
   setAuthSession: (authSession) => set({ authSession, screen: authSession ? 'home' : 'auth' }),
   logout: async () => {
     await ExtensionAuthAdapter.clearSession();
-    set({ authSession: null, screen: 'auth', sessionState: 'IDLE' });
+    speechRecognitionService.stop();
+    set({
+      authSession: null,
+      screen: 'auth',
+      sessionState: 'IDLE',
+      voiceState: 'IDLE',
+      interimTranscript: '',
+      finalTranscripts: [],
+    });
   },
 
   sessionState: 'IDLE',
-  meetingId: 'meet-' + Math.random().toString(36).substring(2, 9),
-  meetingTitle: 'Team Sync Call',
-  platform: 'google-meet',
+  meetingId: '',
+  meetingTitle: '',
+  platform: 'unknown',
   meetingUrl: '',
   consentChecked: false,
   setConsentChecked: (consentChecked) => set({ consentChecked }),
@@ -66,6 +88,12 @@ export const useExtensionStore = create<ExtensionStoreState>((set, get) => ({
   tabVolume: 0,
   sessionSeconds: 0,
   participants: [],
+
+  // Voice recognition initial state
+  voiceState: 'IDLE',
+  interimTranscript: '',
+  finalTranscripts: [],
+  voiceError: null,
 
   initializeExtension: async () => {
     // 1. Check auth session
@@ -80,6 +108,8 @@ export const useExtensionStore = create<ExtensionStoreState>((set, get) => ({
         const response = await chrome.runtime.sendMessage({ type: 'CHECK_MEETING_STATUS' });
         if (response?.isMeetingActive) {
           set({
+            meetingId: response.meetingId || 'meet-' + Math.random().toString(36).substring(2, 9),
+            meetingTitle: response.title || (response.platform === 'google-meet' ? 'Google Meet Call' : 'Online Meeting'),
             platform: response.platform,
             meetingUrl: response.url,
             screen: 'detected',
@@ -107,14 +137,51 @@ export const useExtensionStore = create<ExtensionStoreState>((set, get) => ({
             set({ screen: 'error-connection', sessionState: 'FAILED' });
           }
         } else if (msg.type === 'PARTICIPANTS_UPDATED') {
-          set({ participants: msg.participants });
+          set({ participants: msg.participants || [] });
         }
       });
     }
   },
 
+  startVoiceRecognition: async () => {
+    set({ voiceState: 'INITIALIZING', voiceError: null });
+    await speechRecognitionService.start({
+      onStateChange: (state) => set({ voiceState: state }),
+      onInterimResult: (text) => set({ interimTranscript: text }),
+      onFinalResult: (item) => {
+        set((prev) => ({
+          finalTranscripts: [...prev.finalTranscripts, item],
+          interimTranscript: '',
+        }));
+      },
+      onError: (err) => set({ voiceState: 'ERROR', voiceError: err }),
+      onEnd: () => set({ voiceState: 'STOPPED', interimTranscript: '' }),
+    });
+  },
+
+  stopVoiceRecognition: () => {
+    speechRecognitionService.stop();
+    set({ voiceState: 'STOPPED', interimTranscript: '' });
+  },
+
+  clearTranscripts: () => {
+    set({ finalTranscripts: [], interimTranscript: '', voiceError: null });
+  },
+
   startCapture: async () => {
-    const { meetingId, meetingTitle, platform, meetingUrl } = get();
+    let { meetingId, meetingTitle, platform, meetingUrl } = get();
+    if (!meetingId) {
+      meetingId = 'meet-' + Math.random().toString(36).substring(2, 9);
+      set({ meetingId });
+    }
+    if (!meetingTitle) {
+      meetingTitle = 'Active Meeting Session';
+      set({ meetingTitle });
+    }
+
+    // Also start live speech recognition for immediate spoken transcript
+    get().startVoiceRecognition().catch((e) => console.warn('Speech recognition warning:', e));
+
     if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
       const resp = await chrome.runtime.sendMessage({
         type: 'START_CAPTURE_COMMAND',
@@ -131,18 +198,20 @@ export const useExtensionStore = create<ExtensionStoreState>((set, get) => ({
       }
     } else {
       // Mock / Preview Mode
-      set({ screen: 'live', sessionState: 'CAPTURING' });
+      set({ screen: 'live', sessionState: 'CAPTURING', sessionSeconds: 0 });
     }
   },
 
   pauseCapture: async () => {
+    speechRecognitionService.stop();
     if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
       await chrome.runtime.sendMessage({ type: 'PAUSE_CAPTURE_COMMAND' });
     }
-    set({ screen: 'paused', sessionState: 'PAUSED' });
+    set({ screen: 'paused', sessionState: 'PAUSED', voiceState: 'STOPPED' });
   },
 
   resumeCapture: async () => {
+    get().startVoiceRecognition().catch((e) => console.warn('Speech recognition resume warning:', e));
     if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
       await chrome.runtime.sendMessage({ type: 'RESUME_CAPTURE_COMMAND' });
     }
@@ -150,10 +219,11 @@ export const useExtensionStore = create<ExtensionStoreState>((set, get) => ({
   },
 
   stopCapture: async () => {
+    speechRecognitionService.stop();
     if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
       await chrome.runtime.sendMessage({ type: 'STOP_CAPTURE_COMMAND' });
     }
-    set({ screen: 'completed', sessionState: 'COMPLETED' });
+    set({ screen: 'completed', sessionState: 'COMPLETED', voiceState: 'STOPPED' });
   },
 
   updateAudioMetrics: (sourceId, volume) => {

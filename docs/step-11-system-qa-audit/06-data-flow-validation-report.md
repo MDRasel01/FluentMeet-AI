@@ -56,3 +56,4 @@ sequenceDiagram
 Every stage in the pipeline uses deterministic, compound idempotency keys:
 $$\text{Idempotency Key} = \text{SHA256}(\text{meeting\_id} + ":" + \text{speaker\_label} + ":" + \text{rubric\_version})$$
 Replaying an identical audio segment or re-requesting a report snapshot does not create duplicate database records.
+

@@ -160,3 +160,4 @@ if __name__ == "__main__":
     success = run_chrome_system_audit()
     if not success:
         sys.exit(1)
+

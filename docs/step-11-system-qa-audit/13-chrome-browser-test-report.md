@@ -31,3 +31,4 @@ Automated verification script: `scripts/test_chrome_system_audit.py`
   - Selector `#ielts-disclaimer` present and displayed:
     *"Educational practice estimate only. This is not an official IELTS score, certified assessment, or substitute for an IELTS examiner."*
 - **Console Errors**: 0 unhandled exceptions; 0 CORS errors; 0 resource load failures.
+

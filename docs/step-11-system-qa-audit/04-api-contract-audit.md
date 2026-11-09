@@ -54,3 +54,4 @@ All API endpoints reside under `/api/v1` and strictly return structured envelope
 - `POST /api/v1/reports/{report_id}/export/html`: Generates print-ready HTML view with SHA-256 integrity hash.
 - `GET /api/v1/dashboard/summary`: High-level aggregated KPIs for authenticated organization.
 - `GET /api/v1/dashboard/trends`: Multi-meeting historical skill score trends.
+

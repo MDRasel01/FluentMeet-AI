@@ -58,3 +58,4 @@ FluentMeet-AI/
 - **No circular file references**: Python modules adhere strictly to top-down dependency flow (`main.py` $\to$ `api/v1` $\to$ `services` $\to$ `models`).
 - **No stray temporary directories**: `.pytest_cache`, `dist`, and `build` directories are properly ignored in `.gitignore`.
 - **Zero duplicate source of truth**: Models in `services/api/app/models/` serve as the single authority for database schema, with Alembic migrations tracking revisions incrementally.
+
