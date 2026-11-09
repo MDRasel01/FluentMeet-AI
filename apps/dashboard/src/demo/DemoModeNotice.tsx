@@ -1,6 +1,5 @@
 import React from 'react';
-import { Sparkles, ArrowRight, ShieldAlert, Info } from 'lucide-react';
-import { Button } from '../../../design-system/components';
+import { Sparkles, ArrowRight } from 'lucide-react';
 
 interface DemoModeNoticeProps {
   tabName: string;
