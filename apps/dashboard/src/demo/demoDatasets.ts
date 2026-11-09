@@ -288,3 +288,4 @@ export const DEMO_HISTORICAL_DATA: HistoricalComparisonData = {
     'Conversational Pace Stability',
   ],
 };
+

@@ -25,3 +25,4 @@ export type DashboardTabKey =
 export interface TabModeStateMap {
   [tabKey: string]: TabDataMode;
 }
+
