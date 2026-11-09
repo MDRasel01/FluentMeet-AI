@@ -51,6 +51,16 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
+    @field_validator("JWT_SECRET_KEY")
+    @classmethod
+    def validate_jwt_secret_in_prod(cls, v: str, info) -> str:
+        env = info.data.get("APP_ENV", "development")
+        if env == "production" and ("change-in-production" in v.lower() or len(v) < 32):
+            raise ValueError(
+                "In production, JWT_SECRET_KEY must be a secure, non-default string of at least 32 characters."
+            )
+        return v
+
     # Sentry DSN
     SENTRY_DSN: str = ""
 

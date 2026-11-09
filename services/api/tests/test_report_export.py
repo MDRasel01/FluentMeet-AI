@@ -13,11 +13,14 @@ from datetime import datetime, timezone
 
 
 def test_sanitize_csv_cell():
-    """Unit test verifying CSV injection defense for dangerous prefixes =, +, -, @."""
+    """Unit test verifying CSV injection defense for dangerous prefixes =, +, -, @, including leading whitespace."""
     assert sanitize_csv_cell("=1+1") == "'=1+1"
     assert sanitize_csv_cell("+cmd|' /C calc'!A0") == "'+cmd|' /C calc'!A0"
     assert sanitize_csv_cell("-5+2") == "'-5+2"
     assert sanitize_csv_cell("@SUM(A1:A10)") == "'@SUM(A1:A10)"
+    assert sanitize_csv_cell("  =cmd") == "'  =cmd"
+    assert sanitize_csv_cell("\t=1+1") == "'\t=1+1"
+    assert sanitize_csv_cell("  @SUM(B1)") == "'  @SUM(B1)"
     assert sanitize_csv_cell("Normal text") == "Normal text"
     assert sanitize_csv_cell(85.5) == "85.5"
     assert sanitize_csv_cell(None) == ""

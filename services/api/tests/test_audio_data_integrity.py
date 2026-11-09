@@ -5,7 +5,7 @@ Specification: Step 06 - Section 21.1 (Acceptance Gate: Bit-exact PCM Reconstruc
 
 import pytest
 import numpy as np
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, MagicMock
 from app.audio.protocol import BinaryAudioProtocol, AudioPacket
 from app.audio.service import AudioIngestionService
 from app.audio.storage.object_storage import AudioObjectStorage
@@ -39,6 +39,7 @@ class TestAudioDataIntegrity:
         total_chunks = len(ref_s0_bytes) // chunk_bytes_len
 
         db_mock = AsyncMock()
+        db_mock.add = MagicMock()
 
         # Ingest interleaved chunks from Source 0 and Source 1
         s0_persisted_keys = []

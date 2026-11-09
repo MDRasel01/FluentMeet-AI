@@ -4,7 +4,7 @@ FluentMeet AI - Step 10 Pydantic Schemas: Report Generation, Analytics & Dashboa
 
 from typing import Optional, List, Dict, Any
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class GenerateReportRequest(BaseModel):
@@ -16,6 +16,8 @@ class GenerateReportRequest(BaseModel):
 
 
 class ReportSnapshotResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     meeting_id: str
     tenant_id: Optional[str] = None
@@ -33,9 +35,6 @@ class ReportSnapshotResponse(BaseModel):
     report_payload: Dict[str, Any]
     generated_at: datetime
     created_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 class MeetingReportSummaryResponse(BaseModel):

@@ -68,6 +68,11 @@ async def handle_websocket_loop(
         if not tenant_org_id and "org_id" in payload:
             tenant_org_id = payload["org_id"]
     else:
+        # Enforce authentication in non-development/non-testing environments (DEF-001)
+        if settings.APP_ENV not in ("development", "testing"):
+            logger.warning("Rejected unauthenticated WebSocket connection in production")
+            await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+            return
         # Development fallback if running locally
         user_id = "dev_user"
 

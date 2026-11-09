@@ -17,12 +17,14 @@ from app.reports.builder import MANDATORY_IELTS_DISCLAIMER
 def sanitize_csv_cell(val: Any) -> str:
     """
     Prevents CSV / Spreadsheet Formula Injection (CWE-1236).
-    If cell begins with '=', '+', '-', or '@', prepend a single quote (').
+    If cell begins with '=', '+', '-', '@', '\t', or '\r' (even after leading whitespace),
+    prepend a single quote (') to neutralize execution in Excel / Google Sheets.
     """
     if val is None:
         return ""
     text = str(val)
-    if text and text[0] in ("=", "+", "-", "@"):
+    stripped = text.lstrip()
+    if stripped and stripped[0] in ("=", "+", "-", "@", "\t", "\r"):
         return "'" + text
     return text
 

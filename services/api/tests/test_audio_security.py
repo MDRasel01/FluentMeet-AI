@@ -33,3 +33,12 @@ class TestAudioSecurity:
         with pytest.raises(Exception):
             with client.websocket_connect("/ws/v1/sessions/session-bad-token?token=invalid.jwt.token") as ws:
                 ws.receive_json()
+
+    def test_reject_unauthenticated_connection_in_production(self, monkeypatch):
+        """Enforces DEF-001: Reject unauthenticated WebSocket connections when running in production."""
+        from app.core.config import settings
+        monkeypatch.setattr(settings, "APP_ENV", "production")
+        client = TestClient(app)
+        with pytest.raises(Exception):
+            with client.websocket_connect("/ws/v1/sessions/session-no-token") as ws:
+                ws.receive_json()
