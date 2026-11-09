@@ -43,6 +43,13 @@ import {
 } from 'lucide-react';
 import { ChromeExtensionPage } from './ChromeExtensionPage';
 import {
+  ReportSummaryView,
+  ParticipantReportDetail,
+  HistoricalTrendView,
+  ReportSnapshot,
+  HistoricalComparisonData,
+} from './src/features/reports';
+import {
   Button,
   Input,
   Card,
@@ -90,6 +97,266 @@ export type DashboardPage =
   | 'security-settings'
   | 'notification-settings';
 
+const DEMO_MEETING_SUMMARY_SNAPSHOT: ReportSnapshot = {
+  id: 'rep-snap-sum-001',
+  meeting_id: 'm-101',
+  report_type: 'meeting_summary',
+  report_version: 1,
+  report_status: 'completed',
+  overall_score: 83.5,
+  confidence_score: 0.94,
+  word_count: 1840,
+  speaking_duration_seconds: 620.0,
+  source_analysis_version: '1.0',
+  scoring_rubric_version: '1.0',
+  generated_at: '2026-11-09T08:00:00Z',
+  created_at: '2026-11-09T08:00:00Z',
+  report_payload: {
+    metadata: {
+      meeting_id: 'm-101',
+      title: 'Q3 Enterprise Architecture & Strategy Review',
+      report_type: 'meeting_summary',
+      scoring_rubric_version: '1.0',
+    },
+    summary_metrics: {
+      participant_count: 3,
+      total_duration_seconds: 620.0,
+      total_words: 1840,
+      average_overall_score: 83.5,
+      calibrated_participants_count: 3,
+    },
+    participants: [
+      {
+        speaker_label: 'speaker_priya',
+        display_name: 'Priya Sharma (Host)',
+        overall_score: 85.0,
+        status_label: 'Calibrated',
+        word_count: 820,
+        duration_seconds: 252.0,
+        talk_time_percentage: 40.6,
+        ielts_band: 7.5,
+      },
+      {
+        speaker_label: 'speaker_alex',
+        display_name: 'Alex Chen',
+        overall_score: 82.0,
+        status_label: 'Calibrated',
+        word_count: 610,
+        duration_seconds: 210.0,
+        talk_time_percentage: 33.9,
+        ielts_band: 7.0,
+      },
+      {
+        speaker_label: 'speaker_marcus',
+        display_name: 'Marcus Vance',
+        overall_score: 83.5,
+        status_label: 'Calibrated',
+        word_count: 410,
+        duration_seconds: 158.0,
+        talk_time_percentage: 25.5,
+        ielts_band: 7.5,
+      },
+    ],
+    highlights: [
+      'High conversational engagement across all 3 participants (Average: 83.5/100).',
+      'Strong technical vocabulary and precise architectural expressions observed.',
+    ],
+    areas_for_team_growth: [
+      'Preposition and tense agreement refinement recommended during status transitions.',
+    ],
+    disclaimers: {
+      summary: 'Meeting summary is aggregated strictly from validated participant spoken contributions.',
+      ielts: 'Educational practice estimate only. This is not an official IELTS score, certified assessment, or substitute for an IELTS examiner.',
+    },
+  },
+};
+
+const DEMO_PARTICIPANT_SNAPSHOT: ReportSnapshot = {
+  id: 'rep-snap-part-001',
+  meeting_id: 'm-101',
+  report_type: 'individual_participant',
+  participant_id: 'part-priya-01',
+  speaker_label: 'speaker_priya',
+  report_version: 1,
+  report_status: 'completed',
+  overall_score: 85.0,
+  confidence_score: 0.94,
+  word_count: 820,
+  speaking_duration_seconds: 252.0,
+  source_analysis_version: '1.0',
+  scoring_rubric_version: '1.0',
+  generated_at: '2026-11-09T08:00:00Z',
+  created_at: '2026-11-09T08:00:00Z',
+  report_payload: {
+    metadata: {
+      meeting_id: 'm-101',
+      participant_id: 'part-priya-01',
+      speaker_label: 'speaker_priya',
+      display_name: 'Priya Sharma',
+      scoring_rubric_version: '1.0',
+      report_type: 'individual_participant',
+    },
+    overall_performance: {
+      overall_score: 85.0,
+      confidence_score: 0.94,
+      status_label: 'Calibrated',
+      report_status: 'completed',
+      is_calibrated: true,
+      missing_components: [],
+      validation_notes: ['All four assessment pillars validated and calibrated.'],
+    },
+    speaking_metrics: {
+      total_words: 820,
+      speaking_duration_seconds: 252.0,
+      words_per_minute: 142.0,
+    },
+    grammar_analysis: {
+      score: 84.0,
+      issues_count: 2,
+      issues: [
+        {
+          rule_type: 'preposition_usage',
+          offending_text: 'discuss about the timeline',
+          corrected_text: 'discuss the timeline',
+          explanation: '"Discuss" is a transitive verb; omit the unnecessary preposition "about".',
+          severity: 'minor',
+        },
+        {
+          rule_type: 'conditional_tense',
+          offending_text: 'If we will deploy early, we see bugs',
+          corrected_text: 'If we deploy early, we will see bugs',
+          explanation: 'In first conditional clauses, use present simple in the "if" clause.',
+          severity: 'moderate',
+        },
+      ],
+    },
+    vocabulary_analysis: {
+      score: 86.0,
+      insights: {
+        lexical_diversity: 0.72,
+        high_impact_words: ['bottleneck', 'resilience', 'milestone', 'scalable'],
+        repetitive_words: ['basically', 'actually'],
+      },
+    },
+    fluency_analysis: {
+      score: 82.0,
+      metrics: {
+        words_per_minute: 142.0,
+        filler_word_count: 8,
+        pause_count: 5,
+        speech_rate_category: 'moderate',
+      },
+    },
+    pronunciation_analysis: {
+      score: 88.0,
+      confidence: 0.92,
+      mispronounced_words: [
+        {
+          word: 'architecture',
+          accuracy_score: 72.0,
+          phonemes_expected: 'ɑː k ɪ t ɛ k tʃ ə',
+          phonemes_produced: 'ɑː tʃ ɪ t ɛ k tʃ ə',
+        },
+      ],
+      prosody: {
+        speaking_rate_wpm: 142.0,
+        pitch_range_hz: 95.0,
+        sentence_stress_accuracy: 88.0,
+        intonation_naturalness: 86.0,
+      },
+    },
+    ielts_estimate: {
+      overall_band_estimate: 7.5,
+      fluency_coherence_band: 7.5,
+      lexical_resource_band: 8.0,
+      grammatical_range_band: 7.5,
+      pronunciation_band: 7.5,
+      cefr_level: 'C1',
+      band_descriptor_summary: 'Effective operational command of the language with occasional inaccuracies and minor mother-tongue influence.',
+      disclaimer: 'Educational practice estimate only. This is not an official IELTS score, certified assessment, or substitute for an IELTS examiner.',
+    },
+    recommendations: [
+      {
+        source: 'grammar',
+        category: 'Grammar: Prepositions',
+        priority: 'medium',
+        recommendation_text: 'Eliminate redundant prepositions after transitive verbs like discuss, consider, mention.',
+        practice_text: 'Let us discuss the quarterly deployment roadmap directly with the stakeholders.',
+      },
+      {
+        source: 'pronunciation',
+        category: 'Pronunciation: Minimal Pairs',
+        priority: 'high',
+        recommendation_text: 'Velar plosive /k/ precision in words of Greek origin (architecture, technique).',
+        practice_text: 'The architecture team presented an archetype of the new cloud infrastructure.',
+      },
+    ],
+    disclaimers: {
+      ielts: 'Educational practice estimate only. This is not an official IELTS score, certified assessment, or substitute for an IELTS examiner.',
+      scoring: 'Scores reflect spoken English communication patterns observed during this recording.',
+    },
+  },
+};
+
+const DEMO_HISTORICAL_DATA: HistoricalComparisonData = {
+  participant_id: 'part-priya-01',
+  speaker_name: 'Priya Sharma',
+  total_meetings: 3,
+  history_points: [
+    {
+      meeting_id: 'm-098',
+      meeting_date: '2026-10-24T10:00:00Z',
+      report_id: 'rep-098',
+      overall_score: 78.0,
+      grammar_score: 76.0,
+      vocabulary_score: 80.0,
+      fluency_score: 76.0,
+      pronunciation_score: 80.0,
+      ielts_overall_band: 7.0,
+      word_count: 650,
+    },
+    {
+      meeting_id: 'm-099',
+      meeting_date: '2026-10-31T14:30:00Z',
+      report_id: 'rep-099',
+      overall_score: 81.5,
+      grammar_score: 80.0,
+      vocabulary_score: 84.0,
+      fluency_score: 79.0,
+      pronunciation_score: 83.0,
+      ielts_overall_band: 7.0,
+      word_count: 720,
+    },
+    {
+      meeting_id: 'm-101',
+      meeting_date: '2026-11-08T09:15:00Z',
+      report_id: 'rep-101',
+      overall_score: 85.0,
+      grammar_score: 84.0,
+      vocabulary_score: 86.0,
+      fluency_score: 82.0,
+      pronunciation_score: 88.0,
+      ielts_overall_band: 7.5,
+      word_count: 820,
+    },
+  ],
+  trends: {
+    status: 'active',
+    trajectory: 'improving',
+    overall_delta: 7.0,
+    message: 'Consistent upward trajectory across 3 meetings (+7.0 pts)',
+  },
+  recurring_mistakes: [
+    { rule_type: 'Preposition after transitive verb (discuss about)', frequency: 2 },
+    { rule_type: 'First conditional clause structure', frequency: 2 },
+  ],
+  persistent_strengths: [
+    'Vocabulary Range & Professional Collocations',
+    'Acoustic Clarity & Intelligibility',
+    'Conversational Pace Stability',
+  ],
+};
+
 interface DashboardAppProps {
   initialPage?: DashboardPage;
   onPageChange?: (page: DashboardPage) => void;
@@ -116,6 +383,7 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
   const [savedMistakes, setSavedMistakes] = useState<string[]>(['dm-1']);
   const [practiceAnswered, setPracticeAnswered] = useState<number | null>(null);
   const [selectedTranscriptMistake, setSelectedTranscriptMistake] = useState<any>(null);
+  const [reportSubView, setReportSubView] = useState<'summary' | 'participant' | 'history'>('summary');
 
   const navigateTo = (page: DashboardPage) => {
     setCurrentPage(page);
@@ -1084,94 +1352,73 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
             </div>
           )}
 
-          {/* PAGE 05: INDIVIDUAL REPORT */}
+          {/* PAGE 05: INDIVIDUAL REPORT & STEP 10 ANALYTICS ENGINE */}
           {currentPage === 'report' && (
             <div className="space-y-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
+              {/* Report Sub-view Navigation Bar */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
                 <div>
                   <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-                    Personal English Coaching Report
+                    English Performance & Meeting Analytics Report
                   </h1>
                   <p className="text-xs text-slate-500 mt-1">
-                    Meeting: {selectedMeeting.title} • Speaker: Priya Sharma • Active Speech: {selectedMeeting.mySpeakingTime}
+                    Multi-speaker calibrated scoring, longitudinal progress, and IELTS-style practice assessment
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" onClick={() => navigateTo('transcript-viewer')}>
-                    Review in Transcript
-                  </Button>
-                  <Button size="sm" onClick={() => navigateTo('learning-center')}>
-                    Practice These Mistakes
-                  </Button>
+
+                {/* Sub-view Switcher Tabs */}
+                <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700">
+                  <button
+                    onClick={() => setReportSubView('summary')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                      reportSubView === 'summary'
+                        ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Meeting Summary
+                  </button>
+                  <button
+                    onClick={() => setReportSubView('participant')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                      reportSubView === 'participant'
+                        ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Speaker Assessment
+                  </button>
+                  <button
+                    onClick={() => setReportSubView('history')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                      reportSubView === 'history'
+                        ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Historical Trajectory
+                  </button>
                 </div>
               </div>
 
-              {/* 4 Score Indicators Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Card className="text-center space-y-2">
-                  <ScoreIndicator score={84} size="md" label="Grammar Accuracy" />
-                  <p className="text-[11px] text-slate-400">4 grammatical errors</p>
-                </Card>
-                <Card className="text-center space-y-2">
-                  <ScoreIndicator score={82} size="md" label="Vocabulary Precision" />
-                  <p className="text-[11px] text-slate-400">3 executive upgrades</p>
-                </Card>
-                <Card className="text-center space-y-2">
-                  <ScoreIndicator score={78} size="md" label="Fluency & Rhythm" />
-                  <p className="text-[11px] text-slate-400">142 WPM • 3.8% fillers</p>
-                </Card>
-                <Card className="text-center space-y-2">
-                  <ScoreIndicator score={80} size="md" label="Pronunciation Clarity" />
-                  <p className="text-[11px] text-slate-400">Natural intelligibility</p>
-                </Card>
-              </div>
+              {/* Sub-view Contents */}
+              {reportSubView === 'summary' && (
+                <ReportSummaryView
+                  snapshot={DEMO_MEETING_SUMMARY_SNAPSHOT}
+                  onSelectParticipant={() => setReportSubView('participant')}
+                />
+              )}
 
-              {/* Detailed Grammar Mistakes Breakdown */}
-              <div className="space-y-4">
-                <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                  Identified Mistakes & Concrete Evidence
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {DEMO_MISTAKES.map((m) => (
-                    <GrammarErrorCard
-                      key={m.id}
-                      originalSentence={m.original}
-                      correctedSentence={m.corrected}
-                      errorCategory={m.category}
-                      severity={m.severity}
-                      explanation={m.explanation}
-                      timestamp={m.timestamp}
-                      onPlayAudio={() => {
-                        setIsPlayingAudio(true);
-                        setAudioCurrentTime(252);
-                      }}
-                      onAddToPractice={() => toggleSaveMistake(m.id)}
-                      isSaved={savedMistakes.includes(m.id)}
-                    />
-                  ))}
-                </div>
-              </div>
+              {reportSubView === 'participant' && (
+                <ParticipantReportDetail
+                  snapshot={DEMO_PARTICIPANT_SNAPSHOT}
+                  onBackToSummary={() => setReportSubView('summary')}
+                />
+              )}
 
-              {/* Vocabulary Polish Suggestions */}
-              <Card className="space-y-4">
-                <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                  Executive Vocabulary Enhancements
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {DEMO_VOCABULARY_SUGGESTIONS.map((v, i) => (
-                    <div key={i} className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 space-y-2">
-                      <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
-                        {v.context}
-                      </span>
-                      <p className="text-xs text-rose-500 line-through">{v.original}</p>
-                      <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                        → {v.suggested}
-                      </p>
-                      <p className="text-[11px] text-slate-500 italic">{v.example}</p>
-                    </div>
-                  ))}
-                </div>
-              </Card>
+              {reportSubView === 'history' && (
+                <HistoricalTrendView data={DEMO_HISTORICAL_DATA} />
+              )}
             </div>
           )}
 

@@ -60,6 +60,11 @@ from app.models.pronunciation import (
     IELTSSpeakingPracticeAssessment,
     AssessmentModelRun,
 )
+from app.models.report import (
+    ReportSnapshot,
+    ReportExport,
+    ReportAccessLog,
+)
 
 __all__ = [
     "Base",
@@ -112,4 +117,7 @@ __all__ = [
     "PronunciationRecommendation",
     "IELTSSpeakingPracticeAssessment",
     "AssessmentModelRun",
+    "ReportSnapshot",
+    "ReportExport",
+    "ReportAccessLog",
 ]
