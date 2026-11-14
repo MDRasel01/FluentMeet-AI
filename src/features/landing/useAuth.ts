@@ -140,40 +140,6 @@ export function useAuth() {
     }
   }, []);
 
-  const signInWithProvider = useCallback(async (provider: 'google' | 'github'): Promise<AuthUser> => {
-    setIsLoading(true);
-    setError(null);
-    await new Promise((r) => setTimeout(r, 650));
-
-    const providerUser: AuthUser = provider === 'google'
-      ? {
-          id: 'usr-google-' + Date.now(),
-          name: 'Priya Sharma (Google)',
-          email: 'priya.sharma@gmail.com',
-          avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=256&q=80',
-          role: 'Product Lead',
-          goal: 'Executive Presentations & Global Calls',
-          tier: 'pro',
-          token: 'google-oauth-token-' + Date.now(),
-          createdAt: new Date().toISOString(),
-        }
-      : {
-          id: 'usr-github-' + Date.now(),
-          name: 'Alex Chen (GitHub)',
-          email: 'alex.chen@github.com',
-          avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
-          role: 'Fullstack Engineer',
-          goal: 'Tech Standups & Code Reviews in English',
-          tier: 'pro',
-          token: 'github-oauth-token-' + Date.now(),
-          createdAt: new Date().toISOString(),
-        };
-
-    setUser(providerUser);
-    setIsLoading(false);
-    return providerUser;
-  }, []);
-
   const quickFillDemo = useCallback((personaKey: 'priya' | 'alex' | 'marcus') => {
     const selected = DEMO_USERS[personaKey] || DEMO_USERS.priya;
     setUser(selected);
@@ -195,7 +161,6 @@ export function useAuth() {
     error,
     signIn,
     signUp,
-    signInWithProvider,
     quickFillDemo,
     signOut,
   };
