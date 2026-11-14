@@ -2,14 +2,13 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { copyFileSync } from 'fs';
-import { buildSync } from 'esbuild';
 
 export default defineConfig({
   plugins: [
     react(),
     {
       name: 'extension-post-build',
-      closeBundle() {
+      async closeBundle() {
         try {
           copyFileSync(
             resolve(__dirname, 'manifest.json'),
@@ -21,8 +20,10 @@ export default defineConfig({
         }
 
         try {
+          // Dynamic import prevents TypeScript from complaining if esbuild is not directly in root types
           // Bundle content-script as standalone IIFE to eliminate ES import statements
           // which are disallowed in Chrome Extension content_scripts
+          const { buildSync } = await import('esbuild');
           buildSync({
             entryPoints: [resolve(__dirname, 'src/content/content-script.ts')],
             bundle: true,

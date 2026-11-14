@@ -25,6 +25,13 @@
     }
   },
   "include": ["src", "design-system", "apps"],
-  "exclude": ["apps/dashboard", "node_modules", "dist"]
+  "exclude": [
+    "apps/dashboard",
+    "apps/extension/vite.config.ts",
+    "apps/extension/vitest.config.ts",
+    "apps/extension/tests",
+    "node_modules",
+    "dist"
+  ]
 }
 
