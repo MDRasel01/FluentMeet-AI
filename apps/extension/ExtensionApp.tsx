@@ -20,6 +20,7 @@ import {
   RefreshCw,
   ExternalLink,
   ChevronRight,
+  MoreVertical,
 } from 'lucide-react';
 import { Button, Input, Card, Badge, PlatformIcon, PlatformBadge, PlatformSelect } from '../../design-system/components';
 import { useExtensionStore } from './src/sidepanel/store/extension-store';
@@ -68,6 +69,7 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
 
   // Development preview toggle (cleanly folded by default)
   const [showDevPreview, setShowDevPreview] = useState(false);
+  const [showThreeDotMenu, setShowThreeDotMenu] = useState(false);
 
   useEffect(() => {
     store.initializeExtension();
@@ -180,6 +182,63 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
           >
             <Settings className="w-4 h-4" />
           </button>
+
+          {/* 3-Dot (Three Dots) Menu */}
+          <div className="relative">
+            <button
+              onClick={() => setShowThreeDotMenu(!showThreeDotMenu)}
+              className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+              title="More Options"
+            >
+              <MoreVertical className="w-4 h-4" />
+            </button>
+
+            {showThreeDotMenu && (
+              <div className="absolute right-0 top-full mt-1.5 w-48 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl py-1 z-50 text-xs">
+                <button
+                  onClick={() => {
+                    store.initializeExtension();
+                    setShowThreeDotMenu(false);
+                  }}
+                  className="w-full px-3 py-1.5 text-left flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
+                >
+                  <RefreshCw className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Reload / Refresh</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setShowDevPreview(!showDevPreview);
+                    setShowThreeDotMenu(false);
+                  }}
+                  className="w-full px-3 py-1.5 text-left flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Toggle Dev Switcher</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setScreen('settings');
+                    setShowThreeDotMenu(false);
+                  }}
+                  className="w-full px-3 py-1.5 text-left flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
+                >
+                  <Settings className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Extension Settings</span>
+                </button>
+                <div className="h-px bg-slate-100 dark:bg-slate-800 my-1" />
+                <a
+                  href="http://localhost:5173"
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => setShowThreeDotMenu(false)}
+                  className="w-full px-3 py-1.5 text-left flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800 text-indigo-600 dark:text-indigo-400"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Open Web Dashboard</span>
+                </a>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

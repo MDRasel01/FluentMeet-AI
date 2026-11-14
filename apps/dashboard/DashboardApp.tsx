@@ -39,7 +39,8 @@ import {
   BarChart2,
   Mic,
   Languages,
-  Puzzle
+  Puzzle,
+  MoreVertical
 } from 'lucide-react';
 import { ChromeExtensionPage } from './ChromeExtensionPage';
 import {
@@ -137,6 +138,7 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
   const [practiceAnswered, setPracticeAnswered] = useState<number | null>(null);
   const [selectedTranscriptMistake, setSelectedTranscriptMistake] = useState<any>(null);
   const [reportSubView, setReportSubView] = useState<'summary' | 'participant' | 'history'>('summary');
+  const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
 
   const navigateTo = (page: DashboardPage) => {
     setCurrentPage(page);
@@ -882,27 +884,95 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
                             <td className="py-3.5 px-4">
                               <Badge variant="success" size="sm">{m.overallScore} / 100</Badge>
                             </td>
-                            <td className="py-3.5 px-4 text-right space-x-1">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedMeeting(m);
-                                  navigateTo('meeting-details');
-                                }}
-                              >
-                                Details
-                              </Button>
-                              <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedMeeting(m);
-                                  navigateTo('report');
-                                }}
-                              >
-                                Report
-                              </Button>
+                            <td className="py-3.5 px-4 text-right">
+                              <div className="flex items-center justify-end gap-1.5 relative">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    setSelectedMeeting(m);
+                                    navigateTo('meeting-details');
+                                  }}
+                                >
+                                  Details
+                                </Button>
+                                <Button
+                                  variant="primary"
+                                  size="sm"
+                                  onClick={() => {
+                                    setSelectedMeeting(m);
+                                    navigateTo('report');
+                                  }}
+                                >
+                                  Report
+                                </Button>
+
+                                {/* 3-Dot (Three Dots) Actions Menu */}
+                                <div className="relative inline-block text-left">
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setOpenActionMenuId(openActionMenuId === m.id ? null : m.id);
+                                    }}
+                                    className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                    title="More Options"
+                                  >
+                                    <MoreVertical className="w-4 h-4" />
+                                  </button>
+
+                                  {openActionMenuId === m.id && (
+                                    <div
+                                      onClick={(e) => e.stopPropagation()}
+                                      className="absolute right-0 top-full mt-1 w-44 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl py-1 z-50 text-left text-xs"
+                                    >
+                                      <button
+                                        onClick={() => {
+                                          setSelectedMeeting(m);
+                                          navigateTo('meeting-details');
+                                          setOpenActionMenuId(null);
+                                        }}
+                                        className="w-full px-3 py-1.5 flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
+                                      >
+                                        <FileText className="w-3.5 h-3.5 text-indigo-500" />
+                                        <span>Meeting Summary</span>
+                                      </button>
+                                      <button
+                                        onClick={() => {
+                                          setSelectedMeeting(m);
+                                          navigateTo('transcript-viewer');
+                                          setOpenActionMenuId(null);
+                                        }}
+                                        className="w-full px-3 py-1.5 flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
+                                      >
+                                        <Volume2 className="w-3.5 h-3.5 text-emerald-500" />
+                                        <span>Full Transcript</span>
+                                      </button>
+                                      <button
+                                        onClick={() => {
+                                          navigator.clipboard.writeText(window.location.origin + '/meetings/' + m.id);
+                                          setOpenActionMenuId(null);
+                                        }}
+                                        className="w-full px-3 py-1.5 flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
+                                      >
+                                        <ExternalLink className="w-3.5 h-3.5 text-sky-500" />
+                                        <span>Copy Link</span>
+                                      </button>
+                                      <div className="h-px bg-slate-100 dark:bg-slate-800 my-1" />
+                                      <button
+                                        onClick={() => {
+                                          setShowDeleteModal(true);
+                                          setOpenActionMenuId(null);
+                                        }}
+                                        className="w-full px-3 py-1.5 flex items-center gap-2 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-600"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                        <span>Delete Session</span>
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
                             </td>
                           </tr>
                         ))}

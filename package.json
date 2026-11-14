@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:extension": "pnpm --filter @fluentmeet/extension dev",
+    "build:extension": "pnpm --filter @fluentmeet/extension build",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
