@@ -1,5 +1,4 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import {
   accessExpiresAt, apiFetch, authEvents, loginRequest, logoutRequest, refreshSession, signupRequest,
   switchTenantRequest, type SessionOut, type Tenant, type User,
@@ -28,20 +27,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [tenant, setTenant] = useState<Tenant | null>(null);
   const [tenants, setTenants] = useState<TenantSummary[]>([]);
-  
-  let navigate: any = (to: string) => {
-    if (typeof window !== 'undefined') {
-      console.log('[Auth] Route navigation:', to);
-    }
-  };
-  let location: any = { state: null, pathname: '/', search: '' };
-  try {
-    navigate = useNavigate();
-    location = useLocation();
-  } catch (_) {
-    // Graceful fallback when not wrapped in BrowserRouter
-  }
-
   const timer = useRef<number | undefined>(undefined);
 
   const reloadTenants = useCallback(async () => {
@@ -94,31 +79,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => { authEvents.removeEventListener('signedout', onSignedOut); channel?.removeEventListener('message', onMsg); };
   }, [apply]);
 
-  const fromPath = (location.state as { from?: string } | null)?.from;
-
-  const login = useCallback(async (email: string, password: string, redirectTo?: string) => {
+  const login = useCallback(async (email: string, password: string, _redirectTo?: string) => {
     apply(await loginRequest(email, password));
-    navigate(redirectTo ?? fromPath ?? '/dashboard', { replace: true });
-  }, [apply, navigate, fromPath]);
+  }, [apply]);
 
   const signup = useCallback(async (input: { email: string; password: string; full_name: string; goal?: string }) => {
     apply(await signupRequest(input));
-    navigate(fromPath ?? '/dashboard', { replace: true });
-  }, [apply, navigate, fromPath]);
+  }, [apply]);
 
   const logout = useCallback(async () => {
     await logoutRequest();
     channel?.postMessage({ type: 'logout' });
     apply(null);
-    navigate('/login', { replace: true });
-  }, [apply, navigate]);
+  }, [apply]);
 
   const switchTenant = useCallback(async (tenantId: string) => {
     const s = await switchTenantRequest(tenantId);
     setUser(s.user); setTenant(s.tenant);
     channel?.postMessage({ type: 'tenant-switched' });
-    navigate('/dashboard', { replace: true }); // never leave the user on a page that belonged to the old tenant
-  }, [navigate]);
+  }, []);
 
   const value = useMemo<AuthValue>(
     () => ({ status, user, tenant, tenants, login, signup, logout, switchTenant, reloadTenants }),

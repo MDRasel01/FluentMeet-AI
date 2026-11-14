@@ -1,34 +1,30 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import React, { type ReactNode } from 'react';
 import { useAuth } from './AuthContext';
 
-/**
- * Usage:
- *   <AuthProvider>
- *     <Routes>
- *       <Route path="/login" element={<LoginPage />} />
- *       <Route path="/accept-invite" element={<AcceptInvite />} />
- *       <Route element={<ProtectedRoute />}>
- *         <Route path="/dashboard" element={<Dashboard />} />
- *         <Route element={<RoleGuard allow={['owner', 'admin']} />}>
- *           <Route path="/team" element={<TeamSettings />} />
- *         </Route>
- *       </Route>
- *     </Routes>
- *   </AuthProvider>
- */
-export function ProtectedRoute() {
+export function ProtectedRoute({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
   const { status } = useAuth();
-  const location = useLocation();
-  if (status === 'loading') return <div className="grid min-h-screen place-items-center text-sm text-slate-500">Loading…</div>;
-  if (status === 'unauthenticated') {
-    return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
+  if (status === 'loading') {
+    return <div className="grid min-h-screen place-items-center text-sm text-slate-500">Loading…</div>;
   }
-  return <Outlet />;
+  if (status === 'unauthenticated') {
+    return fallback ? <>{fallback}</> : <div className="p-8 text-center text-sm text-slate-500">Please sign in to access this page.</div>;
+  }
+  return <>{children}</>;
 }
 
-export function RoleGuard({ allow, redirectTo = '/dashboard' }: { allow: Array<'owner' | 'admin' | 'member'>; redirectTo?: string }) {
+export function RoleGuard({
+  allow,
+  children,
+  fallback,
+}: {
+  allow: Array<'owner' | 'admin' | 'member'>;
+  children: ReactNode;
+  fallback?: ReactNode;
+}) {
   const { tenant } = useAuth();
   // UI convenience only: the API and RLS enforce the real permission on every request.
-  if (!tenant || !allow.includes(tenant.role)) return <Navigate to={redirectTo} replace />;
-  return <Outlet />;
+  if (!tenant || !allow.includes(tenant.role)) {
+    return fallback ? <>{fallback}</> : null;
+  }
+  return <>{children}</>;
 }
