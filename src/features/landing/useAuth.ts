@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { AuthUser } from './types';
+import { loginRequest, signupRequest } from '../../lib/api';
 
 const STORAGE_KEY = 'fluentmeet_auth_user';
 
@@ -76,10 +77,33 @@ export function useAuth() {
   const signIn = useCallback(async (email: string, _password?: string): Promise<AuthUser> => {
     setIsLoading(true);
     setError(null);
-    await new Promise((r) => setTimeout(r, 600)); // smooth simulated network latency
 
+    // 1. Try real FastAPI multi-tenant endpoint first
     try {
-      // If email matches any demo account, load that profile
+      if (_password) {
+        const s = await loginRequest(email, _password);
+        const authedUser: AuthUser = {
+          id: s.user.id,
+          name: s.user.full_name || email.split('@')[0],
+          email: s.user.email,
+          avatarUrl: s.user.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
+          role: s.tenant.role,
+          goal: s.user.goal || 'Corporate Meetings & Fluency',
+          tier: s.tenant.tier === 'enterprise' ? 'enterprise' : s.tenant.tier === 'team' || s.tenant.tier === 'pro' ? 'pro' : 'starter',
+          token: s.access_token,
+          createdAt: new Date().toISOString(),
+        };
+        setUser(authedUser);
+        setIsLoading(false);
+        return authedUser;
+      }
+    } catch (apiErr) {
+      console.warn('[FluentMeet Auth] Live backend login skipped or offline, falling back to local session:', apiErr);
+    }
+
+    // 2. Demo fallback
+    await new Promise((r) => setTimeout(r, 400));
+    try {
       const foundDemo = Object.values(DEMO_USERS).find(
         (u) => u.email.toLowerCase() === email.trim().toLowerCase()
       );
@@ -115,8 +139,37 @@ export function useAuth() {
   }): Promise<AuthUser> => {
     setIsLoading(true);
     setError(null);
-    await new Promise((r) => setTimeout(r, 700));
 
+    // 1. Try real FastAPI multi-tenant endpoint first
+    try {
+      if (params.password) {
+        const s = await signupRequest({
+          email: params.email,
+          password: params.password,
+          full_name: params.name,
+          goal: params.goal,
+        });
+        const authedUser: AuthUser = {
+          id: s.user.id,
+          name: s.user.full_name || params.name,
+          email: s.user.email,
+          avatarUrl: s.user.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(params.name || params.email)}`,
+          role: s.tenant.role,
+          goal: s.user.goal || params.goal || 'Corporate Meetings & Fluency',
+          tier: 'starter',
+          token: s.access_token,
+          createdAt: new Date().toISOString(),
+        };
+        setUser(authedUser);
+        setIsLoading(false);
+        return authedUser;
+      }
+    } catch (apiErr) {
+      console.warn('[FluentMeet Auth] Live backend signup skipped or offline, falling back to local session:', apiErr);
+    }
+
+    // 2. Demo fallback
+    await new Promise((r) => setTimeout(r, 450));
     try {
       const newUser: AuthUser = {
         id: 'usr-' + Math.random().toString(36).substring(2, 9),

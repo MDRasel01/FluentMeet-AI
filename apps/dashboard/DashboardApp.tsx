@@ -43,6 +43,7 @@ import {
   MoreVertical
 } from 'lucide-react';
 import { ChromeExtensionPage } from './ChromeExtensionPage';
+import TeamSettings from './src/features/team/TeamSettings';
 import {
   ReportSummaryView,
   ParticipantReportDetail,
@@ -100,6 +101,7 @@ export type DashboardPage =
   | 'mistakes'
   | 'improvement-plan'
   | 'team-analytics'
+  | 'team-settings'
   | 'integrations'
   | 'chrome-extension'
   | 'billing'
@@ -424,6 +426,18 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
                 >
                   <Users className="w-4 h-4 shrink-0" />
                   {!sidebarCollapsed && <span>Team Analytics</span>}
+                </button>
+
+                <button
+                  onClick={() => navigateTo('team-settings')}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                    currentPage === 'team-settings'
+                      ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300'
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <Shield className="w-4 h-4 shrink-0 text-indigo-500" />
+                  {!sidebarCollapsed && <span>Team Workspace Seats</span>}
                 </button>
               </div>
             </div>
@@ -2137,6 +2151,13 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
                   </Card>
                 </>
               )}
+            </div>
+          )}
+
+          {/* PAGE 15B: TEAM & WORKSPACE SEATS */}
+          {currentPage === 'team-settings' && (
+            <div className="space-y-6">
+              <TeamSettings />
             </div>
           )}
 
