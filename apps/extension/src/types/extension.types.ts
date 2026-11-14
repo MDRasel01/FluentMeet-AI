@@ -26,6 +26,7 @@ export interface ParticipantMetadata {
   meetingId: string;
   platform: MeetingPlatform;
   displayName: string;
+  avatarUrl?: string;
   platformUserId?: string;
   isLocalUser: boolean;
   firstSeenAt: string;

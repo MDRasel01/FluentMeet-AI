@@ -457,14 +457,27 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
                 </div>
 
                 {store.participants.map((p, idx) => (
-                  <div key={p.participantId || idx} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 rounded-full bg-slate-500 text-white font-bold text-[10px] flex items-center justify-center">
-                        {(p.displayName || 'Participant').charAt(0).toUpperCase()}
-                      </div>
-                      <span className="font-medium text-slate-800 dark:text-slate-200">{p.displayName || 'Participant'}</span>
+                  <div key={p.participantId || idx} className="flex items-center justify-between py-0.5">
+                    <div className="flex items-center gap-2 truncate pr-2">
+                      {p.avatarUrl ? (
+                        <img
+                          src={p.avatarUrl}
+                          alt={p.displayName}
+                          className="w-5 h-5 rounded-full object-cover shrink-0 border border-slate-200 dark:border-slate-700"
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-5 h-5 rounded-full bg-indigo-500 text-white font-bold text-[10px] flex items-center justify-center shrink-0">
+                          {(p.displayName || 'P').charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <span className="font-semibold text-slate-800 dark:text-slate-200 truncate" title={p.displayName}>
+                        {p.displayName || 'Participant'}
+                      </span>
                     </div>
-                    <span className="text-[10px] text-slate-400">Remote</span>
+                    <span className="text-[10px] text-slate-400 shrink-0">Remote</span>
                   </div>
                 ))}
 
@@ -524,9 +537,27 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
 
               {store.participants.map((p, i) => (
                 <div key={p.participantId || i} className="p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                  <div>
-                    <span className="font-bold text-slate-800 dark:text-slate-200 block">{p.displayName || 'Participant'}</span>
-                    <span className="text-[10px] text-slate-400">Remote Participant</span>
+                  <div className="flex items-center gap-2.5 truncate pr-2">
+                    {p.avatarUrl ? (
+                      <img
+                        src={p.avatarUrl}
+                        alt={p.displayName}
+                        className="w-7 h-7 rounded-full object-cover shrink-0 border border-slate-200 dark:border-slate-700"
+                        onError={(e) => {
+                          (e.target as HTMLElement).style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-7 h-7 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                        {(p.displayName || 'P').charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <div className="truncate">
+                      <span className="font-bold text-slate-800 dark:text-slate-200 block truncate" title={p.displayName}>
+                        {p.displayName || 'Participant'}
+                      </span>
+                      <span className="text-[10px] text-slate-400">Remote Participant</span>
+                    </div>
                   </div>
                   <Badge variant="neutral" size="sm">Remote Tab</Badge>
                 </div>
