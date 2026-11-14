@@ -57,56 +57,61 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       }
 
       case 'START_CAPTURE_COMMAND': {
-        // Enforce user-initiated capture and valid session transition
-        const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        if (!activeTab || !activeTab.id) {
-          throw new Error('No active meeting tab found to capture.');
-        }
+        try {
+          // Enforce user-initiated capture and valid session transition
+          const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+          if (!activeTab || !activeTab.id) {
+            return { success: false, error: 'No active meeting tab found to capture.' };
+          }
 
-        sessionController.transition('STARTING', {
-          meetingId: message.meetingId,
-          title: message.title,
-          platform: message.platform,
-          meetingUrl: message.url,
-          tabId: activeTab.id,
-          consentConfirmed: true,
-          startedAt: Date.now(),
-        });
-
-        // Step A: Ensure offscreen document exists (USER_MEDIA reason)
-        await OffscreenManager.ensureOffscreenDocument();
-
-        // Step B: Obtain Tab Media Stream ID (Chrome 116+)
-        const streamId = await new Promise<string>((resolve, reject) => {
-          chrome.tabCapture.getMediaStreamId({ targetTabId: activeTab.id }, (id) => {
-            if (chrome.runtime.lastError || !id) {
-              reject(new Error(chrome.runtime.lastError?.message || 'Failed to acquire tab stream ID.'));
-            } else {
-              resolve(id);
-            }
+          sessionController.transition('STARTING', {
+            meetingId: message.meetingId,
+            title: message.title,
+            platform: message.platform,
+            meetingUrl: message.url,
+            tabId: activeTab.id,
+            consentConfirmed: true,
+            startedAt: Date.now(),
           });
-        });
 
-        // Step C: Retrieve Auth Token for WebSocket connection
-        const authSession = await ExtensionAuthAdapter.getSession();
-        const token = authSession?.accessToken;
+          // Step A: Ensure offscreen document exists (USER_MEDIA reason)
+          await OffscreenManager.ensureOffscreenDocument();
 
-        // Step D: Instruct offscreen document to start dual capture & stream
-        const offscreenResponse = await chrome.runtime.sendMessage({
-          type: 'START_OFFSCREEN_CAPTURE',
-          streamId,
-          meetingId: message.meetingId,
-          token,
-          wsUrl: `ws://localhost:8000/ws/v1/sessions/${message.meetingId}`,
-        });
+          // Step B: Obtain Tab Media Stream ID (Chrome 116+)
+          const streamId = await new Promise<string>((resolve, reject) => {
+            chrome.tabCapture.getMediaStreamId({ targetTabId: activeTab.id }, (id) => {
+              if (chrome.runtime.lastError || !id) {
+                reject(new Error(chrome.runtime.lastError?.message || 'Failed to acquire tab stream ID.'));
+              } else {
+                resolve(id);
+              }
+            });
+          });
 
-        if (!offscreenResponse?.success) {
-          sessionController.transition('FAILED', { error: offscreenResponse?.error || 'Capture failed' });
-          throw new Error(offscreenResponse?.error || 'Offscreen capture failed to initialize.');
+          // Step C: Retrieve Auth Token for WebSocket connection
+          const authSession = await ExtensionAuthAdapter.getSession();
+          const token = authSession?.accessToken;
+
+          // Step D: Instruct offscreen document to start dual capture & stream
+          const offscreenResponse = await chrome.runtime.sendMessage({
+            type: 'START_OFFSCREEN_CAPTURE',
+            streamId,
+            meetingId: message.meetingId,
+            token,
+            wsUrl: `ws://localhost:8000/ws/v1/sessions/${message.meetingId}`,
+          });
+
+          if (!offscreenResponse?.success) {
+            sessionController.transition('FAILED', { error: offscreenResponse?.error || 'Capture failed' });
+            return { success: false, error: offscreenResponse?.error || 'Offscreen capture failed to initialize.' };
+          }
+
+          sessionController.transition('CAPTURING', { streamId });
+          return { success: true, streamId };
+        } catch (captureErr: any) {
+          console.warn('[FluentMeet Worker] Tab audio capture not active:', captureErr?.message);
+          return { success: false, error: captureErr?.message || 'Dual capture unavailable' };
         }
-
-        sessionController.transition('CAPTURING', { streamId });
-        return { success: true, streamId };
       }
 
       case 'PAUSE_CAPTURE_COMMAND': {

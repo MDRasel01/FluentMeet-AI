@@ -104,15 +104,8 @@ export class SpeechRecognitionService {
             video: false,
           });
         } catch (permErr: any) {
-          this.updateState('ERROR');
-          const isDenied = permErr.name === 'NotAllowedError' || permErr.name === 'PermissionDeniedError';
-          callbacks.onError(
-            isDenied
-              ? 'Microphone permission was denied. Please allow microphone access in Chrome settings.'
-              : 'No working microphone was detected on this device.',
-            isDenied ? 'PERMISSION_DENIED' : 'NO_DEVICE'
-          );
-          return;
+          console.warn('[FluentMeet Speech] Direct getUserMedia note:', permErr);
+          // Do not fatal-abort here; Web Speech API will prompt or handle audio stream directly
         }
       }
 

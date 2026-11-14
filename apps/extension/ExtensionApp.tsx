@@ -856,16 +856,33 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
         {/* SCREEN 11: AUDIO CAPTURE ERROR */}
         {currentScreen === 'error-audio' && (
           <div className="space-y-4 text-center my-auto">
-            <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mx-auto">
+            <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto">
               <Volume2 className="w-6 h-6" />
             </div>
             <h3 className="text-sm font-bold text-amber-900 dark:text-amber-200">Tab Audio Stream Not Selected</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Please ensure "Also share tab audio" is checked when selecting the meeting window.
+              Google Meet tab audio stream wasn't selected or backend capture is offline. You can still practice and get live speech coaching with your microphone!
             </p>
-            <Button size="sm" fullWidth onClick={() => setScreen('detected')}>
-              Re-select Tab Audio
-            </Button>
+            <div className="space-y-2">
+              <Button
+                size="sm"
+                fullWidth
+                onClick={() => {
+                  store.startCapture();
+                  setScreen('live');
+                }}
+              >
+                Continue in Voice Coach Mode (Mic Only)
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                fullWidth
+                onClick={() => setScreen('detected')}
+              >
+                Re-select Tab Audio
+              </Button>
+            </div>
           </div>
         )}
 

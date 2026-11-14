@@ -179,26 +179,30 @@ export const useExtensionStore = create<ExtensionStoreState>((set, get) => ({
       set({ meetingTitle });
     }
 
-    // Also start live speech recognition for immediate spoken transcript
+    // Immediately start live speech recognition for immediate spoken transcript
     get().startVoiceRecognition().catch((e) => console.warn('Speech recognition warning:', e));
 
-    if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
-      const resp = await chrome.runtime.sendMessage({
-        type: 'START_CAPTURE_COMMAND',
-        meetingId,
-        title: meetingTitle,
-        platform,
-        url: meetingUrl,
-      });
+    // Immediately navigate to live session so user is never blocked by offline backend/tabCapture
+    set({ screen: 'live', sessionState: 'CAPTURING', sessionSeconds: 0 });
 
-      if (resp?.success) {
-        set({ screen: 'live', sessionState: 'CAPTURING', sessionSeconds: 0 });
-      } else {
-        set({ screen: 'error-audio', sessionState: 'FAILED' });
+    if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+      try {
+        const resp = await chrome.runtime.sendMessage({
+          type: 'START_CAPTURE_COMMAND',
+          meetingId,
+          title: meetingTitle,
+          platform,
+          url: meetingUrl,
+        });
+
+        if (resp?.success) {
+          console.log('[FluentMeet] Full dual audio capture initialized.');
+        } else {
+          console.warn('[FluentMeet] Offscreen backend capture inactive. Running in client voice coaching mode:', resp?.error);
+        }
+      } catch (err) {
+        console.warn('[FluentMeet] Capture command bypassed, live voice mode active:', err);
       }
-    } else {
-      // Mock / Preview Mode
-      set({ screen: 'live', sessionState: 'CAPTURING', sessionSeconds: 0 });
     }
   },
 
