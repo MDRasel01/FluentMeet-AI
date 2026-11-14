@@ -21,7 +21,7 @@ import {
   ExternalLink,
   ChevronRight,
 } from 'lucide-react';
-import { Button, Input, Card, Badge } from '../../design-system/components';
+import { Button, Input, Card, Badge, PlatformIcon, PlatformBadge, PlatformSelect } from '../../design-system/components';
 import { useExtensionStore } from './src/sidepanel/store/extension-store';
 import { VoiceRecognitionState } from './src/services/speech-recognition.service';
 
@@ -286,23 +286,52 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
                 Ready for Meeting
               </h3>
               <p className="text-xs text-slate-500 mt-1 leading-relaxed max-w-xs mx-auto">
-                Join a meeting on Google Meet, Zoom Web, or Microsoft Teams to start live coaching.
+                Join a meeting or select a platform below to start live AI coaching.
               </p>
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-left space-y-1.5 text-xs">
+            {/* Interactive Platform Selector with 3D Icons */}
+            <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-left space-y-2">
               <span className="font-bold text-slate-700 dark:text-slate-300 block text-[11px] uppercase tracking-wider">
-                Supported Platforms:
+                Select Platform to Connect:
               </span>
-              <p className="text-slate-500 font-mono text-[11px] flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> meet.google.com
-              </p>
-              <p className="text-slate-500 font-mono text-[11px] flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-500" /> app.zoom.us / zoom.us
-              </p>
-              <p className="text-slate-500 font-mono text-[11px] flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" /> teams.microsoft.com
-              </p>
+              <div className="grid grid-cols-1 gap-2">
+                {[
+                  { id: 'google-meet', name: 'Google Meet', url: 'https://meet.google.com/xyz-abc' },
+                  { id: 'zoom', name: 'Zoom Web Client', url: 'https://app.zoom.us/wc/12345' },
+                  { id: 'teams', name: 'Microsoft Teams', url: 'https://teams.microsoft.com/meet' },
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      useExtensionStore.setState({
+                        platform: item.id as any,
+                        meetingTitle: `${item.name} Sync Call`,
+                        meetingUrl: item.url,
+                        meetingId: 'meet-' + Math.random().toString(36).substring(2, 8),
+                      });
+                      setScreen('detected');
+                    }}
+                    className="w-full flex items-center justify-between p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-md transition-all group text-left cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <PlatformIcon platform={item.id} size={26} />
+                      <div>
+                        <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 block leading-tight">
+                          {item.name}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-mono">
+                          {item.id === 'google-meet' ? 'meet.google.com' : item.id === 'zoom' ? 'app.zoom.us' : 'teams.microsoft.com'}
+                        </span>
+                      </div>
+                    </div>
+                    <span className="text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                      Select →
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Direct Voice Test & Manual Start */}
@@ -327,25 +356,25 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
         {/* SCREEN 03: MEETING DETECTED */}
         {currentScreen === 'detected' && (
           <div className="space-y-4">
-            <div className="p-3.5 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 space-y-1">
+            <div className="p-3.5 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 space-y-2">
               <div className="flex items-center justify-between">
-                <Badge variant="primary" size="sm">
-                  {store.platform === 'google-meet'
-                    ? 'Google Meet'
-                    : store.platform === 'zoom'
-                    ? 'Zoom Web'
-                    : store.platform === 'teams'
-                    ? 'MS Teams'
-                    : 'Online Meeting'}{' '}
-                  Detected
-                </Badge>
+                <PlatformBadge platform={store.platform} size="sm" />
                 <span className="text-[11px] font-mono text-indigo-700 dark:text-indigo-400 truncate max-w-[140px]">
                   {store.meetingUrl || 'Active Tab'}
                 </span>
               </div>
-              <h4 className="text-sm font-bold text-slate-900 dark:text-white pt-1">
-                {store.meetingTitle || 'Active Meeting Session'}
-              </h4>
+              <div className="flex items-center gap-3 pt-1">
+                <PlatformIcon platform={store.platform} size={32} />
+                <div className="overflow-hidden">
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                    {store.meetingTitle || 'Active Meeting Session'}
+                  </h4>
+                  <span className="text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Audio Stream Ready
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-2">

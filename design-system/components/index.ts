@@ -12,4 +12,7 @@ export * from './ErrorState';
 export * from './SkeletonLoader';
 export * from './Modal';
 export * from './ConfirmationDialog';
+export * from './PlatformIcon';
+export * from './PlatformBadge';
+export * from './PlatformSelect';
 

@@ -25,7 +25,10 @@ import {
   ScoreIndicator,
   AudioPlayer,
   TranscriptSegment,
-  GrammarErrorCard
+  GrammarErrorCard,
+  PlatformIcon,
+  PlatformBadge,
+  PlatformSelect,
 } from '../design-system/components';
 
 type ActiveApp = 'dashboard' | 'extension' | 'admin' | 'design-system';
@@ -35,6 +38,7 @@ export const App: React.FC = () => {
   const [dashboardPage, setDashboardPage] = useState<string>('overview');
   const [viewportWidth, setViewportWidth] = useState<string>('100%');
   const [isDark, setIsDark] = useState<boolean>(false);
+  const [showcasePlatform, setShowcasePlatform] = useState<string>('google-meet');
 
   useEffect(() => {
     if (isDark) {
@@ -279,6 +283,92 @@ export const App: React.FC = () => {
               <Card className="space-y-4">
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Audio Player & Waveform Sync</h3>
                 <AudioPlayer currentTime={252} duration={2520} />
+              </Card>
+
+              {/* 3D Platform Icons & Platform Select Component */}
+              <Card className="space-y-6">
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+                    3D Platform Icons & Platform Selectors
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    High-definition 3D vector platform icons with volumetric depth, authentic brand gradients, and interactive selection states
+                  </p>
+                </div>
+
+                {/* 3D Icons Showcase */}
+                <div className="space-y-3">
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block uppercase tracking-wider">
+                    High-Definition 3D Brand Icons (All Sizes):
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    {[
+                      { id: 'google-meet', name: 'Google Meet', desc: 'Emerald & Google quaternary 3D camera' },
+                      { id: 'zoom', name: 'Zoom Web', desc: 'Oceanic blue glossy squircle with bevel' },
+                      { id: 'teams', name: 'Microsoft Teams', desc: 'Layered violet tiles & embossed 3D T' },
+                      { id: 'all', name: 'All Platforms', desc: 'Universal holographic multi-ring sphere' },
+                    ].map((p) => (
+                      <div
+                        key={p.id}
+                        className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 space-y-3 text-center"
+                      >
+                        <div className="flex items-center justify-center py-2">
+                          <PlatformIcon platform={p.id} size="xl" />
+                        </div>
+                        <div>
+                          <span className="text-xs font-bold text-slate-900 dark:text-white block">{p.name}</span>
+                          <span className="text-[10px] text-slate-400 block">{p.desc}</span>
+                        </div>
+                        <div className="flex items-center justify-center gap-2 pt-1 border-t border-slate-200 dark:border-slate-800">
+                          <PlatformIcon platform={p.id} size="xs" />
+                          <PlatformIcon platform={p.id} size="sm" />
+                          <PlatformIcon platform={p.id} size="md" />
+                          <PlatformIcon platform={p.id} size="lg" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Interactive PlatformSelect Components */}
+                <div className="space-y-4 pt-2 border-t border-slate-200 dark:border-slate-800">
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block uppercase tracking-wider">
+                    Interactive Select Variants:
+                  </span>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <span className="text-xs font-semibold text-slate-500 block">Pill / Segmented Tabs Variant:</span>
+                      <PlatformSelect
+                        value={showcasePlatform}
+                        onChange={setShowcasePlatform}
+                        variant="pills"
+                        size="md"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <span className="text-xs font-semibold text-slate-500 block">Floating Dropdown Select Variant:</span>
+                      <PlatformSelect
+                        value={showcasePlatform}
+                        onChange={setShowcasePlatform}
+                        variant="dropdown"
+                        size="md"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Platform Badges */}
+                <div className="space-y-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block uppercase tracking-wider">
+                    Platform Badges with 3D Icons:
+                  </span>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <PlatformBadge platform="google-meet" size="md" />
+                    <PlatformBadge platform="zoom" size="md" />
+                    <PlatformBadge platform="teams" size="md" />
+                    <PlatformBadge platform="all" size="md" />
+                  </div>
+                </div>
               </Card>
             </div>
           )}

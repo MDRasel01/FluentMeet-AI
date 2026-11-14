@@ -2,12 +2,13 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { copyFileSync } from 'fs';
+import { buildSync } from 'esbuild';
 
 export default defineConfig({
   plugins: [
     react(),
     {
-      name: 'copy-manifest',
+      name: 'extension-post-build',
       closeBundle() {
         try {
           copyFileSync(
@@ -17,6 +18,22 @@ export default defineConfig({
           console.log('Copied manifest.json to dist/');
         } catch (e) {
           console.error('Failed to copy manifest.json:', e);
+        }
+
+        try {
+          // Bundle content-script as standalone IIFE to eliminate ES import statements
+          // which are disallowed in Chrome Extension content_scripts
+          buildSync({
+            entryPoints: [resolve(__dirname, 'src/content/content-script.ts')],
+            bundle: true,
+            outfile: resolve(__dirname, 'dist', 'src', 'content', 'content-script.js'),
+            format: 'iife',
+            target: 'es2020',
+            minify: true,
+          });
+          console.log('Successfully bundled standalone content-script.js (IIFE)');
+        } catch (e) {
+          console.error('Failed to bundle content script:', e);
         }
       }
     }

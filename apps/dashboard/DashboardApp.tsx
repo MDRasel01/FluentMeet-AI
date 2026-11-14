@@ -62,7 +62,10 @@ import {
   EmptyState,
   ErrorState,
   Modal,
-  ConfirmationDialog
+  ConfirmationDialog,
+  PlatformIcon,
+  PlatformBadge,
+  PlatformSelect,
 } from '../../design-system/components';
 import {
   useTabDataMode,
@@ -745,9 +748,7 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
                             {m.title}
                           </td>
                           <td className="py-3 px-3">
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                              {m.platform}
-                            </span>
+                            <PlatformBadge platform={m.platform} size="sm" />
                           </td>
                           <td className="py-3 px-3 text-slate-500">{m.date}</td>
                           <td className="py-3 px-3 text-slate-500">{m.duration}</td>
@@ -806,24 +807,24 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
                 />
               )}
 
-              {/* Filters Bar */}
-              <div className="flex flex-wrap items-center gap-3 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
-                <div className="flex items-center gap-2">
-                  <Filter className="w-4 h-4 text-slate-400" />
-                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Platform:</span>
-                  {(['all', 'google-meet', 'zoom', 'teams'] as const).map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => setPlatformFilter(p)}
-                      className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
-                        platformFilter === p
-                          ? 'bg-indigo-600 text-white'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
-                      }`}
-                    >
-                      {p.replace('-', ' ')}
-                    </button>
-                  ))}
+              {/* Filters Bar with 3D Platform Selector */}
+              <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
+                    <Filter className="w-4 h-4 text-indigo-500" />
+                    <span>Filter Platform:</span>
+                  </div>
+                  <PlatformSelect
+                    value={platformFilter}
+                    onChange={(val) => setPlatformFilter(val as any)}
+                    variant="pills"
+                    size="sm"
+                  />
+                </div>
+                <div className="hidden sm:block">
+                  <span className="text-[11px] text-slate-400">
+                    Showing {(isDemo('meetings') ? filteredMeetings : realMeetings).length} meetings
+                  </span>
                 </div>
               </div>
 
@@ -860,7 +861,7 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
                               {m.title}
                             </td>
                             <td className="py-3.5 px-4">
-                              <Badge variant="neutral" size="sm">{m.platform}</Badge>
+                              <PlatformBadge platform={m.platform} size="sm" />
                             </td>
                             <td className="py-3.5 px-4 text-slate-500">{m.date}</td>
                             <td className="py-3.5 px-4 text-slate-500">{m.duration}</td>
@@ -918,9 +919,9 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
             <div className="space-y-6">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <Badge variant="primary" size="sm">{selectedMeeting.platform}</Badge>
-                    <span className="text-xs text-slate-400">{selectedMeeting.date} • {selectedMeeting.duration}</span>
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    <PlatformBadge platform={selectedMeeting.platform} size="md" />
+                    <span className="text-xs text-slate-400">• {selectedMeeting.date} • {selectedMeeting.duration}</span>
                   </div>
                   <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
                     {selectedMeeting.title}
@@ -2097,35 +2098,50 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
 
                 <Card className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-sm text-slate-900 dark:text-white">Google Meet Web</span>
+                    <div className="flex items-center gap-3">
+                      <PlatformIcon platform="google-meet" size="lg" />
+                      <div>
+                        <span className="font-bold text-sm text-slate-900 dark:text-white block">Google Meet Web</span>
+                        <span className="text-[11px] text-slate-400 font-mono">https://meet.google.com/*</span>
+                      </div>
+                    </div>
                     <Badge variant="success" size="sm">Full Support</Badge>
                   </div>
                   <p className="text-xs text-slate-500 leading-relaxed">
-                    Automatic DOM discovery, participant roster scraping, and in-call recording arming.
+                    Automatic DOM discovery, participant roster scraping, and in-call recording arming with live captions.
                   </p>
-                  <span className="text-xs text-slate-400">Target: https://meet.google.com/*</span>
                 </Card>
 
                 <Card className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-sm text-slate-900 dark:text-white">Zoom Web Client</span>
+                    <div className="flex items-center gap-3">
+                      <PlatformIcon platform="zoom" size="lg" />
+                      <div>
+                        <span className="font-bold text-sm text-slate-900 dark:text-white block">Zoom Web Client</span>
+                        <span className="text-[11px] text-slate-400 font-mono">https://app.zoom.us/wc/*</span>
+                      </div>
+                    </div>
                     <Badge variant="primary" size="sm">Compatibility Ready</Badge>
                   </div>
                   <p className="text-xs text-slate-500 leading-relaxed">
-                    Browser-based client capture via chrome.tabCapture stream.
+                    Browser-based client capture via chrome.tabCapture stream and AI real-time whisper transcription.
                   </p>
-                  <span className="text-xs text-slate-400">Target: https://app.zoom.us/wc/*</span>
                 </Card>
 
                 <Card className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-sm text-slate-900 dark:text-white">Microsoft Teams Web</span>
+                    <div className="flex items-center gap-3">
+                      <PlatformIcon platform="teams" size="lg" />
+                      <div>
+                        <span className="font-bold text-sm text-slate-900 dark:text-white block">Microsoft Teams Web</span>
+                        <span className="text-[11px] text-slate-400 font-mono">https://teams.microsoft.com/*</span>
+                      </div>
+                    </div>
                     <Badge variant="primary" size="sm">Compatibility Ready</Badge>
                   </div>
                   <p className="text-xs text-slate-500 leading-relaxed">
-                    Browser-based client capture for Teams meetings in Chrome.
+                    Browser-based client capture for Teams meetings in Chrome with speaker diarization.
                   </p>
-                  <span className="text-xs text-slate-400">Target: https://teams.microsoft.com/*</span>
                 </Card>
               </div>
             </div>
