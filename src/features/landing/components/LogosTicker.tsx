@@ -1,6 +1,6 @@
 import React from 'react';
-import { PlatformIcon } from '../../../design-system/components';
-import { ShieldCheck, Chrome, CheckCircle2 } from 'lucide-react';
+import { PlatformIcon } from '../../../../design-system/components';
+import { ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 export const LogosTicker: React.FC = () => {
   return (
@@ -32,7 +32,9 @@ export const LogosTicker: React.FC = () => {
           {/* Chrome Web Store */}
           <div className="flex items-center gap-2.5 grayscale hover:grayscale-0 transition-all cursor-pointer">
             <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-400 via-rose-500 to-emerald-500 flex items-center justify-center shadow-sm">
-              <Chrome className="w-3.5 h-3.5 text-white" />
+              <svg className="w-3.5 h-3.5 fill-white" viewBox="0 0 24 24">
+                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 4.8a7.2 7.2 0 1 1 0 14.4 7.2 7.2 0 0 1 0-14.4zm0 2.4a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6z" />
+              </svg>
             </div>
             <span className="font-bold text-sm text-slate-800 dark:text-slate-200">Chrome Store</span>
           </div>

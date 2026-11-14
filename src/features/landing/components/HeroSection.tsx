@@ -15,7 +15,7 @@ import {
   Star,
   Users
 } from 'lucide-react';
-import { PlatformIcon } from '../../../design-system/components';
+import { PlatformIcon } from '../../../../design-system/components';
 
 interface HeroSectionProps {
   onStartFree: () => void;

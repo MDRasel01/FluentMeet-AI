@@ -1,6 +1,6 @@
 import React from 'react';
 import { Sparkles, Shield, Heart, ArrowUpRight } from 'lucide-react';
-import { PlatformIcon } from '../../../design-system/components';
+import { PlatformIcon } from '../../../../design-system/components';
 
 interface FooterProps {
   onOpenAuth: (mode: 'signin' | 'signup') => void;
