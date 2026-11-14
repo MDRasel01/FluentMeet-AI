@@ -46,9 +46,11 @@ const DEFAULT_LATEST_RELEASE: ReleaseItem = {
   channel: 'stable',
   status: 'published',
   manifest_version: 3,
-  build_number: 'build-20261107-001',
-  git_commit_sha: '7f9a2b1',
+  build_number: 'build-20261114-002',
+  git_commit_sha: '8da19a6',
   release_notes: [
+    'Integrated 3D platform selector and authentic 3D icons for Google Meet, Zoom, and Teams.',
+    'Fixed content script standalone IIFE bundle to eliminate ES import module error on Google Meet.',
     'Real-time dual-track speech coaching for Google Meet, Zoom, and MS Teams.',
     'Manifest V3 Side Panel API integration for non-intrusive meeting presence.',
     'Multi-channel Web Audio capture with 16kHz PCM downsampler and real-time streaming.',
@@ -57,12 +59,12 @@ const DEFAULT_LATEST_RELEASE: ReleaseItem = {
   ],
   minimum_chrome_version: '116.0',
   artifact_filename: 'fluentmeet-ai-v1.0.0.zip',
-  artifact_size_bytes: 98300,
-  sha256_checksum: '53e8620c9422f7e7f7a2715eaccc7a37bca41b87ca2f5a4f774a5dc7480cf003',
-  download_count: 24,
+  artifact_size_bytes: 106886,
+  sha256_checksum: '351a537e837ec1389a0d5607ba057ceed0b088be4b02101260b734709560944a',
+  download_count: 32,
   download_url: '/downloads/fluentmeet-ai-v1.0.0.zip',
-  published_at: '2026-11-07T10:00:00Z',
-  created_at: '2026-11-07T09:30:00Z'
+  published_at: '2026-11-14T15:15:00Z',
+  created_at: '2026-11-14T15:10:00Z'
 };
 
 const DEFAULT_HISTORY_RELEASES: ReleaseItem[] = [
