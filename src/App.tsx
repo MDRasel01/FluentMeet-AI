@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DashboardApp } from '../apps/dashboard/DashboardApp';
 import { ExtensionApp } from '../apps/extension/ExtensionApp';
 import { AdminApp } from '../apps/admin/AdminApp';
+import { LandingPage } from './features/landing/LandingPage';
 import {
   LayoutDashboard,
   Puzzle,
@@ -15,7 +16,8 @@ import {
   Sun,
   Sparkles,
   Download,
-  ExternalLink
+  ExternalLink,
+  Globe
 } from 'lucide-react';
 import {
   Button,
@@ -31,10 +33,10 @@ import {
   PlatformSelect,
 } from '../design-system/components';
 
-type ActiveApp = 'dashboard' | 'extension' | 'admin' | 'design-system';
+type ActiveApp = 'landing' | 'dashboard' | 'extension' | 'admin' | 'design-system';
 
 export const App: React.FC = () => {
-  const [activeApp, setActiveApp] = useState<ActiveApp>('dashboard');
+  const [activeApp, setActiveApp] = useState<ActiveApp>('landing');
   const [dashboardPage, setDashboardPage] = useState<string>('overview');
   const [viewportWidth, setViewportWidth] = useState<string>('100%');
   const [isDark, setIsDark] = useState<boolean>(false);
@@ -62,6 +64,16 @@ export const App: React.FC = () => {
 
           {/* App Switcher Tabs */}
           <div className="flex items-center bg-slate-800 rounded-lg p-0.5 border border-slate-700">
+            <button
+              onClick={() => setActiveApp('landing')}
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-colors ${
+                activeApp === 'landing' ? 'bg-indigo-600 text-white font-semibold shadow-sm' : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              <Globe className="w-3.5 h-3.5 text-amber-300" />
+              <span>Landing Page</span>
+            </button>
+
             <button
               onClick={() => setActiveApp('dashboard')}
               className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-colors ${
@@ -165,6 +177,22 @@ export const App: React.FC = () => {
           className="transition-all duration-300 bg-white dark:bg-slate-900 shadow-2xl rounded-none sm:rounded-xl overflow-hidden min-h-[calc(100vh-60px)]"
           style={{ width: viewportWidth, maxWidth: '100%' }}
         >
+          {activeApp === 'landing' && (
+            <LandingPage
+              isDark={isDark}
+              onToggleTheme={() => setIsDark(!isDark)}
+              onNavigateApp={(app) => {
+                if (app === 'dashboard') {
+                  setDashboardPage('overview');
+                  setActiveApp('dashboard');
+                } else if (app === 'extension') {
+                  setDashboardPage('chrome-extension');
+                  setActiveApp('dashboard');
+                }
+              }}
+            />
+          )}
+
           {activeApp === 'dashboard' && (
             <DashboardApp
               key={dashboardPage}
