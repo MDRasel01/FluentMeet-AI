@@ -269,10 +269,20 @@ export const App: React.FC = () => {
 
           {activeApp === 'dashboard' && (
             <DashboardApp
-              key={dashboardPage + String(isDemoMode)}
+              key={dashboardPage + String(isDemoMode) + (auth.user?.id || 'guest')}
               initialPage={dashboardPage as any}
               isDark={isDark}
               onToggleTheme={() => setIsDark(!isDark)}
+              user={auth.user}
+              onSignOut={() => {
+                auth.signOut();
+                setCurrentRoute('public');
+                setActiveApp('landing');
+              }}
+              onNavigateHome={() => {
+                setCurrentRoute('public');
+                setActiveApp('landing');
+              }}
             />
           )}
 
@@ -362,10 +372,20 @@ export const App: React.FC = () => {
 
         {activeApp === 'dashboard' && (
           <DashboardApp
-            key={dashboardPage}
+            key={dashboardPage + (auth.user?.id || 'guest')}
             initialPage={dashboardPage as any}
             isDark={isDark}
             onToggleTheme={() => setIsDark(!isDark)}
+            user={auth.user}
+            onSignOut={() => {
+              auth.signOut();
+              setCurrentRoute('public');
+              setActiveApp('landing');
+            }}
+            onNavigateHome={() => {
+              setCurrentRoute('public');
+              setActiveApp('landing');
+            }}
           />
         )}
       </div>

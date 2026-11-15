@@ -41,7 +41,8 @@ import {
   Mic,
   Languages,
   Puzzle,
-  MoreVertical
+  MoreVertical,
+  Globe
 } from 'lucide-react';
 import { ChromeExtensionPage } from './ChromeExtensionPage';
 import TeamSettings from './src/features/team/TeamSettings';
@@ -111,11 +112,14 @@ export type DashboardPage =
   | 'security-settings'
   | 'notification-settings';
 
-interface DashboardAppProps {
+export interface DashboardAppProps {
   initialPage?: DashboardPage;
   onPageChange?: (page: DashboardPage) => void;
   isDark: boolean;
   onToggleTheme: () => void;
+  user?: import('../../src/features/landing/types').AuthUser | null;
+  onSignOut?: () => void;
+  onNavigateHome?: () => void;
 }
 
 export const DashboardApp: React.FC<DashboardAppProps> = ({
@@ -123,8 +127,23 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
   onPageChange,
   isDark,
   onToggleTheme,
+  user,
+  onSignOut,
+  onNavigateHome,
 }) => {
   const { getMode, setMode, isDemo } = useTabDataMode('priya_sharma');
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const displayName = user?.name || 'Priya Sharma';
+  const displayRole = user?.jobTitle || (user?.role === 'owner' ? 'Founder & Platform Owner' : user?.role === 'admin' ? 'Team Admin' : 'Senior Engineer');
+  const displayEmail = user?.email || 'priya.sharma@acme.com';
+  const userInitials = displayName
+    .split(' ')
+    .filter(Boolean)
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase() || 'FM';
+
   const [realMeetings, setRealMeetings] = useState<DemoMeeting[]>([]);
   const [realSavedMistakes, setRealSavedMistakes] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState<DashboardPage>(initialPage);
@@ -233,19 +252,70 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
 
           <div className="h-6 w-px bg-slate-200 dark:border-slate-800" />
 
-          {/* User Profile */}
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 text-white font-bold text-xs flex items-center justify-center shadow-xs shrink-0">
-              PS
-            </div>
-            <div className="hidden sm:block text-left">
-              <span className="text-xs font-semibold block leading-tight text-slate-800 dark:text-slate-200">
-                Priya Sharma
-              </span>
-              <span className="text-[10px] text-slate-400 block leading-tight">
-                Senior Engineer
-              </span>
-            </div>
+          {/* User Profile Dropdown Button */}
+          <div className="relative">
+            <button
+              onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+              className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              title="Open User Profile & Settings"
+            >
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 text-white font-bold text-xs flex items-center justify-center shadow-xs shrink-0">
+                {userInitials}
+              </div>
+              <div className="hidden sm:block text-left">
+                <span className="text-xs font-semibold block leading-tight text-slate-800 dark:text-slate-200">
+                  {displayName}
+                </span>
+                <span className="text-[10px] text-slate-400 block leading-tight">
+                  {displayRole}
+                </span>
+              </div>
+              <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+            </button>
+
+            {/* Profile Dropdown Menu */}
+            {profileMenuOpen && (
+              <div
+                className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 py-1.5 z-50 animate-in fade-in zoom-in-95 text-xs font-medium"
+                onClick={() => setProfileMenuOpen(false)}
+              >
+                <div className="px-3.5 py-2 border-b border-slate-100 dark:border-slate-700">
+                  <div className="font-bold text-slate-900 dark:text-white truncate">{displayName}</div>
+                  <div className="text-[10px] text-slate-400 truncate">{displayEmail}</div>
+                  <div className="mt-1 inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 uppercase">
+                    Role: {user?.role || 'member'}
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => navigateTo('profile-settings')}
+                  className="w-full px-3.5 py-2 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"
+                >
+                  <Settings className="w-4 h-4 text-slate-400" />
+                  <span>Profile Settings</span>
+                </button>
+
+                {onNavigateHome && (
+                  <button
+                    onClick={onNavigateHome}
+                    className="w-full px-3.5 py-2 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"
+                  >
+                    <Globe className="w-4 h-4 text-indigo-500" />
+                    <span>Return to Homepage</span>
+                  </button>
+                )}
+
+                <div className="border-t border-slate-100 dark:border-slate-700 my-1" />
+
+                <button
+                  onClick={onSignOut}
+                  className="w-full px-3.5 py-2 text-left text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center gap-2 font-bold"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -546,7 +616,28 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
             </div>
           </div>
 
-          <div className="p-3 border-t border-slate-200 dark:border-slate-800">
+          <div className="p-3 border-t border-slate-200 dark:border-slate-800 space-y-1">
+            {/* Direct Logout / Sign Out Button */}
+            <button
+              onClick={onSignOut}
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+              title="Sign Out of FluentMeet"
+            >
+              <LogOut className="w-4 h-4 shrink-0" />
+              {!sidebarCollapsed && <span>Sign Out</span>}
+            </button>
+
+            {onNavigateHome && (
+              <button
+                onClick={onNavigateHome}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                title="Return to Homepage"
+              >
+                <Globe className="w-4 h-4 shrink-0" />
+                {!sidebarCollapsed && <span>Return to Home</span>}
+              </button>
+            )}
+
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
               className="hidden md:flex w-full items-center justify-center p-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium"
@@ -575,7 +666,7 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-                    Good morning, Priya
+                    Good morning, {displayName.split(' ')[0]}
                   </h1>
                   <p className="text-xs text-slate-500 mt-1">
                     {isDemo('overview')
