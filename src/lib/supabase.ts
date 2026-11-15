@@ -16,7 +16,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 
 export interface AppSpace {
   id: string;
-  slug: 'landing' | 'dashboard' | 'extension' | 'admin' | 'design-system';
+  slug: 'landing' | 'dashboard' | 'extension' | 'users' | 'admin' | 'design-system';
   name: string;
   sort_order: number;
 }
@@ -40,8 +40,9 @@ export const FALLBACK_APP_SPACES: AppSpace[] = [
   { id: 'sp-1', slug: 'landing', name: 'Landing Page', sort_order: 1 },
   { id: 'sp-2', slug: 'dashboard', name: 'Web Dashboard (21)', sort_order: 2 },
   { id: 'sp-3', slug: 'extension', name: 'Chrome Extension Simulator (15)', sort_order: 3 },
-  { id: 'sp-4', slug: 'admin', name: 'Super Admin Console (13)', sort_order: 4 },
-  { id: 'sp-5', slug: 'design-system', name: 'Design System Showcase', sort_order: 5 },
+  { id: 'sp-4', slug: 'users', name: 'User Management & Audit', sort_order: 4 },
+  { id: 'sp-5', slug: 'admin', name: 'Super Admin Console (13)', sort_order: 5 },
+  { id: 'sp-6', slug: 'design-system', name: 'Design System Showcase', sort_order: 6 },
 ];
 
 /**

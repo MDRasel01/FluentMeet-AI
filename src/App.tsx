@@ -8,6 +8,8 @@ import { AuthMode, AuthUser } from './features/landing/types';
 import { sanitizeInternalRedirect } from './lib/validation';
 import { NotFoundPage } from './features/founder/NotFoundPage';
 import { Download, ExternalLink } from 'lucide-react';
+import { supabase } from './lib/supabase';
+import { useSessionHeartbeat } from './features/founder/useUserManagement';
 
 // Lazy-load founder modules only after owner verification passes
 // Hard Rule (§0): Non-owner users must never receive founder markup, data or bundles
@@ -17,15 +19,19 @@ const FounderLayout = lazy(() =>
 const DesignSystemShowcase = lazy(() =>
   import('./features/founder/DesignSystemShowcase').then((m) => ({ default: m.DesignSystemShowcase }))
 );
+const FounderWorkbench = lazy(() =>
+  import('./features/founder/FounderWorkbench').then((m) => ({ default: m.FounderWorkbench }))
+);
 const ForcePasswordChangeModal = lazy(() =>
   import('./features/founder/ForcePasswordChangeModal').then((m) => ({ default: m.ForcePasswordChangeModal }))
 );
 
-type ActiveApp = 'landing' | 'dashboard' | 'extension' | 'admin' | 'design-system';
+type ActiveApp = 'landing' | 'dashboard' | 'extension' | 'users' | 'admin' | 'design-system';
 type ViewRoute = 'public' | 'founder' | 'not-found';
 
 export const App: React.FC = () => {
   const auth = useAuth();
+  useSessionHeartbeat(supabase);
   const [activeApp, setActiveApp] = useState<ActiveApp>('landing');
   const [dashboardPage, setDashboardPage] = useState<string>('overview');
   const [isDark, setIsDark] = useState<boolean>(false);
@@ -324,6 +330,10 @@ export const App: React.FC = () => {
               </div>
               <ExtensionApp isDark={isDark} />
             </div>
+          )}
+
+          {activeApp === 'users' && (
+            <FounderWorkbench />
           )}
 
           {activeApp === 'admin' && (

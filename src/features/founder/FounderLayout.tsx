@@ -12,12 +12,13 @@ import {
   CheckCircle2,
   Database,
   Layers,
-  Sparkles
+  Sparkles,
+  Users
 } from 'lucide-react';
 import { fetchAppSpaces, fetchScreenTrackerStats, AppSpace, ScreenTrackerStats } from '../../lib/supabase';
 import { ExtensionDownloadModal } from './ExtensionDownloadModal';
 
-export type FounderSpace = 'landing' | 'dashboard' | 'extension' | 'admin' | 'design-system';
+export type FounderSpace = 'landing' | 'dashboard' | 'extension' | 'users' | 'admin' | 'design-system';
 
 interface FounderLayoutProps {
   activeSpace: FounderSpace;
@@ -59,6 +60,8 @@ export const FounderLayout: React.FC<FounderLayoutProps> = ({
         return <LayoutDashboard className="w-3.5 h-3.5 text-indigo-400" />;
       case 'extension':
         return <Puzzle className="w-3.5 h-3.5 text-purple-400" />;
+      case 'users':
+        return <Users className="w-3.5 h-3.5 text-cyan-400" />;
       case 'admin':
         return <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />;
       case 'design-system':
