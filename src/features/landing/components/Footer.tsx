@@ -4,10 +4,10 @@ import { PlatformIcon } from '../../../../design-system/components';
 
 interface FooterProps {
   onOpenAuth: (mode: 'signin' | 'signup') => void;
-  onNavigateApp: (app: 'dashboard' | 'extension') => void;
+  onGatedAction: (destination: 'dashboard' | 'extension', preferredMode?: 'signin' | 'signup') => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenAuth, onNavigateApp }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenAuth, onGatedAction }) => {
   return (
     <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 text-xs">
       {/* Top CTA Banner */}
@@ -27,13 +27,13 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAuth, onNavigateApp }) => 
 
           <div className="flex flex-col sm:flex-row items-center gap-3 z-10 w-full sm:w-auto">
             <button
-              onClick={() => onOpenAuth('signup')}
+              onClick={() => onGatedAction('dashboard', 'signup')}
               className="w-full sm:w-auto px-6 py-3 rounded-xl bg-white text-indigo-950 font-bold hover:bg-slate-100 transition-all shadow-md text-xs whitespace-nowrap"
             >
               Start Free (14-Day Trial)
             </button>
             <button
-              onClick={() => onNavigateApp('extension')}
+              onClick={() => onGatedAction('extension', 'signup')}
               className="w-full sm:w-auto px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold transition-all border border-white/20 text-xs whitespace-nowrap"
             >
               Download Extension
@@ -77,7 +77,10 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAuth, onNavigateApp }) => 
               <a href="#live-demo" className="hover:text-indigo-600 transition-colors">Microsoft Teams Coach</a>
             </li>
             <li>
-              <button onClick={() => onNavigateApp('extension')} className="hover:text-indigo-600 transition-colors flex items-center gap-1">
+              <button
+                onClick={() => onGatedAction('extension', 'signup')}
+                className="hover:text-indigo-600 transition-colors flex items-center gap-1 text-left"
+              >
                 Chrome Extension <ArrowUpRight className="w-3 h-3" />
               </button>
             </li>
@@ -102,7 +105,10 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAuth, onNavigateApp }) => 
               <a href="#pricing" className="hover:text-indigo-600 transition-colors">Pricing Plans</a>
             </li>
             <li>
-              <button onClick={() => onNavigateApp('dashboard')} className="hover:text-indigo-600 transition-colors">
+              <button
+                onClick={() => onGatedAction('dashboard')}
+                className="hover:text-indigo-600 transition-colors text-left"
+              >
                 Web Dashboard
               </button>
             </li>
@@ -115,12 +121,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAuth, onNavigateApp }) => 
           </h5>
           <ul className="space-y-2">
             <li>
-              <button onClick={() => onOpenAuth('signin')} className="hover:text-indigo-600 transition-colors">
+              <button onClick={() => onOpenAuth('signin')} className="hover:text-indigo-600 transition-colors text-left">
                 Sign In
               </button>
             </li>
             <li>
-              <button onClick={() => onOpenAuth('signup')} className="hover:text-indigo-600 transition-colors">
+              <button onClick={() => onGatedAction('dashboard', 'signup')} className="hover:text-indigo-600 transition-colors text-left">
                 Create Free Account
               </button>
             </li>

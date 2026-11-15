@@ -3,7 +3,8 @@ export interface AuthUser {
   name: string;
   email: string;
   avatarUrl?: string;
-  role?: string;
+  role?: 'owner' | 'admin' | 'member' | string;
+  jobTitle?: string;
   goal?: string;
   tier?: 'starter' | 'pro' | 'enterprise';
   token?: string;
@@ -11,6 +12,8 @@ export interface AuthUser {
 }
 
 export type AuthMode = 'signin' | 'signup' | 'forgot';
+
+export type GatedDestination = 'dashboard' | 'extension' | 'chrome-store';
 
 export interface PricingPlan {
   id: string;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { LogosTicker } from './components/LogosTicker';
@@ -16,36 +16,28 @@ import { AuthMode, AuthUser } from './types';
 interface LandingPageProps {
   isDark: boolean;
   onToggleTheme: () => void;
-  onNavigateApp: (app: 'dashboard' | 'extension') => void;
+  onGatedAction: (destination: 'dashboard' | 'extension', preferredMode?: 'signin' | 'signup') => void;
+  auth: ReturnType<typeof useAuth>;
+  authModalOpen: boolean;
+  authModalMode: AuthMode;
+  noticeMessage: string | null;
+  onOpenAuth: (mode: AuthMode, notice?: string) => void;
+  onCloseAuth: () => void;
+  onAuthSuccess: (user: AuthUser) => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
   isDark,
   onToggleTheme,
-  onNavigateApp,
+  onGatedAction,
+  auth,
+  authModalOpen,
+  authModalMode,
+  noticeMessage,
+  onOpenAuth,
+  onCloseAuth,
+  onAuthSuccess,
 }) => {
-  const auth = useAuth();
-  const [authModalOpen, setAuthModalOpen] = useState<boolean>(false);
-  const [authModalMode, setAuthModalMode] = useState<AuthMode>('signin');
-
-  const handleOpenAuth = (mode: AuthMode = 'signin') => {
-    setAuthModalMode(mode);
-    setAuthModalOpen(true);
-  };
-
-  const handleAuthSuccess = (user: AuthUser) => {
-    // Optionally navigate straight to dashboard or keep user on landing page with logged-in status
-    console.log('[FluentMeet Landing] User authenticated successfully:', user.name);
-  };
-
-  const handleSelectPlan = (planId: string) => {
-    if (auth.user) {
-      onNavigateApp('dashboard');
-    } else {
-      handleOpenAuth('signup');
-    }
-  };
-
   return (
     <div className="min-h-dvh overflow-x-clip bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white transition-colors duration-200">
       {/* Top Navbar */}
@@ -53,23 +45,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         user={auth.user}
         isDark={isDark}
         onToggleTheme={onToggleTheme}
-        onOpenAuth={(mode) => handleOpenAuth(mode)}
+        onOpenAuth={(mode) => onOpenAuth(mode)}
         onSignOut={() => auth.signOut()}
-        onNavigateApp={onNavigateApp}
+        onGatedAction={onGatedAction}
       />
 
       {/* Main Landing Page Content */}
       <main className="flex-1">
         {/* 1. Hero Section (Calliom + Livo AI Fusion) */}
         <HeroSection
-          onStartFree={() => handleOpenAuth('signup')}
+          onStartFree={() => onGatedAction('dashboard', 'signup')}
           onOpenDemo={() => {
             const demoEl = document.getElementById('live-demo');
             if (demoEl) {
               demoEl.scrollIntoView({ behavior: 'smooth' });
             }
           }}
-          onDownloadExtension={() => onNavigateApp('extension')}
+          onDownloadExtension={() => onGatedAction('extension', 'signup')}
         />
 
         {/* 2. Platform Logos Ticker */}
@@ -85,7 +77,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <UseCasesSection />
 
         {/* 6. Pricing Plans (Monthly / Yearly toggle with Top Choice) */}
-        <PricingSection onSelectPlan={handleSelectPlan} />
+        <PricingSection onSelectPlan={() => onGatedAction('dashboard', 'signup')} />
 
         {/* 7. Large Quote Testimonial Showcase */}
         <TestimonialSection />
@@ -96,16 +88,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
       {/* Footer */}
       <Footer
-        onOpenAuth={(mode) => handleOpenAuth(mode)}
-        onNavigateApp={onNavigateApp}
+        onOpenAuth={(mode) => onOpenAuth(mode)}
+        onGatedAction={onGatedAction}
       />
 
       {/* Authentication Modal (Sign In / Sign Up / Forgot Password / Demo Profiles) */}
       <AuthModal
         isOpen={authModalOpen}
         initialMode={authModalMode}
-        onClose={() => setAuthModalOpen(false)}
-        onSuccess={handleAuthSuccess}
+        noticeMessage={noticeMessage}
+        onClose={onCloseAuth}
+        onSuccess={onAuthSuccess}
         auth={auth}
       />
     </div>

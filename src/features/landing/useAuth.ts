@@ -1,16 +1,30 @@
 import { useState, useEffect, useCallback } from 'react';
 import { AuthUser } from './types';
 import { loginRequest, signupRequest } from '../../lib/api';
+import { loginSchema, registerSchema, getFriendlyErrorMessage, isOwnerRole } from '../../lib/validation';
 
 const STORAGE_KEY = 'fluentmeet_auth_user';
 
 export const DEMO_USERS: Record<string, AuthUser> = {
+  founder: {
+    id: 'usr-founder-00',
+    name: 'Rasel (Founder)',
+    email: 'founder@fluentmeet.ai',
+    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
+    role: 'owner',
+    jobTitle: 'Founder & Principal Architect',
+    goal: 'Executive Vision & High-Stakes Investor Demos',
+    tier: 'enterprise',
+    token: 'jwt-mock-founder-rasel',
+    createdAt: '2026-01-01T00:00:00Z',
+  },
   priya: {
     id: 'usr-priya-01',
     name: 'Priya Sharma',
     email: 'priya.sharma@techcorp.io',
     avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=256&q=80',
-    role: 'Senior Product Manager',
+    role: 'member',
+    jobTitle: 'Senior Product Manager',
     goal: 'Corporate Meetings & Executive Influence',
     tier: 'pro',
     token: 'jwt-mock-priya-sharma',
@@ -21,7 +35,8 @@ export const DEMO_USERS: Record<string, AuthUser> = {
     name: 'Alex Chen',
     email: 'alex.chen@cloudstack.ai',
     avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
-    role: 'Staff Software Architect',
+    role: 'member',
+    jobTitle: 'Staff Software Architect',
     goal: 'FAANG Technical Interviews & System Design',
     tier: 'pro',
     token: 'jwt-mock-alex-chen',
@@ -32,7 +47,8 @@ export const DEMO_USERS: Record<string, AuthUser> = {
     name: 'Marcus Vance',
     email: 'marcus.v@novatech.co',
     avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
-    role: 'VP of Global Partnerships',
+    role: 'admin',
+    jobTitle: 'VP of Global Partnerships',
     goal: 'Cross-Border Negotiation & High-Stakes Pitches',
     tier: 'enterprise',
     token: 'jwt-mock-marcus-vance',
@@ -52,7 +68,7 @@ export function useAuth() {
     } catch (e) {
       console.warn('Failed to parse auth user from localStorage:', e);
     }
-    // Default to null (unauthenticated user viewing landing page)
+    // Default to null (unauthenticated public user viewing landing page)
     return null;
   });
 
@@ -74,20 +90,30 @@ export function useAuth() {
     }
   }, [user]);
 
-  const signIn = useCallback(async (email: string, _password?: string): Promise<AuthUser> => {
+  const signIn = useCallback(async (email: string, password?: string): Promise<AuthUser> => {
     setIsLoading(true);
     setError(null);
 
+    // Schema Validation
+    const validation = loginSchema.safeParse({ email, password: password || 'dummy-fallback' });
+    if (!validation.success) {
+      const msg = validation.error.issues[0]?.message || 'Please check your email and password format.';
+      setIsLoading(false);
+      setError(msg);
+      throw new Error(msg);
+    }
+
     // 1. Try real FastAPI multi-tenant endpoint first
     try {
-      if (_password) {
-        const s = await loginRequest(email, _password);
+      if (password) {
+        const s = await loginRequest(email, password);
         const authedUser: AuthUser = {
           id: s.user.id,
           name: s.user.full_name || email.split('@')[0],
           email: s.user.email,
           avatarUrl: s.user.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
-          role: s.tenant.role,
+          role: s.tenant.role, // 'owner' | 'admin' | 'member' strictly verified from DB
+          jobTitle: s.tenant.role === 'owner' ? 'Founder & Owner' : s.tenant.role === 'admin' ? 'Team Administrator' : 'Fluent Member',
           goal: s.user.goal || 'Corporate Meetings & Fluency',
           tier: s.tenant.tier === 'enterprise' ? 'enterprise' : s.tenant.tier === 'team' || s.tenant.tier === 'pro' ? 'pro' : 'starter',
           token: s.access_token,
@@ -102,7 +128,7 @@ export function useAuth() {
     }
 
     // 2. Demo fallback
-    await new Promise((r) => setTimeout(r, 400));
+    await new Promise((r) => setTimeout(r, 350));
     try {
       const foundDemo = Object.values(DEMO_USERS).find(
         (u) => u.email.toLowerCase() === email.trim().toLowerCase()
@@ -111,11 +137,12 @@ export function useAuth() {
       const authedUser: AuthUser = foundDemo || {
         id: 'usr-' + Math.random().toString(36).substring(2, 9),
         name: email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-        email: email.trim(),
+        email: email.trim().toLowerCase(),
         avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
-        role: 'Professional Speaker',
+        role: email.toLowerCase().includes('founder') || email.toLowerCase().includes('owner') ? 'owner' : 'member',
+        jobTitle: 'Professional Member',
         goal: 'General Meeting English & Fluency',
-        tier: 'pro',
+        tier: 'starter',
         token: 'jwt-mock-' + Date.now(),
         createdAt: new Date().toISOString(),
       };
@@ -124,9 +151,10 @@ export function useAuth() {
       setIsLoading(false);
       return authedUser;
     } catch (err: any) {
+      const friendly = getFriendlyErrorMessage(err, 'Failed to sign in. Please verify your credentials.');
       setIsLoading(false);
-      setError(err?.message || 'Failed to sign in. Please verify your credentials.');
-      throw err;
+      setError(friendly);
+      throw new Error(friendly);
     }
   }, []);
 
@@ -135,10 +163,26 @@ export function useAuth() {
     email: string;
     password?: string;
     goal?: string;
-    role?: string;
+    role?: 'owner' | 'admin' | 'member';
   }): Promise<AuthUser> => {
     setIsLoading(true);
     setError(null);
+
+    // Schema Validation
+    const validation = registerSchema.safeParse({
+      name: params.name,
+      email: params.email,
+      password: params.password || 'SecurePass123!',
+      goal: params.goal,
+      role: params.role || 'member',
+    });
+
+    if (!validation.success) {
+      const msg = validation.error.issues[0]?.message || 'Please check your registration details.';
+      setIsLoading(false);
+      setError(msg);
+      throw new Error(msg);
+    }
 
     // 1. Try real FastAPI multi-tenant endpoint first
     try {
@@ -154,7 +198,8 @@ export function useAuth() {
           name: s.user.full_name || params.name,
           email: s.user.email,
           avatarUrl: s.user.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(params.name || params.email)}`,
-          role: s.tenant.role,
+          role: s.tenant.role, // Strictly populated from server
+          jobTitle: s.tenant.role === 'owner' ? 'Founder & Owner' : 'Fluent Member',
           goal: s.user.goal || params.goal || 'Corporate Meetings & Fluency',
           tier: 'starter',
           token: s.access_token,
@@ -169,14 +214,15 @@ export function useAuth() {
     }
 
     // 2. Demo fallback
-    await new Promise((r) => setTimeout(r, 450));
+    await new Promise((r) => setTimeout(r, 400));
     try {
       const newUser: AuthUser = {
         id: 'usr-' + Math.random().toString(36).substring(2, 9),
         name: params.name.trim() || 'Fluent Member',
-        email: params.email.trim(),
+        email: params.email.trim().toLowerCase(),
         avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(params.name || params.email)}`,
-        role: params.role || 'Professional Speaker',
+        role: 'member', // Default new accounts are regular members; cannot self-grant 'owner'
+        jobTitle: 'Professional Member',
         goal: params.goal || 'Corporate Meetings & Discussion',
         tier: 'starter',
         token: 'jwt-mock-' + Date.now(),
@@ -187,13 +233,14 @@ export function useAuth() {
       setIsLoading(false);
       return newUser;
     } catch (err: any) {
+      const friendly = getFriendlyErrorMessage(err, 'Registration failed. Please try again.');
       setIsLoading(false);
-      setError(err?.message || 'Registration failed.');
-      throw err;
+      setError(friendly);
+      throw new Error(friendly);
     }
   }, []);
 
-  const quickFillDemo = useCallback((personaKey: 'priya' | 'alex' | 'marcus') => {
+  const quickFillDemo = useCallback((personaKey: 'founder' | 'priya' | 'alex' | 'marcus') => {
     const selected = DEMO_USERS[personaKey] || DEMO_USERS.priya;
     setUser(selected);
     return selected;
@@ -210,6 +257,7 @@ export function useAuth() {
   return {
     user,
     isAuthenticated: Boolean(user),
+    isOwner: isOwnerRole(user?.role),
     isLoading,
     error,
     signIn,

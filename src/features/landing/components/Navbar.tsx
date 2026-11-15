@@ -12,7 +12,8 @@ import {
   ChevronDown,
   Puzzle,
   Download,
-  ShieldCheck
+  ShieldCheck,
+  Crown
 } from 'lucide-react';
 import { AuthUser } from '../types';
 
@@ -22,7 +23,7 @@ interface NavbarProps {
   onToggleTheme: () => void;
   onOpenAuth: (mode: 'signin' | 'signup') => void;
   onSignOut: () => void;
-  onNavigateApp: (app: 'dashboard' | 'extension') => void;
+  onGatedAction: (destination: 'dashboard' | 'extension', preferredMode?: 'signin' | 'signup') => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -31,28 +32,34 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleTheme,
   onOpenAuth,
   onSignOut,
-  onNavigateApp,
+  onGatedAction,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const isOwner = user?.role === 'owner';
 
   return (
     <header className="sticky top-0 z-40 w-full">
-      {/* Top Pro Announcement Strip */}
-      <div className="bg-gradient-to-r from-indigo-700 via-purple-700 to-indigo-800 text-white text-[11px] font-medium py-1.5 px-4 text-center flex items-center justify-center gap-2 shadow-sm">
-        <span className="inline-flex items-center gap-1 bg-white/20 text-white font-bold px-1.5 py-0.5 rounded text-[9px] uppercase tracking-wider">
-          v1.0 Released
-        </span>
-        <span className="truncate">
-          Real-time AI English meeting coach for Google Meet, Zoom & MS Teams with CEFR scoring!
-        </span>
-        <button
-          onClick={() => onNavigateApp('extension')}
-          className="hidden sm:inline-flex items-center gap-1 font-bold underline hover:opacity-90 ml-1 text-amber-200"
-        >
-          Download Extension →
-        </button>
-      </div>
+      {/* 
+        Founder-Only Announcement Strip ("v1.0 Release / Workbench Preview")
+        Non-owner users have ZERO presence of this banner in the DOM.
+      */}
+      {isOwner && (
+        <div className="bg-gradient-to-r from-indigo-700 via-purple-700 to-indigo-800 text-white text-[11px] font-medium py-1.5 px-4 text-center flex items-center justify-center gap-2 shadow-sm">
+          <span className="inline-flex items-center gap-1 bg-amber-400 text-slate-950 font-black px-1.5 py-0.5 rounded text-[9px] uppercase tracking-wider">
+            <Crown className="w-2.5 h-2.5 inline" /> Founder Mode
+          </span>
+          <span className="truncate">
+            v1.0 Release preview active. Workbench and all 49 screen specs unlocked for owner.
+          </span>
+          <button
+            onClick={() => onGatedAction('extension')}
+            className="hidden sm:inline-flex items-center gap-1 font-bold underline hover:opacity-90 ml-1 text-amber-200"
+          >
+            Extension Simulator →
+          </button>
+        </div>
+      )}
 
       {/* Main Glassmorphic Navigation Bar */}
       <nav className="backdrop-blur-xl bg-white/85 dark:bg-slate-900/85 border-b border-slate-200/80 dark:border-slate-800 transition-colors">
@@ -94,9 +101,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <a href="#pricing" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               Pricing
             </a>
+            {/* Chrome Extension CTA button - strictly gated */}
             <button
-              onClick={() => onNavigateApp('extension')}
-              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-1"
+              onClick={() => onGatedAction('extension', 'signup')}
+              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-1.5"
             >
               <Puzzle className="w-3.5 h-3.5 text-indigo-500" />
               <span>Chrome Extension</span>
@@ -137,7 +145,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       {user.name.split(' ')[0]}
                     </span>
                     <span className="text-[9px] text-indigo-600 dark:text-indigo-400 font-semibold block leading-none">
-                      {user.tier === 'enterprise' ? 'Enterprise' : 'Pro Coach'}
+                      {user.role === 'owner' ? 'Owner / Founder' : user.role === 'admin' ? 'Team Admin' : 'Member'}
                     </span>
                   </div>
                   <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
@@ -152,10 +160,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <div className="px-3.5 py-2 border-b border-slate-100 dark:border-slate-700">
                       <div className="font-bold text-slate-900 dark:text-white truncate">{user.name}</div>
                       <div className="text-[10px] text-slate-400 truncate">{user.email}</div>
+                      <div className="mt-1 inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 uppercase">
+                        Role: {user.role || 'member'}
+                      </div>
                     </div>
 
                     <button
-                      onClick={() => onNavigateApp('dashboard')}
+                      onClick={() => onGatedAction('dashboard')}
                       className="w-full px-3.5 py-2 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"
                     >
                       <LayoutDashboard className="w-4 h-4 text-indigo-500" />
@@ -163,7 +174,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </button>
 
                     <button
-                      onClick={() => onNavigateApp('extension')}
+                      onClick={() => onGatedAction('extension')}
                       className="w-full px-3.5 py-2 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"
                     >
                       <Puzzle className="w-4 h-4 text-purple-500" />
@@ -183,7 +194,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 )}
               </div>
             ) : (
-              /* Non-authenticated CTAs */
+              /* Non-authenticated Gated CTAs */
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <button
                   onClick={() => onOpenAuth('signin')}
@@ -192,7 +203,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   Log In
                 </button>
                 <button
-                  onClick={() => onOpenAuth('signup')}
+                  onClick={() => onGatedAction('dashboard', 'signup')}
                   className="px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-[11px] sm:text-xs font-bold shadow-md shadow-indigo-500/20 flex items-center gap-1 sm:gap-1.5 transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
                 >
                   <span>Start Free</span>
@@ -243,10 +254,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               Pricing Plans
             </a>
+
+            {/* Gated Extension Action on Mobile */}
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                onNavigateApp('extension');
+                onGatedAction('extension', 'signup');
               }}
               className="w-full text-left px-3 py-2 rounded-lg text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 flex items-center gap-2"
             >
@@ -259,7 +272,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    onNavigateApp('dashboard');
+                    onGatedAction('dashboard');
                   }}
                   className="w-full py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs text-center flex items-center justify-center gap-2"
                 >
@@ -281,7 +294,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    onOpenAuth('signup');
+                    onGatedAction('dashboard', 'signup');
                   }}
                   className="py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs text-center"
                 >
