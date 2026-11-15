@@ -52,6 +52,24 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
 
           {/* Main Card Container */}
           <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl overflow-hidden p-3 sm:p-6 md:p-8">
+            {/* Feature Highlights Strip (Option 5) */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 px-3.5 py-2 sm:px-4 sm:py-2.5 mb-4 sm:mb-6 rounded-2xl bg-gradient-to-r from-indigo-50/90 via-purple-50/70 to-pink-50/60 dark:from-indigo-950/40 dark:via-purple-950/30 dark:to-slate-900/50 border border-indigo-100/80 dark:border-indigo-900/50 text-xs sm:text-[13px] shadow-sm">
+              <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-slate-700 dark:text-slate-200 font-medium">
+                <span className="flex items-center gap-1.5">
+                  <span className="flex h-2 w-2 rounded-full bg-indigo-600 animate-pulse" />
+                  Real-time grammar detection
+                </span>
+                <span className="text-slate-300 dark:text-slate-600 hidden xs:inline">•</span>
+                <span>Native vocabulary upgrades</span>
+                <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
+                <span>Live CEFR scoring</span>
+              </div>
+              <span className="text-emerald-700 dark:text-emerald-300 font-semibold bg-emerald-100/70 dark:bg-emerald-950/70 px-2.5 py-0.5 rounded-full text-[11px] border border-emerald-200 dark:border-emerald-800/80 inline-flex items-center gap-1 shrink-0 self-start sm:self-auto">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                Completely invisible to other callers
+              </span>
+            </div>
+
             {/* Top Interactive Mode Tabs (Calliom Style) */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 sm:pb-6 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-2xl text-[11px] sm:text-xs font-semibold overflow-x-auto scrollbar-none max-w-full">
