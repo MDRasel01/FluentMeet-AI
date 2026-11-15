@@ -4,10 +4,7 @@ import { z } from 'zod';
 
 const passwordSchema = z
   .string()
-  .min(8, 'Password must be at least 8 characters long.')
-  .regex(/[A-Z]/, 'Must contain at least one uppercase letter.')
-  .regex(/[a-z]/, 'Must contain at least one lowercase letter.')
-  .regex(/[0-9]/, 'Must contain at least one number.');
+  .min(6, 'Password must be at least 6 characters long.');
 
 interface ForcePasswordChangeModalProps {
   isOpen: boolean;
@@ -107,7 +104,7 @@ export const ForcePasswordChangeModal: React.FC<ForcePasswordChangeModalProps> =
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Min 8 chars, uppercase, lowercase, number"
+                  placeholder="Min 6 characters"
                   className="w-full pl-3 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                 />
                 <button

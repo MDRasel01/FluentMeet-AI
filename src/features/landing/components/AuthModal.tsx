@@ -100,8 +100,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       return;
     }
 
-    if (!password || password.length < 8) {
-      setLocalError('Password must be at least 8 characters long with uppercase, lowercase and numbers.');
+    if (!password || password.length < 6) {
+      setLocalError('Password must be at least 6 characters long.');
       return;
     }
 
@@ -327,7 +327,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder={mode === 'signup' ? 'Min 8 chars with uppercase & numbers' : 'Enter your password'}
+                      placeholder={mode === 'signup' ? 'Min 6 characters' : 'Enter your password'}
                       className="w-full pl-9 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                     <button
