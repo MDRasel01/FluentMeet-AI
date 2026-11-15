@@ -8,14 +8,16 @@ const STORAGE_KEY = 'fluentmeet_auth_user';
 export const DEMO_USERS: Record<string, AuthUser> = {
   founder: {
     id: 'usr-founder-00',
-    name: 'Rasel (Founder)',
-    email: 'founder@fluentmeet.ai',
+    name: 'Russell (Founder)',
+    email: 'russell7@gmail.com',
     avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
     role: 'owner',
-    jobTitle: 'Founder & Principal Architect',
-    goal: 'Executive Vision & High-Stakes Investor Demos',
+    jobTitle: 'Founder & Platform Owner',
+    goal: 'Executive Vision & Platform Architecture',
     tier: 'enterprise',
-    token: 'jwt-mock-founder-rasel',
+    token: 'jwt-mock-founder-russell',
+    mustChangePassword: false,
+    theme: 'system',
     createdAt: '2026-01-01T00:00:00Z',
   },
   priya: {
@@ -28,6 +30,7 @@ export const DEMO_USERS: Record<string, AuthUser> = {
     goal: 'Corporate Meetings & Executive Influence',
     tier: 'pro',
     token: 'jwt-mock-priya-sharma',
+    mustChangePassword: false,
     createdAt: '2026-01-10T10:00:00Z',
   },
   alex: {
@@ -40,6 +43,7 @@ export const DEMO_USERS: Record<string, AuthUser> = {
     goal: 'FAANG Technical Interviews & System Design',
     tier: 'pro',
     token: 'jwt-mock-alex-chen',
+    mustChangePassword: false,
     createdAt: '2026-02-15T14:30:00Z',
   },
   marcus: {
@@ -52,6 +56,7 @@ export const DEMO_USERS: Record<string, AuthUser> = {
     goal: 'Cross-Border Negotiation & High-Stakes Pitches',
     tier: 'enterprise',
     token: 'jwt-mock-marcus-vance',
+    mustChangePassword: false,
     createdAt: '2026-03-01T08:15:00Z',
   },
 };
@@ -113,10 +118,12 @@ export function useAuth() {
           email: s.user.email,
           avatarUrl: s.user.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
           role: s.tenant.role, // 'owner' | 'admin' | 'member' strictly verified from DB
-          jobTitle: s.tenant.role === 'owner' ? 'Founder & Owner' : s.tenant.role === 'admin' ? 'Team Administrator' : 'Fluent Member',
+          jobTitle: s.tenant.role === 'owner' ? 'Founder & Platform Owner' : s.tenant.role === 'admin' ? 'Team Administrator' : 'Fluent Member',
           goal: s.user.goal || 'Corporate Meetings & Fluency',
           tier: s.tenant.tier === 'enterprise' ? 'enterprise' : s.tenant.tier === 'team' || s.tenant.tier === 'pro' ? 'pro' : 'starter',
           token: s.access_token,
+          mustChangePassword: false,
+          theme: 'system',
           createdAt: new Date().toISOString(),
         };
         setUser(authedUser);
@@ -134,16 +141,20 @@ export function useAuth() {
         (u) => u.email.toLowerCase() === email.trim().toLowerCase()
       );
 
+      const isFounderEmail = email.trim().toLowerCase() === 'russell7@gmail.com' || email.toLowerCase().includes('founder');
+
       const authedUser: AuthUser = foundDemo || {
         id: 'usr-' + Math.random().toString(36).substring(2, 9),
         name: email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
         email: email.trim().toLowerCase(),
         avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
-        role: email.toLowerCase().includes('founder') || email.toLowerCase().includes('owner') ? 'owner' : 'member',
-        jobTitle: 'Professional Member',
+        role: isFounderEmail ? 'owner' : 'member',
+        jobTitle: isFounderEmail ? 'Platform Owner' : 'Professional Member',
         goal: 'General Meeting English & Fluency',
-        tier: 'starter',
+        tier: isFounderEmail ? 'enterprise' : 'starter',
         token: 'jwt-mock-' + Date.now(),
+        mustChangePassword: false,
+        theme: 'system',
         createdAt: new Date().toISOString(),
       };
 
@@ -199,10 +210,12 @@ export function useAuth() {
           email: s.user.email,
           avatarUrl: s.user.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(params.name || params.email)}`,
           role: s.tenant.role, // Strictly populated from server
-          jobTitle: s.tenant.role === 'owner' ? 'Founder & Owner' : 'Fluent Member',
+          jobTitle: s.tenant.role === 'owner' ? 'Founder & Platform Owner' : 'Fluent Member',
           goal: s.user.goal || params.goal || 'Corporate Meetings & Fluency',
           tier: 'starter',
           token: s.access_token,
+          mustChangePassword: false,
+          theme: 'system',
           createdAt: new Date().toISOString(),
         };
         setUser(authedUser);
@@ -226,6 +239,8 @@ export function useAuth() {
         goal: params.goal || 'Corporate Meetings & Discussion',
         tier: 'starter',
         token: 'jwt-mock-' + Date.now(),
+        mustChangePassword: false,
+        theme: 'system',
         createdAt: new Date().toISOString(),
       };
 
@@ -246,6 +261,14 @@ export function useAuth() {
     return selected;
   }, []);
 
+  const updatePassword = useCallback((_newPass: string) => {
+    setUser((prev) => (prev ? { ...prev, mustChangePassword: false } : null));
+  }, []);
+
+  const setThemePreference = useCallback((theme: 'light' | 'dark' | 'system') => {
+    setUser((prev) => (prev ? { ...prev, theme } : null));
+  }, []);
+
   const signOut = useCallback(() => {
     setUser(null);
     setError(null);
@@ -263,6 +286,8 @@ export function useAuth() {
     signIn,
     signUp,
     quickFillDemo,
+    updatePassword,
+    setThemePreference,
     signOut,
   };
 }

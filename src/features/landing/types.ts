@@ -8,6 +8,8 @@ export interface AuthUser {
   goal?: string;
   tier?: 'starter' | 'pro' | 'enterprise';
   token?: string;
+  mustChangePassword?: boolean;
+  theme?: 'light' | 'dark' | 'system';
   createdAt?: string;
 }
 
