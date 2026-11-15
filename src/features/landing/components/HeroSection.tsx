@@ -61,7 +61,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           {/* Subtitle */}
           <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl font-normal leading-relaxed">
-            FluentMeet runs silently alongside <span className="font-semibold text-slate-900 dark:text-white">Google Meet</span>, <span className="font-semibold text-slate-900 dark:text-white">Zoom</span>, and <span className="font-semibold text-slate-900 dark:text-white">Teams</span>. Get real-time discreet speech feedback, instant vocabulary upgrades, and CEFR fluency scores without interrupting your conversation.
+            Stop second-guessing your English mid-sentence. FluentMeet instantly suggests the right professional words, calculates your speaking pace, and guides you to speak clearly and decisively in high-stakes discussions.
           </p>
 
           {/* Hero Action CTAs */}
@@ -71,7 +71,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm shadow-xl shadow-indigo-500/25 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               <Sparkles className="w-4 h-4" />
-              <span>Start Free (No Card Required)</span>
+              <span>Start Speaking with Confidence</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 
@@ -82,23 +82,23 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <div className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 flex items-center justify-center">
                 <Play className="w-3 h-3 fill-current ml-0.5" />
               </div>
-              <span>Interactive Live Demo</span>
+              <span>Experience Live AI Demo</span>
             </button>
           </div>
 
           {/* Micro-guarantees */}
           <div className="flex flex-wrap items-center justify-center gap-5 pt-1 text-xs text-slate-500 dark:text-slate-400">
             <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-              14-Day Full Pro Access
+              <Shield className="w-4 h-4 text-emerald-500" />
+              Completely Silent &amp; Stealth
             </span>
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-              No Credit Card Needed
+              Eliminates &apos;Um&apos;, &apos;Uh&apos; &amp; Awkward Pauses
             </span>
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-              Chrome Extension 1-Click Setup
+              No Credit Card Required
             </span>
           </div>
         </div>
