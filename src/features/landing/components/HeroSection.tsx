@@ -33,13 +33,15 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Hero Headline */}
-        <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
-          <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.1]">
-            AI Meeting Coach for{' '}
-            <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
-              Flawless English
-            </span>{' '}
-            in Every Call.
+        <div className="flex flex-col items-center text-center max-w-5xl mx-auto">
+          <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-[64px] font-black text-slate-900 dark:text-white tracking-tight leading-[1.15]">
+            <span className="block">AI Meeting Coach for</span>
+            <span className="block mt-1 sm:mt-2 sm:whitespace-nowrap">
+              <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                Flawless English
+              </span>{' '}
+              in Every Call.
+            </span>
           </h1>
         </div>
 
