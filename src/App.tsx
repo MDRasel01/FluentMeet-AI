@@ -8,9 +8,6 @@ import {
   Puzzle,
   ShieldAlert,
   Palette,
-  Monitor,
-  Smartphone,
-  Tablet,
   CheckCircle2,
   Moon,
   Sun,
@@ -38,7 +35,6 @@ type ActiveApp = 'landing' | 'dashboard' | 'extension' | 'admin' | 'design-syste
 export const App: React.FC = () => {
   const [activeApp, setActiveApp] = useState<ActiveApp>('landing');
   const [dashboardPage, setDashboardPage] = useState<string>('overview');
-  const [viewportWidth, setViewportWidth] = useState<string>('100%');
   const [isDark, setIsDark] = useState<boolean>(false);
   const [showcasePlatform, setShowcasePlatform] = useState<string>('google-meet');
 
@@ -129,32 +125,8 @@ export const App: React.FC = () => {
           </button>
         </div>
 
-        {/* Viewport & Theme Resizer Controls */}
+        {/* Theme and Status Controls */}
         <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-1 bg-slate-800 rounded-lg p-0.5 border border-slate-700 text-[11px]">
-            <span className="px-2 text-slate-400">Viewport:</span>
-            {[
-              { label: '320px', width: '320px', icon: <Smartphone className="w-3 h-3" /> },
-              { label: '375px', width: '375px', icon: <Smartphone className="w-3 h-3" /> },
-              { label: '430px', width: '430px', icon: <Smartphone className="w-3 h-3" /> },
-              { label: '768px', width: '768px', icon: <Tablet className="w-3 h-3" /> },
-              { label: '1024px', width: '1024px', icon: <Monitor className="w-3 h-3" /> },
-              { label: '1280px', width: '1280px', icon: <Monitor className="w-3 h-3" /> },
-              { label: '1440px', width: '1440px', icon: <Monitor className="w-3 h-3" /> },
-              { label: 'Fluid', width: '100%', icon: <Monitor className="w-3 h-3" /> },
-            ].map((vp) => (
-              <button
-                key={vp.label}
-                onClick={() => setViewportWidth(vp.width)}
-                className={`px-2 py-0.5 rounded transition-colors flex items-center gap-1 ${
-                  viewportWidth === vp.width ? 'bg-slate-700 text-white font-bold' : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                {vp.label}
-              </button>
-            ))}
-          </div>
-
           <button
             onClick={() => setIsDark(!isDark)}
             className="p-1.5 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 transition-colors"
@@ -171,13 +143,9 @@ export const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Viewport Container */}
-      <div className="flex-1 overflow-auto flex items-start justify-center p-0 sm:p-2 bg-slate-200/60 dark:bg-slate-950">
-        <div
-          className="transition-all duration-300 bg-white dark:bg-slate-900 shadow-2xl rounded-none sm:rounded-xl overflow-hidden min-h-[calc(100vh-60px)]"
-          style={{ width: viewportWidth, maxWidth: '100%' }}
-        >
-          {activeApp === 'landing' && (
+      {/* Main Full-Width Application Container */}
+      <div className="flex-1 w-full bg-white dark:bg-slate-900 flex flex-col min-h-[calc(100vh-48px)]">
+        {activeApp === 'landing' && (
             <LandingPage
               isDark={isDark}
               onToggleTheme={() => setIsDark(!isDark)}
@@ -402,6 +370,5 @@ export const App: React.FC = () => {
           )}
         </div>
       </div>
-    </div>
   );
 };
