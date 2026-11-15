@@ -7,7 +7,6 @@ import {
   TrendingUp,
   Award,
   Layers,
-  ChevronRight,
   Check,
   Star,
   Users
@@ -33,17 +32,8 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Top Tag & Pill Switcher */}
-        <div className="flex flex-col items-center text-center space-y-6 max-w-4xl mx-auto">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-slate-200/80 dark:border-slate-700 shadow-sm text-xs font-semibold text-slate-700 dark:text-slate-200 animate-in fade-in duration-500">
-            <span className="flex h-2 w-2 rounded-full bg-indigo-600 animate-pulse" />
-            <span className="text-indigo-600 dark:text-indigo-400 font-bold">New Release:</span>
-            <span>AI English Analysis for Real-Time Discussions</span>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-          </div>
-
-          {/* Main Hero Headline */}
+        {/* Main Hero Headline */}
+        <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
           <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.1]">
             AI Meeting Coach for{' '}
             <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
