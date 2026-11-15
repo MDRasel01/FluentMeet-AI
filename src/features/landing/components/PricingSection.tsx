@@ -128,7 +128,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onSelectPlan }) 
                 key={p.id}
                 className={`relative rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 ${
                   isPro
-                    ? 'bg-slate-900 text-white dark:bg-indigo-950/70 border-2 border-indigo-500 shadow-2xl shadow-indigo-500/25 scale-[1.03] z-10'
+                    ? 'bg-slate-900 text-white dark:bg-indigo-950/70 border-2 border-indigo-500 shadow-2xl shadow-indigo-500/25 md:scale-[1.03] z-10'
                     : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl'
                 }`}
               >

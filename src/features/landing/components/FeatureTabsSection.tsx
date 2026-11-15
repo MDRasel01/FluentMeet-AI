@@ -86,7 +86,7 @@ export const FeatureTabsSection: React.FC = () => {
 
         {/* Tab Buttons (Ai Notely Style) */}
         <div className="flex justify-center mb-10">
-          <div className="inline-flex p-1.5 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm max-w-full overflow-x-auto">
+          <div className="inline-flex p-1 sm:p-1.5 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm max-w-full overflow-x-auto scrollbar-none">
             {(['prepare', 'live', 'followup'] as const).map((id) => {
               const item = tabContent[id];
               const isActive = activeTabId === id;
@@ -94,7 +94,7 @@ export const FeatureTabsSection: React.FC = () => {
                 <button
                   key={id}
                   onClick={() => setActiveTabId(id)}
-                  className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2 ${
+                  className={`px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-1.5 sm:gap-2 ${
                     isActive
                       ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-white shadow-md'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
