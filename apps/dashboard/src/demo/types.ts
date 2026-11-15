@@ -20,7 +20,8 @@ export type DashboardTabKey =
   | 'learning-center'
   | 'mistakes'
   | 'improvement-plan'
-  | 'team-analytics';
+  | 'team-analytics'
+  | 'user-management';
 
 export interface TabModeStateMap {
   [tabKey: string]: TabDataMode;

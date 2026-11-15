@@ -1,6 +1,7 @@
 // src/features/founder/FounderWorkbench.tsx
 // Founder-only User Management, Session Activity & Audit Logs
 // WCAG 2.1 AA compliant, responsive, accessible native drawer, live presence indicators.
+// Features full dual-mode support: REAL VERSION (live Supabase) and DEMO VERSION (sample sandbox).
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Users,
@@ -26,14 +27,24 @@ import {
   ChevronRight,
   Shield,
   Radio,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Sparkles,
+  Database,
+  ArrowRight
 } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
+import { supabase, isLiveSupabaseConfigured } from '../../lib/supabase';
 import {
   useUserManagement,
   type AuditEventType,
   type AuditRow,
+  type TabDataMode,
 } from './useUserManagement';
+
+export interface FounderWorkbenchProps {
+  mode?: TabDataMode;
+  onModeChange?: (mode: TabDataMode) => void;
+  showModeSelector?: boolean;
+}
 
 const EVENT_LABEL: Record<AuditEventType, string> = {
   LOGIN_SUCCESS: 'Login Successful',
@@ -142,11 +153,13 @@ function KpiCard({
 
 function SessionInspectorModal({
   row,
+  mode,
   onClose,
   onTimeline,
   actions,
 }: {
   row: AuditRow | null;
+  mode: TabDataMode;
   onClose: () => void;
   onTimeline: (userId: string) => void;
   actions: ReturnType<typeof useUserManagement>['actions'];
@@ -154,6 +167,7 @@ function SessionInspectorModal({
   const ref = useRef<HTMLDialogElement>(null);
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [actionNotice, setActionNotice] = useState<string | null>(null);
 
   useEffect(() => {
     const d = ref.current;
@@ -161,13 +175,22 @@ function SessionInspectorModal({
     if (row && !d.open) d.showModal();
     if (!row && d.open) d.close();
     setConfirming(false);
+    setActionNotice(null);
   }, [row]);
 
-  const run = async (fn: () => Promise<{ ok: boolean }>) => {
+  const run = async (actionName: string, fn: () => Promise<{ ok: boolean; demo?: boolean }>) => {
     setBusy(true);
-    await fn();
+    setActionNotice(null);
+    const res = await fn();
     setBusy(false);
     setConfirming(false);
+    if (res.ok) {
+      setActionNotice(
+        mode === 'DEMO'
+          ? `[Demo Mode] Successfully simulated "${actionName}" for this user.`
+          : `Live Action "${actionName}" completed.`
+      );
+    }
   };
   const uid = row?.user_id;
 
@@ -183,10 +206,21 @@ function SessionInspectorModal({
           {/* Header */}
           <div className="flex items-start justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
             <div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-                Live Session Inspector
-              </span>
-              <h2 id="inspector-title" className="text-lg font-bold text-slate-900 dark:text-white break-all">
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                  Live Session Inspector
+                </span>
+                {mode === 'DEMO' ? (
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
+                    DEMO DATA
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">
+                    REAL SESSION
+                  </span>
+                )}
+              </div>
+              <h2 id="inspector-title" className="text-lg font-bold text-slate-900 dark:text-white break-all mt-1">
                 {row.email ?? 'Unknown Account'}
               </h2>
               <p className="text-xs text-slate-500 font-mono mt-0.5">ID: {uid ?? 'Unregistered IP'}</p>
@@ -199,6 +233,13 @@ function SessionInspectorModal({
               ✕
             </button>
           </div>
+
+          {actionNotice && (
+            <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200 text-xs font-semibold flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              <span>{actionNotice}</span>
+            </div>
+          )}
 
           {/* Details list */}
           <div className="space-y-3 bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 text-xs">
@@ -218,11 +259,11 @@ function SessionInspectorModal({
               </span>
             </div>
             <div className="flex justify-between py-1 border-b border-slate-200/60 dark:border-slate-700/60">
-              <span className="text-slate-500 font-medium">Network (Masked)</span>
+              <span className="text-slate-500 font-medium">Network (Masked IP)</span>
               <span className="font-mono text-indigo-600 dark:text-indigo-400 font-semibold">{row.ip_address ?? '—'}</span>
             </div>
             <div className="pt-1">
-              <span className="text-slate-500 font-medium block mb-1">User Agent & Client Device</span>
+              <span className="text-slate-500 font-medium block mb-1">User Agent &amp; Client Device</span>
               <p className="font-mono text-[11px] text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 break-words">
                 {row.user_agent ?? '—'}
               </p>
@@ -247,7 +288,7 @@ function SessionInspectorModal({
           {uid && (
             <div className="mt-auto pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
-                Administrative Security Controls
+                Administrative Security Controls {mode === 'DEMO' && '(Demo Sandbox)'}
               </span>
 
               {!confirming ? (
@@ -262,13 +303,13 @@ function SessionInspectorModal({
               ) : (
                 <div role="alertdialog" aria-label="Confirm revoke" className="rounded-2xl border border-rose-300 bg-rose-50 dark:bg-rose-950/40 p-4 space-y-2.5">
                   <p className="text-xs text-rose-900 dark:text-rose-200 font-medium">
-                    Are you sure? This will immediately invalidate all refresh tokens and terminate this user&apos;s active sessions on all devices.
+                    Are you sure? This will invalidate active refresh tokens and terminate this user&apos;s sessions.
                   </p>
                   <div className="flex gap-2">
                     <button
                       autoFocus
                       disabled={busy}
-                      onClick={() => run(() => actions.revokeAllSessions(uid, 'Revoked by founder via inspector'))}
+                      onClick={() => run('Revoke All Sessions', () => actions.revokeAllSessions(uid, 'Revoked by founder via inspector'))}
                       className="flex-1 py-2 rounded-xl bg-rose-600 text-white font-bold text-xs hover:bg-rose-700 transition-colors"
                     >
                       {busy ? 'Terminating…' : 'Yes, Revoke Sessions'}
@@ -286,28 +327,28 @@ function SessionInspectorModal({
               <div className="grid grid-cols-2 gap-2">
                 <button
                   disabled={busy}
-                  onClick={() => run(() => actions.setStatus(uid, 'suspended'))}
+                  onClick={() => run('Suspend Account', () => actions.setStatus(uid, 'suspended'))}
                   className="py-2.5 px-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200"
                 >
                   Suspend Account
                 </button>
                 <button
                   disabled={busy}
-                  onClick={() => run(() => actions.setStatus(uid, 'active'))}
+                  onClick={() => run('Reactivate Account', () => actions.setStatus(uid, 'active'))}
                   className="py-2.5 px-3 rounded-xl border border-emerald-300 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 text-xs font-semibold text-emerald-700 dark:text-emerald-300"
                 >
                   Reactivate
                 </button>
                 <button
                   disabled={busy}
-                  onClick={() => run(() => actions.unlock(uid))}
+                  onClick={() => run('Unlock Login', () => actions.unlock(uid))}
                   className="py-2.5 px-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200"
                 >
                   Unlock Login
                 </button>
                 <button
                   disabled={busy}
-                  onClick={() => run(() => actions.setRole(uid, 'admin'))}
+                  onClick={() => run('Promote to Admin', () => actions.setRole(uid, 'admin'))}
                   className="py-2.5 px-3 rounded-xl border border-indigo-300 dark:border-indigo-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 text-xs font-semibold text-indigo-700 dark:text-indigo-300"
                 >
                   Make Admin
@@ -321,7 +362,19 @@ function SessionInspectorModal({
   );
 }
 
-export const FounderWorkbench: React.FC = () => {
+export const FounderWorkbench: React.FC<FounderWorkbenchProps> = ({
+  mode: propMode,
+  onModeChange,
+  showModeSelector = true,
+}) => {
+  const [internalMode, setInternalMode] = useState<TabDataMode>(propMode ?? 'DEMO');
+  const activeMode: TabDataMode = propMode ?? internalMode;
+
+  const handleModeChange = (newMode: TabDataMode) => {
+    setInternalMode(newMode);
+    onModeChange?.(newMode);
+  };
+
   const {
     kpis,
     rows,
@@ -335,7 +388,7 @@ export const FounderWorkbench: React.FC = () => {
     reload,
     actions,
     exportCsv,
-  } = useUserManagement(supabase);
+  } = useUserManagement(supabase, activeMode);
 
   const [selected, setSelected] = useState<AuditRow | null>(null);
 
@@ -349,32 +402,90 @@ export const FounderWorkbench: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-6 p-4 sm:p-6 lg:p-8 font-sans">
       {/* Header bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-200 dark:border-slate-800">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               User Management &amp; Audit Trail
             </h1>
-            <span className="px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 text-[11px] font-bold border border-indigo-200 dark:border-indigo-800">
-              Live Presence Engine
-            </span>
+            {activeMode === 'REAL' ? (
+              <span className="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 text-[11px] font-bold border border-emerald-200 dark:border-emerald-800 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>LIVE PRODUCTION</span>
+              </span>
+            ) : (
+              <span className="px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 text-[11px] font-bold border border-amber-300 dark:border-amber-800 flex items-center gap-1.5">
+                <Sparkles className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                <span>DEMO VERSION</span>
+              </span>
+            )}
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
             Real-time session monitoring, immutable authentication audit trail, and remote access revocation.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start sm:self-auto">
+        <div className="flex items-center gap-2.5 flex-wrap self-start sm:self-auto">
+          {/* Dual Mode Selector (REAL VERSION vs DEMO VERSION) */}
+          {showModeSelector && (
+            <div
+              className="inline-flex items-center p-0.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 select-none shadow-sm"
+              role="group"
+              aria-label="User Management Data Mode Selector"
+            >
+              {/* REAL VERSION TAB */}
+              <button
+                type="button"
+                onClick={() => handleModeChange('REAL')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-150 ${
+                  activeMode === 'REAL'
+                    ? 'bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 shadow-sm border border-emerald-200 dark:border-emerald-800/60 font-bold'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                }`}
+                aria-pressed={activeMode === 'REAL'}
+                title="View actual live production users & audit logs from Supabase"
+              >
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${
+                    activeMode === 'REAL' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'
+                  }`}
+                />
+                <span>REAL VERSION</span>
+              </button>
+
+              {/* DEMO VERSION TAB */}
+              <button
+                type="button"
+                onClick={() => handleModeChange('DEMO')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-150 ${
+                  activeMode === 'DEMO'
+                    ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 shadow-sm border border-amber-300 dark:border-amber-700 font-bold'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                }`}
+                aria-pressed={activeMode === 'DEMO'}
+                title="View interactive demonstration data (1,428 users, sample sessions)"
+              >
+                <Sparkles
+                  className={`w-3 h-3 ${
+                    activeMode === 'DEMO' ? 'text-amber-600 dark:text-amber-400' : 'text-slate-400'
+                  }`}
+                />
+                <span>DEMO VERSION</span>
+              </button>
+            </div>
+          )}
+
           <button
             onClick={() => void exportCsv()}
-            className="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm flex items-center gap-2 transition-all"
+            className="px-3.5 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm flex items-center gap-1.5 transition-all"
+            title={`Export current ${activeMode} data as CSV`}
           >
             <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
             <span>Export CSV</span>
           </button>
           <button
             onClick={reload}
-            className="px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/20 flex items-center gap-1.5 transition-all"
+            className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm shadow-indigo-600/20 flex items-center gap-1.5 transition-all"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Refresh</span>
@@ -382,13 +493,85 @@ export const FounderWorkbench: React.FC = () => {
         </div>
       </div>
 
+      {/* Mode Explanatory Notice Banner */}
+      {activeMode === 'DEMO' ? (
+        <div
+          className="p-3.5 rounded-xl border border-amber-300 dark:border-amber-700/60 bg-amber-50/90 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm"
+          role="alert"
+        >
+          <div className="flex items-start gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">
+                  Interactive Demo Mode
+                </span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-200/80 dark:bg-amber-900/80 text-amber-900 dark:text-amber-200 font-medium">
+                  Sample Data Active
+                </span>
+              </div>
+              <p className="text-xs text-amber-800/90 dark:text-amber-300/90 mt-0.5 leading-relaxed">
+                Viewing pre-populated demonstration data for <strong>User Management &amp; Audit Trail</strong> (1,428 demo users, 28 active now, simulated audit logs and remote revocation). You can test all actions safely without altering live database records.
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => handleModeChange('REAL')}
+            className="self-end sm:self-center shrink-0 px-3 py-1.5 text-xs font-semibold rounded-lg bg-white dark:bg-slate-900 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 hover:bg-amber-100/50 dark:hover:bg-slate-800 transition-colors shadow-sm flex items-center gap-1.5"
+          >
+            <span>Switch to Real Version</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      ) : (
+        <div
+          className="p-3.5 rounded-xl border border-emerald-300 dark:border-emerald-700/60 bg-emerald-50/90 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm"
+          role="status"
+        >
+          <div className="flex items-start gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
+              <Database className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
+                  Live Production Mode
+                </span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-200/80 dark:bg-emerald-900/80 text-emerald-900 dark:text-emerald-200 font-medium flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  {isLiveSupabaseConfigured ? 'Connected to PostgreSQL' : 'Supabase Credentials Needed'}
+                </span>
+              </div>
+              <p className="text-xs text-emerald-800/90 dark:text-emerald-300/90 mt-0.5 leading-relaxed">
+                {isLiveSupabaseConfigured
+                  ? 'Connecting directly to live Supabase partitioned tables and active session heartbeats with Row-Level Security.'
+                  : 'Live Supabase environment variables not detected. Real database queries are active; switch to Demo Version to preview sample metrics.'}
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => handleModeChange('DEMO')}
+            className="self-end sm:self-center shrink-0 px-3 py-1.5 text-xs font-semibold rounded-lg bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 text-emerald-900 dark:text-emerald-200 hover:bg-emerald-100/50 dark:hover:bg-slate-800 transition-colors shadow-sm flex items-center gap-1.5"
+          >
+            <span>Switch to Demo Version</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* KPI Cards Row */}
       <section aria-label="Key Performance Indicators">
         <dl className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
           <KpiCard
             label="Total Users"
             value={kpis?.total_users ?? '—'}
-            sublabel={`+${kpis?.new_signups_today ?? 0} new registrations today`}
+            sublabel={activeMode === 'DEMO' ? `+${kpis?.new_signups_today ?? 0} new registrations today` : 'Live registered accounts'}
             icon={<Users className="w-5 h-5 text-indigo-500" />}
           />
           <KpiCard
@@ -401,7 +584,7 @@ export const FounderWorkbench: React.FC = () => {
           <KpiCard
             label="Daily Active (DAU)"
             value={kpis?.dau ?? '—'}
-            sublabel={`${kpis?.returning_users ?? 0} returning members`}
+            sublabel={activeMode === 'DEMO' ? `${kpis?.returning_users ?? 0} returning members` : 'Distinct active users today'}
             icon={<UserCheck className="w-5 h-5 text-blue-500" />}
           />
           <KpiCard
@@ -508,8 +691,11 @@ export const FounderWorkbench: React.FC = () => {
       {/* Realtime Live notification alert */}
       <div aria-live="polite" className="min-h-5">
         {error && (
-          <div role="alert" className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200 text-xs font-semibold">
-            {error}
+          <div role="alert" className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200 text-xs font-semibold flex items-center justify-between gap-2">
+            <span>{error}</span>
+            <button onClick={() => handleModeChange('DEMO')} className="underline shrink-0 font-bold hover:text-amber-950">
+              Switch to Demo Mode
+            </button>
           </div>
         )}
         {liveCount > 0 && (
@@ -596,8 +782,45 @@ export const FounderWorkbench: React.FC = () => {
 
               {!loading && rows.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-slate-500">
-                    No authentication events match your filter criteria.
+                  <td colSpan={6} className="p-12 text-center">
+                    {activeMode === 'REAL' ? (
+                      <div className="max-w-md mx-auto space-y-3">
+                        <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto">
+                          <Database className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                          No Live Audit Logs Recorded Yet
+                        </h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                          You are viewing the <strong>REAL VERSION</strong>. Authentication events, session activity, and IP audit trails will populate automatically as users register, log in, or run sessions.
+                        </p>
+                        <div className="pt-2 flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => handleModeChange('DEMO')}
+                            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all"
+                          >
+                            <Sparkles className="w-3.5 h-3.5" />
+                            <span>Switch to Demo Version (Sample Data)</span>
+                          </button>
+                          <button
+                            onClick={reload}
+                            className="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                          >
+                            Refresh
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <p className="text-slate-500 font-medium">No demo authentication events match your filter criteria.</p>
+                        <button
+                          onClick={() => setFilters({ search: '', from: null, to: null, eventTypes: [], userId: null })}
+                          className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+                        >
+                          Reset Filters
+                        </button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               )}
@@ -622,6 +845,7 @@ export const FounderWorkbench: React.FC = () => {
       {/* Session Inspector Drawer Modal */}
       <SessionInspectorModal
         row={selected}
+        mode={activeMode}
         onClose={() => setSelected(null)}
         actions={actions}
         onTimeline={(userId) =>

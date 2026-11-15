@@ -2569,7 +2569,10 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
           {currentPage === 'user-management' && (
             <div className="-m-3 sm:-m-6">
               <Suspense fallback={<div className="p-12 text-center text-xs font-semibold text-slate-400">Loading User Management…</div>}>
-                <FounderWorkbench />
+                <FounderWorkbench
+                  mode={getMode('user-management')}
+                  onModeChange={(m) => setMode('user-management', m as any)}
+                />
               </Suspense>
             </div>
           )}

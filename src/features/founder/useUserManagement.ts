@@ -1,10 +1,11 @@
 // src/features/founder/useUserManagement.ts
-// Data layer for the Founder Workbench: KPIs, keyset-paginated audit log, live feed,
-// session heartbeat, and owner actions. All authorization is enforced by RLS/RPCs;
-// nothing here is a security boundary.
+// Data layer for the Founder Workbench: Dual Mode (REAL vs DEMO), KPIs,
+// keyset-paginated audit log, live feed, session heartbeat, and owner actions.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { isLiveSupabaseConfigured } from '../../lib/supabase';
+
+export type TabDataMode = 'REAL' | 'DEMO';
 
 export type AuditEventType =
   | 'LOGIN_SUCCESS'
@@ -66,7 +67,18 @@ const FALLBACK_KPIS: Kpis = {
   rollup_updated_at: new Date().toISOString(),
 };
 
-const SAMPLE_AUDIT_LOGS: AuditRow[] = [
+const REAL_EMPTY_KPIS: Kpis = {
+  total_users: 0,
+  new_signups_today: 0,
+  dau: 0,
+  returning_users: 0,
+  peak_concurrent: 0,
+  active_now: 0,
+  failed_24h: 0,
+  rollup_updated_at: null,
+};
+
+export const SAMPLE_AUDIT_LOGS: AuditRow[] = [
   {
     id: 'aud-1',
     created_at: new Date(Date.now() - 1000 * 60 * 2).toISOString(),
@@ -158,6 +170,7 @@ export function useSessionHeartbeat(supabase: SupabaseClient, gatewayUrl = '/api
         console.warn('Heartbeat check bypassed:', err);
       }
     };
+
     void beat();
     const id = window.setInterval(beat, HEARTBEAT_MS);
     const onVisible = () => { if (document.visibilityState === 'visible') void beat(); };
@@ -189,11 +202,15 @@ export function useSessionHeartbeat(supabase: SupabaseClient, gatewayUrl = '/api
 }
 
 // ---------------------------------------------------------------------------
-// Main hook
+// Main hook: Supports both REAL VERSION and DEMO VERSION
 // ---------------------------------------------------------------------------
-export function useUserManagement(supabase: SupabaseClient) {
-  const [kpis, setKpis] = useState<Kpis | null>(FALLBACK_KPIS);
-  const [rows, setRows] = useState<AuditRow[]>(SAMPLE_AUDIT_LOGS);
+export function useUserManagement(
+  supabase: SupabaseClient,
+  mode: TabDataMode = 'DEMO'
+) {
+  const [demoRows, setDemoRows] = useState<AuditRow[]>(SAMPLE_AUDIT_LOGS);
+  const [kpis, setKpis] = useState<Kpis | null>(mode === 'DEMO' ? FALLBACK_KPIS : REAL_EMPTY_KPIS);
+  const [rows, setRows] = useState<AuditRow[]>(mode === 'DEMO' ? SAMPLE_AUDIT_LOGS : []);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -211,10 +228,10 @@ export function useUserManagement(supabase: SupabaseClient) {
     setLoading(true);
     setError(null);
 
-    if (!isLiveSupabaseConfigured) {
-      // Fallback demo filtering
+    if (mode === 'DEMO') {
+      // High-fidelity client-side filtering for interactive demo mode
       setTimeout(() => {
-        let filtered = [...SAMPLE_AUDIT_LOGS];
+        let filtered = [...demoRows];
         if (f.search) {
           filtered = filtered.filter((r) => (r.email || '').toLowerCase().includes(f.search.toLowerCase()));
         }
@@ -227,7 +244,15 @@ export function useUserManagement(supabase: SupabaseClient) {
         setRows(filtered);
         setHasMore(false);
         setLoading(false);
-      }, 150);
+      }, 100);
+      return;
+    }
+
+    // REAL PRODUCTION MODE
+    if (!isLiveSupabaseConfigured) {
+      setRows([]);
+      setHasMore(false);
+      setLoading(false);
       return;
     }
 
@@ -246,8 +271,9 @@ export function useUserManagement(supabase: SupabaseClient) {
 
       if (seq !== reqSeq.current) return;
       if (err) {
-        console.warn('owner_list_audit_logs RPC returned error, falling back to demo rows:', err);
-        setRows(SAMPLE_AUDIT_LOGS);
+        console.warn('owner_list_audit_logs RPC error in REAL mode:', err);
+        setError(`Live Supabase Query Notice: ${err.message || 'Run migration 20261115_001_founder_user_management.sql'}`);
+        setRows([]);
         setLoading(false);
         return;
       }
@@ -262,51 +288,59 @@ export function useUserManagement(supabase: SupabaseClient) {
       if (reset) setLiveCount(0);
     } catch (e) {
       console.warn('RPC invocation failed:', e);
-      setRows(SAMPLE_AUDIT_LOGS);
+      setError('Failed to reach Supabase database. Verify network or database configuration.');
+      setRows([]);
     } finally {
       setLoading(false);
     }
-  }, [supabase]);
+  }, [mode, demoRows, supabase]);
 
   const refreshKpis = useCallback(async () => {
-    if (!isLiveSupabaseConfigured) {
+    if (mode === 'DEMO') {
       setKpis(FALLBACK_KPIS);
+      return;
+    }
+
+    // REAL MODE
+    if (!isLiveSupabaseConfigured) {
+      setKpis(REAL_EMPTY_KPIS);
       return;
     }
 
     try {
       const { data, error: err } = await supabase.rpc('owner_kpis');
       if (err) {
-        setKpis(FALLBACK_KPIS);
+        console.warn('owner_kpis RPC notice:', err);
+        setKpis(REAL_EMPTY_KPIS);
         return;
       }
       setKpis(data as Kpis);
     } catch {
-      setKpis(FALLBACK_KPIS);
+      setKpis(REAL_EMPTY_KPIS);
     }
-  }, [supabase]);
+  }, [mode, supabase]);
 
-  // Initial load + filter changes
+  // Initial load + filter changes + mode changes
   useEffect(() => {
+    cursor.current = null;
     const t = window.setTimeout(() => {
-      cursor.current = null;
       void fetchPage(true);
-    }, 250);
+      void refreshKpis();
+    }, 150);
     return () => window.clearTimeout(t);
-  }, [filters, fetchPage]);
+  }, [mode, filters, fetchPage, refreshKpis]);
 
   // KPI polling
   useEffect(() => {
-    void refreshKpis();
     const id = window.setInterval(() => {
       if (document.visibilityState === 'visible') void refreshKpis();
     }, KPI_REFRESH_MS);
     return () => window.clearInterval(id);
   }, [refreshKpis]);
 
-  // Live feed: Realtime INSERTs
+  // Live feed: Realtime INSERTs in REAL mode
   useEffect(() => {
-    if (!isLiveSupabaseConfigured) return;
+    if (mode !== 'REAL' || !isLiveSupabaseConfigured) return;
 
     let pending = 0;
     let flush: number | undefined;
@@ -327,7 +361,7 @@ export function useUserManagement(supabase: SupabaseClient) {
       if (flush) window.clearTimeout(flush);
       void supabase.removeChannel(channel);
     };
-  }, [supabase, refreshKpis]);
+  }, [mode, supabase, refreshKpis]);
 
   const setFilters = useCallback((patch: Partial<AuditFilters>) =>
     setFiltersState((prev) => ({ ...prev, ...patch })), []);
@@ -340,12 +374,26 @@ export function useUserManagement(supabase: SupabaseClient) {
 
   // Owner actions
   const act = useCallback(async (fn: string, args: Record<string, unknown>) => {
-    if (!isLiveSupabaseConfigured) {
-      // Demo response
-      alert(`[Demo Mode Action] ${fn} executed with args: ${JSON.stringify(args)}`);
+    if (mode === 'DEMO') {
+      // Simulate real owner actions in demo mode
+      console.log(`[Demo Action] Simulated ${fn} with args:`, args);
+      if (fn === 'owner_revoke_user_sessions') {
+        const uid = args.p_user_id as string;
+        setDemoRows((prev) =>
+          prev.map((r) =>
+            r.user_id === uid ? { ...r, event_type: 'SESSION_REVOKED' as AuditEventType } : r
+          )
+        );
+      }
       reload();
-      return { ok: true as const };
+      return { ok: true as const, demo: true };
     }
+
+    if (!isLiveSupabaseConfigured) {
+      setError('Live Supabase credentials are not configured in this environment.');
+      return { ok: false as const };
+    }
+
     const { data, error: err } = await supabase.rpc(fn, args);
     if (err) {
       setError(friendly(err));
@@ -353,7 +401,7 @@ export function useUserManagement(supabase: SupabaseClient) {
     }
     reload();
     return { ok: true as const, data };
-  }, [supabase, reload]);
+  }, [mode, reload, supabase]);
 
   const actions = useMemo(() => ({
     revokeAllSessions: (userId: string, reason?: string) =>
@@ -371,8 +419,8 @@ export function useUserManagement(supabase: SupabaseClient) {
     const out: AuditRow[] = [];
     let c: { ts: string; id: string } | null = null;
 
-    if (!isLiveSupabaseConfigured) {
-      out.push(...SAMPLE_AUDIT_LOGS);
+    if (mode === 'DEMO' || !isLiveSupabaseConfigured) {
+      out.push(...rows);
     } else {
       while (out.length < maxRows) {
         const { data, error: err } = await supabase.rpc('owner_list_audit_logs', {
@@ -405,10 +453,10 @@ export function useUserManagement(supabase: SupabaseClient) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `fluentmeet-audit-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `fluentmeet-${mode.toLowerCase()}-audit-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
-  }, [supabase]);
+  }, [mode, rows, supabase]);
 
   return {
     kpis,
