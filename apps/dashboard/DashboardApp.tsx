@@ -1,5 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { useLockBodyScroll } from '../../src/hooks/useLockBodyScroll';
+
+const FounderWorkbench = lazy(() => import('../../src/features/founder/FounderWorkbench'));
 import {
   LayoutDashboard,
   Video,
@@ -104,6 +106,7 @@ export type DashboardPage =
   | 'improvement-plan'
   | 'team-analytics'
   | 'team-settings'
+  | 'user-management'
   | 'integrations'
   | 'chrome-extension'
   | 'billing'
@@ -286,6 +289,14 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
                     Role: {user?.role || 'member'}
                   </div>
                 </div>
+
+                <button
+                  onClick={() => navigateTo('user-management')}
+                  className="w-full px-3.5 py-2 text-left text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 flex items-center gap-2 font-bold"
+                >
+                  <Users className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  <span>User Management &amp; Logs</span>
+                </button>
 
                 <button
                   onClick={() => navigateTo('profile-settings')}
@@ -553,6 +564,25 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
                 >
                   <Shield className="w-4 h-4 shrink-0 text-indigo-500" />
                   {!sidebarCollapsed && <span>Team Workspace Seats</span>}
+                </button>
+
+                <button
+                  onClick={() => navigateTo('user-management')}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${
+                    currentPage === 'user-management'
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <Users className="w-4 h-4 shrink-0 text-cyan-500" />
+                  {!sidebarCollapsed && (
+                    <div className="flex items-center justify-between w-full">
+                      <span>User Management</span>
+                      <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase bg-emerald-500 text-white shadow-xs">
+                        Live
+                      </span>
+                    </div>
+                  )}
                 </button>
               </div>
             </div>
@@ -2532,6 +2562,15 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
                   <input type="checkbox" defaultChecked />
                 </label>
               </Card>
+            </div>
+          )}
+
+          {/* PAGE 22: USER MANAGEMENT & AUDIT LOGS */}
+          {currentPage === 'user-management' && (
+            <div className="-m-3 sm:-m-6">
+              <Suspense fallback={<div className="p-12 text-center text-xs font-semibold text-slate-400">Loading User Management…</div>}>
+                <FounderWorkbench />
+              </Suspense>
             </div>
           )}
         </main>
