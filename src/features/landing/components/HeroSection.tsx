@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import {
   Sparkles,
-  ArrowRight,
-  Play,
   CheckCircle2,
   Mic,
   Volume2,
   TrendingUp,
   Award,
-  Shield,
   Layers,
   ChevronRight,
   Check,
@@ -18,16 +15,12 @@ import {
 import { PlatformIcon } from '../../../../design-system/components';
 
 interface HeroSectionProps {
-  onStartFree: () => void;
-  onOpenDemo: () => void;
-  onDownloadExtension: () => void;
+  onStartFree?: () => void;
+  onOpenDemo?: () => void;
+  onDownloadExtension?: () => void;
 }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({
-  onStartFree,
-  onOpenDemo,
-  onDownloadExtension,
-}) => {
+export const HeroSection: React.FC<HeroSectionProps> = () => {
   const [activePill, setActivePill] = useState<'coach' | 'grammar' | 'cefr'>('coach');
 
   return (
@@ -58,53 +51,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </span>{' '}
             in Every Call.
           </h1>
-
-          {/* Subtitle */}
-          <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl font-normal leading-relaxed">
-            Stop second-guessing your English mid-sentence. FluentMeet instantly suggests the right professional words, calculates your speaking pace, and guides you to speak clearly and decisively in high-stakes discussions.
-          </p>
-
-          {/* Hero Action CTAs */}
-          <div className="flex flex-col sm:flex-row items-center gap-3.5 pt-2 w-full sm:w-auto">
-            <button
-              onClick={onStartFree}
-              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm shadow-xl shadow-indigo-500/25 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>Start Speaking with Confidence</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-
-            <button
-              onClick={onOpenDemo}
-              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-semibold text-sm shadow-sm flex items-center justify-center gap-2 transition-all hover:border-slate-300 dark:hover:border-slate-600"
-            >
-              <div className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 flex items-center justify-center">
-                <Play className="w-3 h-3 fill-current ml-0.5" />
-              </div>
-              <span>Experience Live AI Demo</span>
-            </button>
-          </div>
-
-          {/* Micro-guarantees */}
-          <div className="flex flex-wrap items-center justify-center gap-5 pt-1 text-xs text-slate-500 dark:text-slate-400">
-            <span className="flex items-center gap-1.5">
-              <Shield className="w-4 h-4 text-emerald-500" />
-              Completely Silent &amp; Stealth
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-              Eliminates &apos;Um&apos;, &apos;Uh&apos; &amp; Awkward Pauses
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-              No Credit Card Required
-            </span>
-          </div>
         </div>
 
         {/* Live Interactive Hero Canvas (Livo AI + Calliom Style) */}
-        <div className="mt-12 md:mt-16 relative max-w-5xl mx-auto">
+        <div className="mt-8 md:mt-12 relative max-w-5xl mx-auto">
           {/* Decorative outer gradient halo */}
           <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-2xl -z-10" />
 
