@@ -68,24 +68,24 @@ export const FeatureTabsSection: React.FC = () => {
   const current = tabContent[activeTabId];
 
   return (
-    <section id="how-it-works" className="py-20 md:py-28">
+    <section id="how-it-works" className="py-12 sm:py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
+        <div className="text-center max-w-3xl mx-auto space-y-3 sm:space-y-4 mb-8 sm:mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold">
             <Layers className="w-3.5 h-3.5 text-indigo-500" />
             <span>End-to-End Meeting Workflow</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
             FluentMeet supports you before, during, and after every meeting.
           </h2>
-          <p className="text-base text-slate-600 dark:text-slate-400">
+          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
             Engineered specifically for non-native English speakers working in global tech, enterprise, and consulting teams.
           </p>
         </div>
 
         {/* Tab Buttons (Ai Notely Style) */}
-        <div className="flex justify-center mb-10">
+        <div className="flex justify-center mb-8 sm:mb-10">
           <div className="inline-flex p-1 sm:p-1.5 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm max-w-full overflow-x-auto scrollbar-none">
             {(['prepare', 'live', 'followup'] as const).map((id) => {
               const item = tabContent[id];
@@ -111,7 +111,7 @@ export const FeatureTabsSection: React.FC = () => {
         </div>
 
         {/* Feature Display Card */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden p-6 sm:p-10 transition-all duration-300">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden p-4 sm:p-8 md:p-10 transition-all duration-300">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Content Column */}
             <div className="lg:col-span-6 space-y-6">
@@ -211,19 +211,19 @@ export const FeatureTabsSection: React.FC = () => {
 
                 {activeTabId === 'followup' && (
                   <div className="space-y-3 text-xs">
-                    <div className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                    <div className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div>
                         <span className="text-[10px] text-slate-400 font-bold uppercase block">Meeting CEFR Score</span>
-                        <span className="text-xl font-black text-indigo-600 dark:text-indigo-400">C1 Advanced (88/100)</span>
+                        <span className="text-lg sm:text-xl font-black text-indigo-600 dark:text-indigo-400">C1 Advanced (88/100)</span>
                       </div>
-                      <div className="px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 font-bold text-xs">
+                      <div className="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 font-bold text-[11px] sm:text-xs self-start sm:self-auto shrink-0">
                         +4 pts vs Last Week
                       </div>
                     </div>
 
                     <div className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
                       <span className="text-[10px] text-slate-400 font-bold uppercase block">Interactive Flashcard Drill</span>
-                      <div className="flex items-center justify-between font-semibold text-slate-800 dark:text-slate-200">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 font-semibold text-slate-800 dark:text-slate-200 text-xs">
                         <span>Mispronounced: "Hierarchy"</span>
                         <span className="text-indigo-600 font-bold hover:underline cursor-pointer">Listen Audio 🔊</span>
                       </div>

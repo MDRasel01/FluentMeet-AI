@@ -81,41 +81,41 @@ export const UseCasesSection: React.FC = () => {
   const current = USE_CASES.find((u) => u.id === activeTab) || USE_CASES[0];
 
   return (
-    <section id="use-cases" className="py-20 md:py-28">
+    <section id="use-cases" className="py-12 sm:py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
+        <div className="text-center max-w-3xl mx-auto space-y-3 sm:space-y-4 mb-8 sm:mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-50 dark:bg-pink-950/60 border border-pink-200 dark:border-pink-800 text-pink-700 dark:text-pink-300 text-xs font-semibold">
             <Target className="w-3.5 h-3.5" />
             <span>Targeted Scenarios</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
             Tailored to your professional career goals.
           </h2>
-          <p className="text-base text-slate-600 dark:text-slate-400">
+          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
             Whether leading high-stakes team syncs or cracking your dream global job offer, FluentMeet accelerates your professional English.
           </p>
         </div>
 
         {/* Tab Selection */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8 sm:mb-10">
           {USE_CASES.map((uc) => {
             const isActive = activeTab === uc.id;
             return (
               <button
                 key={uc.id}
                 onClick={() => setActiveTab(uc.id)}
-                className={`p-4 rounded-2xl border text-left transition-all flex items-start gap-3.5 ${
+                className={`p-3.5 sm:p-4 rounded-2xl border text-left transition-all flex items-start gap-3 sm:gap-3.5 ${
                   isActive
                     ? 'border-indigo-600 bg-white dark:bg-slate-800 shadow-lg shadow-indigo-500/10 dark:border-indigo-500'
                     : 'border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 hover:border-slate-300 dark:hover:border-slate-700'
                 }`}
               >
-                <div className={`p-2.5 rounded-xl ${isActive ? 'bg-indigo-50 dark:bg-indigo-950 text-indigo-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
+                <div className={`p-2 sm:p-2.5 rounded-xl shrink-0 ${isActive ? 'bg-indigo-50 dark:bg-indigo-950 text-indigo-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>
                   {uc.icon}
                 </div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">{uc.title}</h4>
-                  <span className="text-[11px] text-slate-400">{uc.tag}</span>
+                <div className="min-w-0">
+                  <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">{uc.title}</h4>
+                  <span className="text-[10px] sm:text-[11px] text-slate-400 truncate block">{uc.tag}</span>
                 </div>
               </button>
             );
@@ -123,25 +123,25 @@ export const UseCasesSection: React.FC = () => {
         </div>
 
         {/* Active Use Case Deep Dive Card */}
-        <div className="bg-gradient-to-br from-indigo-900 via-slate-900 to-purple-950 text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden">
+        <div className="bg-gradient-to-br from-indigo-900 via-slate-900 to-purple-950 text-white rounded-3xl p-5 sm:p-8 md:p-12 shadow-2xl relative overflow-hidden">
           {/* Subtle Glows */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
-            <div className="lg:col-span-8 space-y-5">
-              <span className="inline-block px-3 py-1 rounded-full bg-white/10 text-indigo-300 font-bold text-xs uppercase tracking-wider">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center relative z-10">
+            <div className="lg:col-span-8 space-y-4 sm:space-y-5">
+              <span className="inline-block px-3 py-1 rounded-full bg-white/10 text-indigo-300 font-bold text-[10px] sm:text-xs uppercase tracking-wider">
                 {current.tag}
               </span>
-              <h3 className="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
+              <h3 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight leading-tight">
                 {current.headline}
               </h3>
-              <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
+              <p className="text-xs sm:text-base text-slate-300 leading-relaxed max-w-2xl">
                 {current.description}
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 pt-2 sm:pt-3">
                 {current.bullets.map((b, i) => (
-                  <div key={i} className="flex items-center gap-2.5 text-xs text-slate-200 font-medium">
+                  <div key={i} className="flex items-center gap-2 sm:gap-2.5 text-xs text-slate-200 font-medium">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                     <span>{b}</span>
                   </div>
@@ -149,10 +149,10 @@ export const UseCasesSection: React.FC = () => {
               </div>
             </div>
 
-            <div className="lg:col-span-4 bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/15 text-center space-y-2">
-              <span className="text-5xl font-black text-amber-300 block">{current.stat}</span>
-              <h5 className="text-sm font-bold text-white">{current.statLabel}</h5>
-              <p className="text-[11px] text-slate-300 pt-1">
+            <div className="lg:col-span-4 bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-white/15 text-center space-y-1.5 sm:space-y-2">
+              <span className="text-4xl sm:text-5xl font-black text-amber-300 block">{current.stat}</span>
+              <h5 className="text-xs sm:text-sm font-bold text-white">{current.statLabel}</h5>
+              <p className="text-[10px] sm:text-[11px] text-slate-300 pt-1">
                 Measured across 2,400+ professionals after 30 days of active meeting coaching.
               </p>
             </div>

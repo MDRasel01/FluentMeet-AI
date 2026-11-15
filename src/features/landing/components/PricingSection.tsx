@@ -76,30 +76,30 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onSelectPlan }) 
   ];
 
   return (
-    <section id="pricing" className="py-20 md:py-28 bg-slate-50/50 dark:bg-slate-900/40 border-t border-slate-200/80 dark:border-slate-800">
+    <section id="pricing" className="py-12 sm:py-20 md:py-28 bg-slate-50/50 dark:bg-slate-900/40 border-t border-slate-200/80 dark:border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
+        <div className="text-center max-w-3xl mx-auto space-y-3 sm:space-y-4 mb-8 sm:mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold">
             <Zap className="w-3.5 h-3.5" />
             <span>Transparent Pricing</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
             Invest in your global career confidence.
           </h2>
-          <p className="text-base text-slate-600 dark:text-slate-400">
+          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
             Start free with no credit card required. Upgrade when you need unlimited deep coaching.
           </p>
 
           {/* Billing Interval Toggle (Livo AI Style) */}
-          <div className="pt-4 flex items-center justify-center gap-3">
+          <div className="pt-2 sm:pt-4 flex items-center justify-center gap-2.5 sm:gap-3">
             <span className={`text-xs font-semibold ${!isYearly ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>
               Monthly
             </span>
             <button
               type="button"
               onClick={() => setIsYearly(!isYearly)}
-              className="w-13 h-7 rounded-full bg-indigo-600 p-1 flex items-center transition-colors relative cursor-pointer"
+              className="w-12 h-6 sm:w-13 sm:h-7 rounded-full bg-indigo-600 p-0.5 sm:p-1 flex items-center transition-colors relative cursor-pointer"
               aria-label="Toggle annual billing"
             >
               <div
@@ -118,7 +118,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onSelectPlan }) 
         </div>
 
         {/* Pricing Cards Grid (Livo AI & Calliom Style) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch max-w-6xl mx-auto">
           {plans.map((p) => {
             const price = isYearly ? p.yearlyPrice : p.monthlyPrice;
             const isPro = p.isPopular;
@@ -126,9 +126,9 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onSelectPlan }) 
             return (
               <div
                 key={p.id}
-                className={`relative rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 ${
+                className={`relative rounded-3xl p-5 sm:p-8 flex flex-col justify-between transition-all duration-300 ${
                   isPro
-                    ? 'bg-slate-900 text-white dark:bg-indigo-950/70 border-2 border-indigo-500 shadow-2xl shadow-indigo-500/25 md:scale-[1.03] z-10'
+                    ? 'bg-slate-900 text-white dark:bg-indigo-950/70 border-2 border-indigo-500 shadow-2xl shadow-indigo-500/25 lg:scale-[1.03] z-10'
                     : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl'
                 }`}
               >
@@ -141,7 +141,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onSelectPlan }) 
 
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-lg font-bold">{p.name}</h4>
+                    <h4 className="text-base sm:text-lg font-bold">{p.name}</h4>
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
                         isPro ? 'bg-white/15 text-indigo-300' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
@@ -157,7 +157,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onSelectPlan }) 
 
                   {/* Price */}
                   <div className="pt-2">
-                    <span className="text-4xl sm:text-5xl font-black tracking-tight">${price}</span>
+                    <span className="text-3xl sm:text-5xl font-black tracking-tight">${price}</span>
                     <span className={`text-xs ml-1.5 ${isPro ? 'text-slate-400' : 'text-slate-500'}`}>
                       / month {isYearly && price > 0 ? '(billed annually)' : ''}
                     </span>

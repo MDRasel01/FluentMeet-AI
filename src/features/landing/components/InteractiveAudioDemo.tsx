@@ -98,12 +98,12 @@ export const InteractiveAudioDemo: React.FC = () => {
   return (
     <section id="live-demo" className="py-20 bg-slate-50/70 dark:bg-slate-900/60 border-y border-slate-200/80 dark:border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
+        <div className="text-center max-w-3xl mx-auto space-y-3 sm:space-y-4 mb-8 sm:mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-semibold">
             <Volume2 className="w-3.5 h-3.5" />
             <span>Interactive Voice Player</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
             Hear the difference AI coaching makes in real calls.
           </h2>
           <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
@@ -112,7 +112,7 @@ export const InteractiveAudioDemo: React.FC = () => {
         </div>
 
         {/* Scenario Switcher Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mb-6 sm:mb-8">
           {DEMO_SNIPPETS.map((s) => (
             <button
               key={s.id}
@@ -121,7 +121,7 @@ export const InteractiveAudioDemo: React.FC = () => {
                 setIsPlaying(false);
                 setProgress(0);
               }}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-bold transition-all border whitespace-nowrap ${
                 selectedSnippet.id === s.id
                   ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20'
                   : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300'
@@ -133,43 +133,43 @@ export const InteractiveAudioDemo: React.FC = () => {
         </div>
 
         {/* Audio Player Interactive Card (Calliom Glass Card) */}
-        <div className="max-w-3xl mx-auto bg-white dark:bg-slate-800/90 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-2xl p-6 sm:p-8 space-y-6">
+        <div className="max-w-3xl mx-auto bg-white dark:bg-slate-800/90 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-2xl p-4 sm:p-8 space-y-4 sm:space-y-6">
           {/* Player Top Meta */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 block">
                 Scenario Track
               </span>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">{selectedSnippet.title}</h3>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">{selectedSnippet.title}</h3>
               <span className="text-xs text-slate-400">
                 Speaker: <span className="font-semibold text-slate-700 dark:text-slate-300">{selectedSnippet.speaker}</span> ({selectedSnippet.role})
               </span>
             </div>
 
-            <div className="text-right">
-              <span className="text-2xl font-black text-indigo-600 dark:text-indigo-400">{selectedSnippet.cefrLevel}</span>
+            <div className="text-left sm:text-right flex items-center sm:block gap-2">
+              <span className="text-xl sm:text-2xl font-black text-indigo-600 dark:text-indigo-400">{selectedSnippet.cefrLevel}</span>
               <span className="text-[10px] text-slate-400 block font-medium">CEFR Equivalent</span>
             </div>
           </div>
 
           {/* Audio Waveform & Play Controller */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 flex items-center gap-4">
+          <div className="p-3 sm:p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 flex items-center gap-3 sm:gap-4">
             <button
               onClick={togglePlay}
-              className="w-12 h-12 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/30 transition-transform active:scale-95"
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/30 transition-transform active:scale-95"
             >
-              {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current ml-0.5" />}
+              {isPlaying ? <Pause className="w-4 h-4 sm:w-5 sm:h-5 fill-current" /> : <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current ml-0.5" />}
             </button>
 
             {/* Simulated Animated Audio Waveform */}
-            <div className="flex-1 space-y-1">
-              <div className="flex items-center gap-1 h-8">
+            <div className="flex-1 space-y-1 min-w-0">
+              <div className="flex items-center gap-0.5 sm:gap-1 h-6 sm:h-8">
                 {[15, 30, 65, 90, 45, 80, 100, 75, 40, 85, 95, 60, 45, 90, 70, 50, 85, 95, 40, 60, 80, 50, 30, 20].map((h, i) => {
                   const isCurrent = (i / 24) * 100 <= progress;
                   return (
                     <span
                       key={i}
-                      className={`flex-1 rounded-full transition-all duration-150 ${
+                      className={`flex-1 rounded-full transition-all duration-150 ${i > 15 ? 'hidden sm:inline-block' : ''} ${
                         isCurrent
                           ? 'bg-indigo-600 dark:bg-indigo-400'
                           : 'bg-slate-200 dark:bg-slate-700'

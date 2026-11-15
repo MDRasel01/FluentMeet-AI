@@ -11,8 +11,8 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAuth, onNavigateApp }) => 
   return (
     <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 text-xs">
       {/* Top CTA Banner */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-indigo-900 via-indigo-950 to-purple-950 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+        <div className="p-5 sm:p-12 rounded-3xl bg-gradient-to-r from-indigo-900 via-indigo-950 to-purple-950 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
           <div className="space-y-2 text-center md:text-left z-10">
             <span className="text-xs font-bold text-indigo-300 uppercase tracking-wider block">
               Join 50,000+ Global Professionals
