@@ -1,3 +1,5 @@
+import plugin from 'tailwindcss/plugin';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: 'class',
@@ -12,6 +14,39 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        xs: '400px',
+        'smallMobile': '320px',
+        'mobile': '375px',
+        'largeMobile': '430px',
+        'tablet': '768px',
+        'smallDesktop': '1024px',
+        'desktop': '1280px',
+        'largeDesktop': '1440px',
+        'wideDesktop': '1600px',
+        '3xl': '1920px',
+      },
+      minHeight: { dvh: '100dvh', svh: '100svh' },
+      height: { dvh: '100dvh', svh: '100svh' },
+      maxHeight: { sheet: '85dvh' },
+      minWidth: { touch: '44px' },
+      spacing: { touch: '44px' },
+      keyframes: {
+        marquee: {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-50%)' },
+        },
+        'sheet-up': {
+          from: { transform: 'translateY(100%)' },
+          to: { transform: 'translateY(0)' },
+        },
+        'fade-in': { from: { opacity: 0 }, to: { opacity: 1 } },
+      },
+      animation: {
+        marquee: 'marquee 30s linear infinite',
+        'sheet-up': 'sheet-up 280ms cubic-bezier(.32,.72,0,1)',
+        'fade-in': 'fade-in 200ms ease-out',
+      },
       colors: {
         primary: {
           50: '#EEF2FF',
@@ -63,18 +98,19 @@ export default {
         sans: ['Inter', 'Geist Sans', '-apple-system', 'sans-serif'],
         mono: ['Geist Mono', 'JetBrains Mono', 'monospace'],
       },
-      screens: {
-        'smallMobile': '320px',
-        'mobile': '375px',
-        'largeMobile': '430px',
-        'tablet': '768px',
-        'smallDesktop': '1024px',
-        'desktop': '1280px',
-        'largeDesktop': '1440px',
-        'wideDesktop': '1600px',
-      },
     },
   },
-  plugins: [],
-}
+  plugins: [
+    plugin(({ addUtilities }) => {
+      addUtilities({
+        '.pt-safe': { paddingTop: 'env(safe-area-inset-top)' },
+        '.pb-safe': { paddingBottom: 'env(safe-area-inset-bottom)' },
+        '.pl-safe': { paddingLeft: 'env(safe-area-inset-left)' },
+        '.pr-safe': { paddingRight: 'env(safe-area-inset-right)' },
+        '.pb-safe-4': { paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' },
+        '.pt-safe-4': { paddingTop: 'max(1rem, env(safe-area-inset-top))' },
+      });
+    }),
+  ],
+};
 

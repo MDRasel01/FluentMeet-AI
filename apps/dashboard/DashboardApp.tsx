@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useLockBodyScroll } from '../../src/hooks/useLockBodyScroll';
 import {
   LayoutDashboard,
   Video,
@@ -141,6 +142,18 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
   const [selectedTranscriptMistake, setSelectedTranscriptMistake] = useState<any>(null);
   const [reportSubView, setReportSubView] = useState<'summary' | 'participant' | 'history'>('summary');
   const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
+  const touchStartX = useRef<number | null>(null);
+
+  useLockBodyScroll(mobileMenuOpen);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mobileMenuOpen]);
 
   const navigateTo = (page: DashboardPage) => {
     setCurrentPage(page);
@@ -163,24 +176,25 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col antialiased">
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col antialiased overflow-x-clip">
       {/* Top Application Bar */}
-      <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 flex items-center justify-between sticky top-0 z-30 shadow-xs">
-        <div className="flex items-center gap-3">
+      <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 sm:px-4 pt-safe flex items-center justify-between sticky top-0 z-30 shadow-xs">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+            className="md:hidden grid h-11 w-11 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0"
             aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-base shadow-sm">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-base shadow-sm shrink-0">
               <Sparkles className="w-4 h-4" />
             </div>
-            <div>
-              <span className="font-bold text-sm tracking-tight text-slate-900 dark:text-white block leading-none">
+            <div className="min-w-0">
+              <span className="font-bold text-sm tracking-tight text-slate-900 dark:text-white block leading-none truncate">
                 AI Meeting Coach
               </span>
               <span className="text-[10px] font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
@@ -189,7 +203,7 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
             </div>
           </div>
 
-          <div className="hidden lg:flex items-center gap-2 ml-6 pl-6 border-l border-slate-200 dark:border-slate-800">
+          <div className="hidden lg:flex items-center gap-2 ml-4 pl-4 border-l border-slate-200 dark:border-slate-800">
             <Badge variant="primary" size="sm">Acme Corp Workspace</Badge>
             <span className="text-xs text-slate-400">•</span>
             <span className="text-xs text-slate-500 font-medium">Engineering Dept</span>
@@ -197,12 +211,12 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
         </div>
 
         {/* Global Search and Actions */}
-        <div className="flex items-center gap-3">
-          <div className="relative hidden md:block w-64">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="relative hidden md:block w-56 lg:w-64">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
             <input
               type="text"
-              placeholder="Search meetings, errors, vocabulary..."
+              placeholder="Search meetings, errors..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
@@ -211,17 +225,17 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
 
           <button
             onClick={onToggleTheme}
-            className="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="grid h-10 w-10 place-items-center rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             title={isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
           >
             {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
           </button>
 
-          <div className="h-6 w-px bg-slate-200 dark:bg-slate-800" />
+          <div className="h-6 w-px bg-slate-200 dark:border-slate-800" />
 
           {/* User Profile */}
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 text-white font-bold text-xs flex items-center justify-center shadow-xs shrink-0">
               PS
             </div>
             <div className="hidden sm:block text-left">
@@ -236,15 +250,46 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
         </div>
       </header>
 
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left Navigation Sidebar */}
+      <div className="flex-1 flex overflow-hidden relative">
+        {/* Mobile Drawer Backdrop */}
+        <div
+          aria-hidden="true"
+          onClick={() => setMobileMenuOpen(false)}
+          className={`fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+            mobileMenuOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+          }`}
+        />
+
+        {/* Left Navigation Sidebar / Mobile Drawer */}
         <aside
+          onTouchStart={(e) => {
+            touchStartX.current = e.touches[0].clientX;
+          }}
+          onTouchEnd={(e) => {
+            if (touchStartX.current === null) return;
+            const dx = e.changedTouches[0].clientX - touchStartX.current;
+            if (dx < -60) setMobileMenuOpen(false);
+            touchStartX.current = null;
+          }}
           className={`
-            fixed md:static inset-y-0 left-0 z-20 w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col transition-all duration-200 ease-in-out
-            ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+            fixed md:static inset-y-0 left-0 z-50 md:z-auto w-[min(18rem,85vw)] md:w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col pt-safe pb-safe transition-all duration-300 ease-out
+            ${mobileMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'}
             ${sidebarCollapsed ? 'md:w-16' : 'md:w-64'}
           `}
         >
+          {/* Mobile drawer header with close button */}
+          <div className="flex h-14 shrink-0 items-center justify-between px-4 border-b border-slate-200 dark:border-slate-800 md:hidden">
+            <span className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">
+              Menu Navigation
+            </span>
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="grid h-10 w-10 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              aria-label="Close menu"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
           <div className="flex-1 overflow-y-auto p-3 space-y-6">
             {/* Workspace Group */}
             <div>
@@ -512,7 +557,7 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
         </aside>
 
         {/* Main Application Body */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 max-w-7xl mx-auto w-full">
+        <main className="flex-1 overflow-y-auto overscroll-contain p-4 md:p-8 max-w-7xl mx-auto w-full pb-safe-4">
           {/* Breadcrumb Bar */}
           <div className="flex items-center gap-2 text-xs text-slate-400 mb-6 font-medium">
             <span className="hover:text-slate-700 dark:hover:text-slate-300 cursor-pointer" onClick={() => navigateTo('overview')}>

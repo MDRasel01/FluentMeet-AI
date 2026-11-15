@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, type TouchEvent } from 'react';
 import {
   X,
   Mail,
@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { AuthMode, AuthUser } from '../types';
 import { DEMO_USERS } from '../useAuth';
+import { useLockBodyScroll } from '../../../hooks/useLockBodyScroll';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -40,6 +41,42 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
   const [forgotSubmitted, setForgotSubmitted] = useState(false);
+  const [dragY, setDragY] = useState(0);
+  const startY = useRef<number | null>(null);
+
+  useLockBodyScroll(isOpen);
+
+  useEffect(() => {
+    if (isOpen) {
+      setMode(initialMode);
+      setDragY(0);
+      setLocalError(null);
+    }
+  }, [isOpen, initialMode]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
+
+  // Mobile swipe down to close
+  const onTouchStart = (e: TouchEvent) => {
+    startY.current = e.touches[0].clientY;
+  };
+  const onTouchMove = (e: TouchEvent) => {
+    if (startY.current === null) return;
+    const delta = e.touches[0].clientY - startY.current;
+    if (delta > 0) setDragY(delta);
+  };
+  const onTouchEnd = () => {
+    if (dragY > 100) onClose();
+    setDragY(0);
+    startY.current = null;
+  };
 
   if (!isOpen) return null;
 
@@ -99,41 +136,59 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4">
       {/* Blurred Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity animate-in fade-in duration-200"
+        className="fixed inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity animate-fade-in"
         onClick={onClose}
       />
 
-      {/* Modal Card */}
-      <div className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200/80 dark:border-slate-800 p-6 md:p-8 z-10 my-8 transition-all animate-in zoom-in-95 duration-200">
+      {/* Modal Card (Bottom Sheet on mobile, centered dialog on sm+) */}
+      <div
+        style={{
+          transform: dragY ? `translateY(${dragY}px)` : undefined,
+          transition: dragY ? 'none' : undefined,
+        }}
+        className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-3xl shadow-2xl border-t sm:border border-slate-200/80 dark:border-slate-800 z-10 max-h-[88dvh] sm:max-h-[90dvh] flex flex-col overflow-hidden animate-sheet-up sm:animate-fade-in"
+      >
+        {/* Mobile Grab Handle */}
+        <div
+          className="flex h-6 shrink-0 cursor-grab touch-none items-center justify-center sm:hidden pt-2"
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
+          <span className="h-1.5 w-10 rounded-full bg-slate-300 dark:bg-slate-700" />
+        </div>
+
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          className="absolute top-4 right-4 p-2 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors z-20"
           aria-label="Close"
         >
           <X className="w-5 h-5" />
         </button>
 
-        {/* Brand Header */}
-        <div className="text-center space-y-1.5 mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-1">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-            <span>FluentMeet AI Platform</span>
+        {/* Scrollable Body: iOS Keyboard Safe with Safe-Area Padding */}
+        <div className="overflow-y-auto overscroll-contain px-5 sm:px-8 pt-4 pb-safe-4 flex-1">
+          {/* Brand Header */}
+          <div className="text-center space-y-1.5 mb-5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-1">
+              <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+              <span>FluentMeet AI Platform</span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              {mode === 'signin' && 'Welcome Back'}
+              {mode === 'signup' && 'Create Your Account'}
+              {mode === 'forgot' && 'Reset Password'}
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
+              {mode === 'signin' && 'Sign in to access your meeting transcripts, CEFR scores, and speech coaching analytics.'}
+              {mode === 'signup' && 'Join 50,000+ professionals speaking confident, fluent English in daily meetings.'}
+              {mode === 'forgot' && 'Enter your email and we will send you a secure password reset link.'}
+            </p>
           </div>
-          <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-            {mode === 'signin' && 'Welcome Back'}
-            {mode === 'signup' && 'Create Your Account'}
-            {mode === 'forgot' && 'Reset Password'}
-          </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
-            {mode === 'signin' && 'Sign in to access your meeting transcripts, CEFR scores, and speech coaching analytics.'}
-            {mode === 'signup' && 'Join 50,000+ professionals speaking confident, fluent English in daily meetings.'}
-            {mode === 'forgot' && 'Enter your email and we will send you a secure password reset link.'}
-          </p>
-        </div>
 
         {/* Mode Switcher Tabs */}
         {mode !== 'forgot' && (
@@ -214,7 +269,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. Priya Sharma"
-                    className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-9 pr-3 py-2.5 text-base sm:text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
               </div>
@@ -232,7 +287,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@company.com"
-                  className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full pl-9 pr-3 py-2.5 text-base sm:text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
             </div>
@@ -261,7 +316,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-9 pr-10 py-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-9 pr-10 py-2.5 text-base sm:text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                   <button
                     type="button"
@@ -367,11 +422,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         </div>
 
         {/* Security / Privacy Assurance */}
-        <div className="mt-4 flex items-center justify-center gap-2 text-[10px] text-slate-400 text-center">
+        <div className="mt-4 flex items-center justify-center gap-2 text-[10px] text-slate-400 text-center pb-2">
           <Shield className="w-3 h-3 text-emerald-500 shrink-0" />
           <span>SOC2 Type II & GDPR Compliant • Audio processed with strict consent</span>
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 };

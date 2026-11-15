@@ -152,9 +152,9 @@ export const ExtensionApp: React.FC<ExtensionAppProps> = ({
   };
 
   return (
-    <div className="w-full max-w-[400px] h-[640px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl flex flex-col overflow-hidden text-slate-900 dark:text-slate-100 antialiased mx-auto select-none">
+    <div className="w-full min-w-[320px] max-w-[420px] h-full min-h-[580px] max-h-dvh md:h-[650px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl flex flex-col overflow-x-clip text-slate-900 dark:text-slate-100 antialiased mx-auto select-none relative">
       {/* Chrome Side Panel Header */}
-      <div className="p-3.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex items-center justify-between">
+      <div className="p-3 sm:p-3.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 rounded-md bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">
             <Sparkles className="w-3.5 h-3.5" />

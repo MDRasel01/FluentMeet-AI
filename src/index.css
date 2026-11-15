@@ -2,6 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    /* clip, not hidden: `hidden` creates a scroll container and breaks position: sticky */
+    overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 4.5rem; /* sticky header offset for anchor links */
+  }
+  body {
+    min-height: 100dvh;
+    overflow-x: clip;
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #root {
+    min-height: 100dvh;
+  }
+  img, svg, video {
+    max-width: 100%;
+  }
+}
+
+@layer utilities {
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 :root {
   /* Primary Brand Tokens */
   --color-primary: #6366F1;
