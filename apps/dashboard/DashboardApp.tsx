@@ -630,18 +630,6 @@ export const DashboardApp: React.FC<DashboardAppProps> = ({
                   <CreditCard className="w-4 h-4 shrink-0" />
                   {!sidebarCollapsed && <span>Billing & Usage</span>}
                 </button>
-
-                <button
-                  onClick={() => navigateTo('profile-settings')}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
-                    currentPage.includes('settings')
-                      ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300'
-                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                  }`}
-                >
-                  <Settings className="w-4 h-4 shrink-0" />
-                  {!sidebarCollapsed && <span>Settings</span>}
-                </button>
               </div>
             </div>
           </div>
